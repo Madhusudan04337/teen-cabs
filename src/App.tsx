@@ -8,6 +8,7 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ContactSection } from './components/ContactSection';
+import { BackToTopButton } from './components/BackToTopButton';
 import { ExperienceShowcase } from './components/ExperienceShowcase';
 import { HeroSection } from './components/HeroSection';
 import { JourneyAndTeamSection } from './components/JourneyAndTeamSection';
@@ -20,6 +21,8 @@ import { WaitlistFooterSection } from './components/WaitlistFooterSection';
 import { WaitlistModal } from './components/WaitlistModal';
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.defaults({ overwrite: 'auto', force3D: true });
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export default function App() {
   const [waitlistOpen, setWaitlistOpen] = useState(false);
@@ -31,10 +34,10 @@ export default function App() {
 
     if (!prefersReduced) {
       lenis = new Lenis({
-        duration: 1.15,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        lerp: 0.085,
+        wheelMultiplier: 0.92,
+        touchMultiplier: 1.15,
         smoothWheel: true,
-        touchMultiplier: 1.4,
       });
 
       lenis.on('scroll', ScrollTrigger.update);
@@ -55,8 +58,24 @@ export default function App() {
       if (!el) return;
 
       event.preventDefault();
+      if (hash === '#top') {
+        if (lenis) {
+          lenis.scrollTo(0, {
+            duration: 1.25,
+            easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+          });
+        } else {
+          window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+        }
+        return;
+      }
+
       if (lenis) {
-        lenis.scrollTo(el as HTMLElement, { offset: -64, duration: 1.1 });
+        lenis.scrollTo(el as HTMLElement, {
+          offset: -68,
+          duration: 1.25,
+          easing: (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)),
+        });
       } else {
         el.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth' });
       }
@@ -68,10 +87,19 @@ export default function App() {
     window.addEventListener('load', refresh);
     const timer = window.setTimeout(refresh, 450);
 
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            ScrollTrigger.refresh();
+          })
+        : null;
+    resizeObserver?.observe(document.body);
+
     return () => {
       document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('load', refresh);
       window.clearTimeout(timer);
+      resizeObserver?.disconnect();
       if (rafCallback) {
         gsap.ticker.remove(rafCallback);
       }
@@ -80,7 +108,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-[#012B17] text-[#F7F3E9]">
+    <div className="relative min-h-screen overflow-x-clip bg-[#063B27] text-[#E8EEE8]">
       <LogoIntro />
       <LivingAtmosphere />
       <Navbar onOpenWaitlist={() => setWaitlistOpen(true)} />
@@ -99,6 +127,7 @@ export default function App() {
         isOpen={waitlistOpen}
         onClose={() => setWaitlistOpen(false)}
       />
+      {!waitlistOpen && <BackToTopButton />}
     </div>
   );
 }

@@ -32,9 +32,9 @@ export function NeedAndApproachSection() {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const isDesktop = window.innerWidth >= 768;
-        const offset = isDesktop ? 56 : 24;
+        const offset = isDesktop ? 36 : 16;
 
-        // Snappy, reversible slide-ins from left (100% crisp opacity on entry, reverses cleanly on scroll up)
+        // Smooth, reversible slide-ins from left
         gsap.utils.toArray<HTMLElement>('[data-snap-left]').forEach((el) => {
           gsap.fromTo(
             el,
@@ -42,19 +42,19 @@ export function NeedAndApproachSection() {
             {
               x: 0,
               opacity: 1,
-              duration: 0.72,
-              ease: 'power3.out',
+              duration: 0.85,
+              ease: 'expo.out',
               scrollTrigger: {
                 trigger: el,
-                start: 'top 86%',
-                end: 'bottom 12%',
+                start: 'top 90%',
+                end: 'bottom 4%',
                 toggleActions: 'play reverse play reverse',
               },
             }
           );
         });
 
-        // Snappy, reversible slide-ins from right
+        // Smooth, reversible slide-ins from right
         gsap.utils.toArray<HTMLElement>('[data-snap-right]').forEach((el) => {
           gsap.fromTo(
             el,
@@ -62,32 +62,32 @@ export function NeedAndApproachSection() {
             {
               x: 0,
               opacity: 1,
-              duration: 0.72,
-              ease: 'power3.out',
+              duration: 0.85,
+              ease: 'expo.out',
               scrollTrigger: {
                 trigger: el,
-                start: 'top 86%',
-                end: 'bottom 12%',
+                start: 'top 90%',
+                end: 'bottom 4%',
                 toggleActions: 'play reverse play reverse',
               },
             }
           );
         });
 
-        // Staggered unboxed pillars rising cleanly
+        // Staggered elevated pillars rising smoothly
         gsap.fromTo(
           '[data-approach-col]',
-          { y: 36, opacity: 0 },
+          { y: 28, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            duration: 0.68,
-            stagger: 0.12,
-            ease: 'power3.out',
+            duration: 0.82,
+            stagger: 0.11,
+            ease: 'expo.out',
             scrollTrigger: {
               trigger: '[data-approach-grid]',
-              start: 'top 84%',
-              end: 'bottom 14%',
+              start: 'top 88%',
+              end: 'bottom 4%',
               toggleActions: 'play reverse play reverse',
             },
           }
@@ -98,11 +98,11 @@ export function NeedAndApproachSection() {
           const counter = { val: 0 };
           gsap.to(counter, {
             val: 73,
-            duration: 1.1,
-            ease: 'power2.out',
+            duration: 1.25,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: heroMetricRef.current,
-              start: 'top 86%',
+              start: 'top 88%',
               toggleActions: 'play none none reverse',
             },
             onUpdate: () => {
@@ -128,26 +128,26 @@ export function NeedAndApproachSection() {
       <section
         id="the-need"
         aria-labelledby="need-heading"
-        className="py-16 sm:py-20 lg:py-24"
+        className="bg-[#063B27] py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
           <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
             {/* Left Column: Open Interactive Reality Selector (Zero Boxes) */}
             <div data-snap-left className="lg:col-span-6">
-              <p className="mb-3 text-sm font-medium tracking-wide text-[#82CFA0]">
+              <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
                 Why we are building this
               </p>
               <h2
                 id="need-heading"
-                className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#F7F3E9] sm:text-4xl lg:text-[3rem]"
+                className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
               >
                 Growing up means{' '}
-                <span className="font-editorial font-normal italic text-[#DFBA78]">
+                <span className="font-editorial font-normal italic text-[#E6C477]">
                   going places.
                 </span>
               </h2>
 
-              <div className="mt-9 divide-y divide-[#0E5A35]/70 border-y border-[#0E5A35]/70">
+              <div className="mt-9 divide-y divide-[#285640] border-y border-[#285640]">
                 {NEED_ITEMS.map((item) => {
                   const Icon = NEED_ICONS[item.id as keyof typeof NEED_ICONS];
                   const selected = item.id === activeNeed.id;
@@ -162,8 +162,8 @@ export function NeedAndApproachSection() {
                       <span
                         className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
                           selected
-                            ? 'bg-[#DFBA78] text-[#012B17] scale-105'
-                            : 'bg-[#02391F] text-[#DFBA78] group-hover:bg-[#054928]'
+                            ? 'scale-105 bg-[#E6C477] text-[#032A1D]'
+                            : 'border border-[#285640] bg-[#0B4933] text-[#E6C477] group-hover:border-[#D9B45B]'
                         }`}
                       >
                         <Icon className="h-4 w-4" aria-hidden="true" />
@@ -172,8 +172,8 @@ export function NeedAndApproachSection() {
                         <h3
                           className={`text-lg leading-snug font-medium transition-colors sm:text-xl ${
                             selected
-                              ? 'text-[#DFBA78]'
-                              : 'text-[#F7F3E9] group-hover:text-[#DFBA78]'
+                              ? 'text-[#E6C477]'
+                              : 'text-[#E8EEE8] group-hover:text-[#E6C477]'
                           }`}
                         >
                           {item.title}
@@ -192,8 +192,8 @@ export function NeedAndApproachSection() {
                                   ? undefined
                                   : { opacity: 0, height: 0 }
                               }
-                              transition={{ duration: 0.24, ease: 'easeOut' }}
-                              className="overflow-hidden pt-2.5 text-sm leading-[1.65] font-light text-[#CBE0D3] sm:text-[0.9375rem]"
+                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                              className="overflow-hidden pt-2.5 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]"
                             >
                               {item.description}
                             </motion.p>
@@ -210,42 +210,42 @@ export function NeedAndApproachSection() {
             <div data-snap-right className="relative lg:col-span-6 lg:pl-10">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-6 right-4 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(223,186,120,0.14)_0%,transparent_70%)] blur-2xl"
+                className="pointer-events-none absolute -top-6 right-4 h-72 w-72 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.09)_0%,transparent_66%)]"
               />
 
-              <p className="max-w-[46ch] rounded-2xl border border-[#14653C]/55 bg-[#02351C]/45 px-5 py-4 text-sm leading-[1.65] font-light text-[#CBE0D3] sm:text-[0.9375rem]">
+              <p className="max-w-[46ch] rounded-2xl border border-[#285640] bg-[#0B4933] px-5 py-4 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
                 Getting to school, tuition, or weekend practice should never mean
                 compromising on safety. Today’s ride platforms were never built
                 around teens or the families supporting them.
               </p>
 
               <div className="mt-9">
-                <p className="text-xs font-semibold tracking-[0.12em] text-[#9BC5AD] uppercase">
+                <p className="text-xs font-semibold tracking-[0.12em] text-[#B7C8BA] uppercase">
                   The bigger picture
                 </p>
 
                 <div className="mt-4 flex flex-wrap items-baseline gap-6 pb-8">
                   <span
                     ref={heroMetricRef}
-                    className="font-mono text-6xl leading-none font-medium tracking-tight tabular-nums text-[#DFBA78] sm:text-7xl lg:text-[5.25rem]"
+                    className="font-mono text-6xl leading-none font-medium tracking-tight tabular-nums text-[#E6C477] sm:text-7xl lg:text-[5.25rem]"
                   >
                     73%
                   </span>
-                  <p className="max-w-[24ch] font-editorial text-lg leading-snug italic text-[#F7F3E9] sm:text-xl">
+                  <p className="max-w-[24ch] font-editorial text-lg leading-snug italic text-[#E8EEE8] sm:text-xl">
                     of parents worry about teen transport safety every day
                   </p>
                 </div>
 
-                <dl className="grid grid-cols-2 gap-x-10 gap-y-8 border-t border-[#0E5A35]/70 pt-8">
+                <dl className="grid grid-cols-2 gap-x-10 gap-y-8 border-t border-[#285640] pt-8">
                   {BIGGER_PICTURE_STATS.map((stat) => (
                     <div key={stat.label}>
                       <dd
                         aria-label={stat.ariaLabel}
-                        className="font-mono text-3xl leading-none font-medium tabular-nums text-[#F7F3E9] sm:text-4xl"
+                        className="font-mono text-3xl leading-none font-medium tabular-nums text-[#E8EEE8] sm:text-4xl"
                       >
                         {stat.value}
                       </dd>
-                      <dt className="mt-2 text-xs font-medium tracking-wide text-[#9BC5AD] sm:text-sm">
+                      <dt className="mt-2 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
                         {stat.label}
                       </dt>
                     </div>
@@ -257,31 +257,31 @@ export function NeedAndApproachSection() {
         </div>
       </section>
 
-      {/* Section 3: Our Approach — Open 3-Column Editorial Band (Zero Heavy Boxes) */}
+      {/* Section 3: Our Approach — Open 3-Column Editorial Band */}
       <section
         id="our-approach"
         aria-labelledby="approach-heading"
-        className="py-16 sm:py-20 lg:py-24"
+        className="border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
-          <div className="flex flex-col justify-between gap-8 border-b border-[#0E5A35]/70 pb-10 lg:flex-row lg:items-end lg:pb-12">
+          <div className="flex flex-col justify-between gap-8 border-b border-[#285640] pb-10 lg:flex-row lg:items-end lg:pb-12">
             <div data-snap-left>
-              <p className="mb-3 text-sm font-medium tracking-wide text-[#82CFA0]">
+              <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
                 Our approach
               </p>
               <h2
                 id="approach-heading"
-                className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#F7F3E9] sm:text-4xl lg:text-[3rem]"
+                className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
               >
                 Introducing{' '}
-                <span className="font-editorial font-normal italic text-[#DFBA78]">
+                <span className="font-editorial font-normal italic text-[#E6C477]">
                   Teen Cabs.
                 </span>
               </h2>
             </div>
 
             <div data-snap-right className="flex flex-col items-start gap-4 lg:items-end">
-              <p className="max-w-[40ch] text-base leading-[1.65] font-light text-[#CBE0D3] lg:text-right sm:text-[1.0625rem]">
+              <p className="max-w-[40ch] text-base leading-[1.65] font-light text-[#D4E1D8] lg:text-right sm:text-[1.0625rem]">
                 Engineered from the ground up — trusted by parents and effortless
                 for Gen Z.
               </p>
@@ -289,7 +289,7 @@ export function NeedAndApproachSection() {
               <div
                 role="group"
                 aria-label="Audience perspective filter"
-                className="inline-flex items-center gap-6 border-b border-[#0E5A35]"
+                className="inline-flex items-center gap-6 border-b border-[#285640]"
               >
                 {(
                   [
@@ -306,8 +306,8 @@ export function NeedAndApproachSection() {
                       aria-pressed={active}
                       className={`relative min-h-[40px] cursor-pointer py-2 text-sm font-medium transition-colors ${
                         active
-                          ? 'text-[#DFBA78]'
-                          : 'text-[#9BC5AD] hover:text-[#F7F3E9]'
+                          ? 'text-[#E6C477]'
+                          : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
                       }`}
                     >
                       {lens.label}
@@ -315,7 +315,7 @@ export function NeedAndApproachSection() {
                         <motion.span
                           layoutId="approach-lens-line"
                           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                          className="absolute right-0 -bottom-px left-0 h-[2px] bg-[#DFBA78]"
+                          className="absolute right-0 -bottom-px left-0 h-[2px] bg-[#E6C477]"
                         />
                       )}
                     </button>
@@ -325,7 +325,7 @@ export function NeedAndApproachSection() {
             </div>
           </div>
 
-          {/* Open 3-Column Unboxed Pillars */}
+          {/* 3-Column Elevated Pillars */}
           <div
             data-approach-grid
             className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-10 lg:gap-12"
@@ -344,12 +344,12 @@ export function NeedAndApproachSection() {
                 <article
                   key={item.id}
                   data-approach-col
-                  className="group rounded-2xl border border-[#14653C]/55 bg-[#02351C]/45 p-6 transition-colors hover:border-[#DFBA78]/45"
+                  className="group rounded-2xl border border-[#285640] bg-[#0B4933] p-6 transition-colors hover:border-[#D9B45B]"
                 >
-                  <h3 className="text-xl leading-snug font-medium text-[#F7F3E9] transition-colors group-hover:text-[#DFBA78] sm:text-2xl">
+                  <h3 className="text-xl leading-snug font-medium text-[#E8EEE8] transition-colors group-hover:text-[#E6C477] sm:text-2xl">
                     {item.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-[1.65] font-light text-[#CBE0D3] sm:text-[0.9375rem]">
+                  <p className="mt-3 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
                     {item.description}
                   </p>
                   <AnimatePresence mode="wait">
@@ -359,7 +359,7 @@ export function NeedAndApproachSection() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
                       transition={{ duration: 0.2 }}
-                      className="mt-4 text-xs font-semibold tracking-wide text-[#DFBA78] sm:text-sm"
+                      className="mt-4 text-xs font-semibold tracking-wide text-[#E6C477] sm:text-sm"
                     >
                       {lensHighlight}
                     </motion.p>

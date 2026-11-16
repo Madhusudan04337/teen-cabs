@@ -12,15 +12,15 @@ export function VelocityRibbon() {
   return (
     <div
       aria-label="Teen Cabs core safety principles"
-      className="group relative z-10 overflow-hidden bg-[#012212]/90 py-4 sm:py-5"
+      className="group relative z-10 overflow-hidden border-y border-[#285640] bg-[#063B27] py-4 sm:py-5"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#012B17] to-transparent sm:w-28"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#063B27] to-transparent sm:w-28"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#012B17] to-transparent sm:w-28"
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#063B27] to-transparent sm:w-28"
       />
 
       <div className="animate-marquee-glide flex w-max items-center gap-10 whitespace-nowrap will-change-transform sm:gap-12">
@@ -28,9 +28,9 @@ export function VelocityRibbon() {
           <span
             key={`${phrase}-${idx}`}
             aria-hidden={idx >= RIBBON_ITEMS.length}
-            className="font-editorial text-base italic tracking-wide text-[#CBE0D3] sm:text-lg"
+            className="font-editorial text-base italic tracking-wide text-[#D4E1D8] sm:text-lg"
           >
-            <span className="mr-10 text-[#DFBA78]/65" aria-hidden="true">
+            <span className="mr-10 text-[#D9B45B]" aria-hidden="true">
               —
             </span>
             {phrase}

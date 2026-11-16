@@ -16,7 +16,7 @@ export function BrandLogoMark({ className = '', size = 32 }: BrandLogoMarkProps)
       {/* Lower-left rounded chevron */}
       <path
         d="M14 27 H33 V46"
-        stroke="#DFBA78"
+        stroke="#E6C477"
         strokeWidth="9.5"
         strokeLinecap="round"
         strokeLinejoin="miter"
@@ -24,7 +24,7 @@ export function BrandLogoMark({ className = '', size = 32 }: BrandLogoMarkProps)
       {/* Upper-right rounded chevron */}
       <path
         d="M27 14 H47 V34"
-        stroke="#DFBA78"
+        stroke="#E6C477"
         strokeWidth="9.5"
         strokeLinecap="round"
         strokeLinejoin="miter"

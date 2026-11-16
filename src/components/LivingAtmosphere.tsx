@@ -24,7 +24,7 @@ export function LivingAtmosphere() {
               trigger: document.documentElement,
               start: 'top top',
               end: 'bottom bottom',
-              scrub: 0.25,
+              scrub: true,
             },
           }
         );
@@ -34,8 +34,8 @@ export function LivingAtmosphere() {
       const glowEl = glowRef.current;
 
       if (finePointer && glowEl) {
-        const xTo = gsap.quickTo(glowEl, 'x', { duration: 0.65, ease: 'power3.out' });
-        const yTo = gsap.quickTo(glowEl, 'y', { duration: 0.65, ease: 'power3.out' });
+        const xTo = gsap.quickTo(glowEl, 'x', { duration: 0.75, ease: 'power3.out' });
+        const yTo = gsap.quickTo(glowEl, 'y', { duration: 0.75, ease: 'power3.out' });
 
         const handleMove = (e: PointerEvent) => {
           xTo(e.clientX - 240);
@@ -59,18 +59,18 @@ export function LivingAtmosphere() {
       >
         <div
           ref={progressRef}
-          className="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#82CFA0] via-[#DFBA78] to-[#ECCD93]"
+          className="h-full w-full origin-left scale-x-0 transform-gpu bg-gradient-to-r from-[#D9B45B] to-[#E6C477] will-change-transform"
         />
       </div>
 
-      {/* Subtle Pointer Ambient Light */}
+      {/* Subtle Pointer Ambient Light (pure gradient, zero blur filter repaint) */}
       <div
         ref={glowRef}
         aria-hidden="true"
-        className="pointer-events-none fixed top-0 left-0 z-0 hidden h-[480px] w-[480px] rounded-full opacity-45 blur-3xl will-change-transform md:block"
+        className="pointer-events-none fixed top-0 left-0 z-0 hidden h-[480px] w-[480px] transform-gpu rounded-full opacity-45 will-change-transform md:block"
         style={{
           background:
-            'radial-gradient(circle, rgba(223, 186, 120, 0.1) 0%, rgba(130, 207, 160, 0.08) 45%, transparent 72%)',
+            'radial-gradient(circle, rgba(230, 196, 119, 0.08) 0%, rgba(11, 73, 51, 0.14) 38%, transparent 68%)',
         }}
       />
     </>

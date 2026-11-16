@@ -78,7 +78,7 @@ export function ContactSection() {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const isDesktop = window.innerWidth >= 768;
-        const offset = isDesktop ? 56 : 24;
+        const offset = isDesktop ? 36 : 16;
 
         gsap.fromTo(
           '[data-contact-left]',
@@ -86,12 +86,12 @@ export function ContactSection() {
           {
             x: 0,
             opacity: 1,
-            duration: 0.72,
-            ease: 'power3.out',
+            duration: 0.85,
+            ease: 'expo.out',
             scrollTrigger: {
               trigger: '#contact',
-              start: 'top 84%',
-              end: 'bottom 14%',
+              start: 'top 90%',
+              end: 'bottom 4%',
               toggleActions: 'play reverse play reverse',
             },
           }
@@ -103,12 +103,12 @@ export function ContactSection() {
           {
             x: 0,
             opacity: 1,
-            duration: 0.72,
-            ease: 'power3.out',
+            duration: 0.85,
+            ease: 'expo.out',
             scrollTrigger: {
               trigger: '#contact',
-              start: 'top 84%',
-              end: 'bottom 14%',
+              start: 'top 90%',
+              end: 'bottom 4%',
               toggleActions: 'play reverse play reverse',
             },
           }
@@ -170,45 +170,45 @@ export function ContactSection() {
       id="contact"
       ref={sectionRef}
       aria-labelledby="contact-heading"
-      className="relative z-10 py-16 sm:py-20 lg:py-24"
+      className="relative z-10 border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24"
     >
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Left Column: Open Unboxed Contact Channels & Studio Address */}
+          {/* Left Column: Open Contact Channels & Studio Address */}
           <div data-contact-left className="lg:col-span-5">
-            <p className="mb-3 text-sm font-medium tracking-wide text-[#82CFA0]">
+            <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
               Contact Teen Cabs
             </p>
             <h2
               id="contact-heading"
-              className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#F7F3E9] sm:text-4xl lg:text-[3rem]"
+              className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
             >
               Let’s talk.
-              <span className="font-editorial block font-normal italic text-[#DFBA78]">
+              <span className="font-editorial block font-normal italic text-[#E6C477]">
                 Built for families.
               </span>
             </h2>
-            <p className="mt-5 max-w-[44ch] rounded-2xl border border-[#14653C]/55 bg-[#02351C]/45 px-5 py-4 text-sm leading-[1.65] font-light text-[#CBE0D3] sm:text-[0.9375rem]">
+            <p className="mt-5 max-w-[44ch] rounded-2xl border border-[#285640] bg-[#0B4933] px-5 py-4 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
               Questions about teen onboarding, school partnerships, or driver
               safety standards? Reach our Chennai team directly.
             </p>
 
-            {/* Open Hairline Directory (Zero Nested Card Boxes) */}
-            <dl className="mt-9 divide-y divide-[#0E5A35]/70 border-y border-[#0E5A35]/70">
+            {/* Open Hairline Directory */}
+            <dl className="mt-9 divide-y divide-[#285640] border-y border-[#285640]">
               <div className="flex items-center justify-between gap-4 py-5">
                 <div className="flex min-w-0 items-start gap-3.5">
                   <Phone
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[#DFBA78]"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[#E6C477]"
                     aria-hidden="true"
                   />
                   <div>
-                    <dt className="text-xs font-semibold tracking-wider text-[#9BC5AD] uppercase">
+                    <dt className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
                       Phone &amp; WhatsApp
                     </dt>
                     <dd className="mt-1">
                       <a
                         href="tel:+918610336533"
-                        className="font-mono text-sm font-medium text-[#F7F3E9] transition-colors hover:text-[#DFBA78] sm:text-base"
+                        className="font-mono text-sm font-medium text-[#E8EEE8] transition-colors hover:text-[#E6C477] sm:text-base"
                       >
                         +91 86103 36533
                       </a>
@@ -220,12 +220,12 @@ export function ContactSection() {
                   type="button"
                   onClick={() => handleCopy('phone', '+918610336533')}
                   aria-label="Copy phone number"
-                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-[#02391F] px-3.5 py-1.5 text-xs font-medium text-[#CBE0D3] transition-colors hover:text-[#DFBA78]"
+                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-1.5 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
                 >
                   {copiedField === 'phone' ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-[#82CFA0]" aria-hidden="true" />
-                      <span className="text-[#82CFA0]">Copied</span>
+                      <Check className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
+                      <span className="text-[#E6C477]">Copied</span>
                     </>
                   ) : (
                     <>
@@ -239,17 +239,17 @@ export function ContactSection() {
               <div className="flex items-center justify-between gap-4 py-5">
                 <div className="flex min-w-0 items-start gap-3.5">
                   <Mail
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[#DFBA78]"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[#E6C477]"
                     aria-hidden="true"
                   />
                   <div className="min-w-0">
-                    <dt className="text-xs font-semibold tracking-wider text-[#9BC5AD] uppercase">
+                    <dt className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
                       Direct Email
                     </dt>
                     <dd className="mt-1 truncate">
                       <a
                         href="mailto:info@forgeit.co.in"
-                        className="text-sm font-medium text-[#F7F3E9] transition-colors hover:text-[#DFBA78] sm:text-base"
+                        className="text-sm font-medium text-[#E8EEE8] transition-colors hover:text-[#E6C477] sm:text-base"
                       >
                         info@forgeit.co.in
                       </a>
@@ -261,12 +261,12 @@ export function ContactSection() {
                   type="button"
                   onClick={() => handleCopy('email', 'info@forgeit.co.in')}
                   aria-label="Copy email address"
-                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full bg-[#02391F] px-3.5 py-1.5 text-xs font-medium text-[#CBE0D3] transition-colors hover:text-[#DFBA78]"
+                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-1.5 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
                 >
                   {copiedField === 'email' ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-[#82CFA0]" aria-hidden="true" />
-                      <span className="text-[#82CFA0]">Copied</span>
+                      <Check className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
+                      <span className="text-[#E6C477]">Copied</span>
                     </>
                   ) : (
                     <>
@@ -280,14 +280,14 @@ export function ContactSection() {
               <div className="py-5">
                 <div className="flex items-start gap-3.5">
                   <MapPin
-                    className="mt-0.5 h-4 w-4 shrink-0 text-[#DFBA78]"
+                    className="mt-0.5 h-4 w-4 shrink-0 text-[#E6C477]"
                     aria-hidden="true"
                   />
                   <div>
-                    <dt className="text-xs font-semibold tracking-wider text-[#9BC5AD] uppercase">
+                    <dt className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
                       Office Address
                     </dt>
-                    <dd className="mt-1.5 text-sm leading-[1.65] font-light text-[#CBE0D3]">
+                    <dd className="mt-1.5 text-sm leading-[1.65] font-light text-[#D4E1D8]">
                       No. 14, Prabhu Nagar, Neelankarai Link Rd, Murgeshan Nagar,
                       Subbarayan Nagar, Thoraipakkam, Chennai, Tamil Nadu 600097
                     </dd>
@@ -295,7 +295,7 @@ export function ContactSection() {
                       href="https://maps.google.com/?q=No.14+Prabhu+Nagar+Neelankarai+Link+Rd+Thoraipakkam+Chennai+600097"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#DFBA78] underline-offset-4 hover:underline"
+                      className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline"
                     >
                       <span>Open in Google Maps</span>
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -305,8 +305,8 @@ export function ContactSection() {
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4 py-5">
-                <div className="flex items-center gap-2.5 text-xs font-medium text-[#CBE0D3]">
-                  <Clock className="h-4 w-4 text-[#82CFA0]" aria-hidden="true" />
+                <div className="flex items-center gap-2.5 text-xs font-medium text-[#D4E1D8]">
+                  <Clock className="h-4 w-4 text-[#E6C477]" aria-hidden="true" />
                   <span>Response within 24 hours</span>
                 </div>
 
@@ -318,7 +318,7 @@ export function ContactSection() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Forgeit & Teen Cabs on ${social.name}`}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#02391F] text-[#CBE0D3] transition-colors hover:bg-[#DFBA78] hover:text-[#012B17]"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
                     >
                       {social.icon}
                     </a>
@@ -328,19 +328,19 @@ export function ContactSection() {
             </dl>
           </div>
 
-          {/* Right Column: Soft Dimmed Sage-Cream Inquiry Sheet (Gentle on Eyes vs Pure White) */}
+          {/* Right Column: Warm Ivory Inquiry Sheet (#F3F0E6) with High-Contrast Forest Green Ink (#063B27) */}
           <div data-contact-right className="lg:col-span-7">
-            <div className="rounded-3xl border border-[#82CFA0]/30 bg-gradient-to-br from-[#D6E0D8] via-[#C8D5CB] to-[#BACAC0] p-6 text-[#012B17] shadow-2xl shadow-black/45 sm:p-8 lg:p-10">
-              <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#012B17]/15 pb-5">
+            <div className="rounded-3xl border border-[#D8D9C9] bg-[#F3F0E6] p-6 text-[#063B27] shadow-2xl shadow-black/45 sm:p-8 lg:p-10">
+              <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#D8D9C9] pb-5">
                 <div>
-                  <p className="text-xs font-semibold tracking-[0.12em] text-[#0A5C35] uppercase">
+                  <p className="text-xs font-semibold tracking-[0.12em] text-[#547064] uppercase">
                     Direct Message
                   </p>
-                  <h3 className="mt-1 text-2xl font-semibold tracking-tight text-[#012B17]">
+                  <h3 className="mt-1 text-2xl font-semibold tracking-tight text-[#063B27]">
                     Send an inquiry
                   </h3>
                 </div>
-                <span className="text-xs font-medium text-[#2D5E43]">
+                <span className="text-xs font-medium text-[#547064]">
                   Direct review by Forgeit team
                 </span>
               </div>
@@ -355,20 +355,20 @@ export function ContactSection() {
                     role="status"
                     className="py-10 text-center"
                   >
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#E4ECE6] text-[#0A5C35]">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27]">
                       <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
                     </div>
-                    <h4 className="mt-5 text-xl font-semibold text-[#012B17]">
+                    <h4 className="mt-5 text-xl font-semibold text-[#063B27]">
                       Message received, {fullName.trim()}
                     </h4>
-                    <p className="mx-auto mt-2 max-w-[40ch] text-sm leading-relaxed text-[#2D5E43]">
-                      Our team will review your <span className="font-semibold">{topic}</span> note
-                      and reply to <span className="font-mono">{email.trim()}</span> within 24 hours.
+                    <p className="mx-auto mt-2 max-w-[40ch] text-sm leading-relaxed text-[#547064]">
+                      Our team will review your <span className="font-semibold text-[#063B27]">{topic}</span> note
+                      and reply to <span className="font-mono text-[#063B27]">{email.trim()}</span> within 24 hours.
                     </p>
                     <button
                       type="button"
                       onClick={handleReset}
-                      className="mt-7 inline-flex min-h-[42px] cursor-pointer items-center gap-2 rounded-full bg-[#012B17] px-6 py-2.5 text-xs font-semibold text-[#DFBA78] transition-colors hover:bg-[#02391F]"
+                      className="mt-7 inline-flex min-h-[42px] cursor-pointer items-center gap-2 rounded-full bg-[#063B27] px-6 py-2.5 text-xs font-semibold text-[#E6C477] transition-colors hover:bg-[#032A1D]"
                     >
                       <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>Send another message</span>
@@ -385,7 +385,7 @@ export function ContactSection() {
                   >
                     {/* Topic Selector Buttons */}
                     <fieldset>
-                      <legend className="mb-2.5 text-xs font-semibold tracking-wider text-[#2D5E43] uppercase">
+                      <legend className="mb-2.5 text-xs font-semibold tracking-wider text-[#547064] uppercase">
                         Inquiry focus
                       </legend>
                       <div className="flex flex-wrap gap-2">
@@ -399,8 +399,8 @@ export function ContactSection() {
                               aria-pressed={active}
                               className={`min-h-[38px] cursor-pointer rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
                                 active
-                                  ? 'bg-[#012B17] text-[#DFBA78]'
-                                  : 'bg-[#E2EAE3]/80 text-[#185233] hover:bg-[#EAF0EB]'
+                                  ? 'bg-[#063B27] text-[#E6C477]'
+                                  : 'border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27] hover:bg-[#E8EEE8]'
                               }`}
                             >
                               {item}
@@ -414,9 +414,9 @@ export function ContactSection() {
                       <div>
                         <label
                           htmlFor="contact-name"
-                          className="mb-1.5 block text-xs font-semibold text-[#185233]"
+                          className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                         >
-                          Full Name <span className="text-[#0A5C35]">*</span>
+                          Full Name <span className="text-[#547064]">*</span>
                         </label>
                         <input
                           id="contact-name"
@@ -425,16 +425,16 @@ export function ContactSection() {
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="e.g. Anand Sundaram"
-                          className="min-h-[46px] w-full rounded-xl border border-[#9BB2A3] bg-[#E2EAE4]/90 px-4 py-2.5 text-sm text-[#012B17] placeholder:text-[#4D6E5B] focus:border-[#012B17] focus:bg-[#EDF2EE] focus:outline-none"
+                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                         />
                       </div>
 
                       <div>
                         <label
                           htmlFor="contact-email"
-                          className="mb-1.5 block text-xs font-semibold text-[#185233]"
+                          className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                         >
-                          Email Address <span className="text-[#0A5C35]">*</span>
+                          Email Address <span className="text-[#547064]">*</span>
                         </label>
                         <input
                           id="contact-email"
@@ -443,14 +443,14 @@ export function ContactSection() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="you@example.com"
-                          className="min-h-[46px] w-full rounded-xl border border-[#9BB2A3] bg-[#E2EAE4]/90 px-4 py-2.5 text-sm text-[#012B17] placeholder:text-[#4D6E5B] focus:border-[#012B17] focus:bg-[#EDF2EE] focus:outline-none"
+                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                         />
                       </div>
 
                       <div>
                         <label
                           htmlFor="contact-phone"
-                          className="mb-1.5 block text-xs font-semibold text-[#185233]"
+                          className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                         >
                           Phone / WhatsApp
                         </label>
@@ -461,14 +461,14 @@ export function ContactSection() {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="+91 98765 43210"
-                          className="min-h-[46px] w-full rounded-xl border border-[#9BB2A3] bg-[#E2EAE4]/90 px-4 py-2.5 text-sm text-[#012B17] placeholder:text-[#4D6E5B] focus:border-[#012B17] focus:bg-[#EDF2EE] focus:outline-none"
+                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                         />
                       </div>
 
                       <div>
                         <label
                           htmlFor="contact-org"
-                          className="mb-1.5 block text-xs font-semibold text-[#185233]"
+                          className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                         >
                           School or Organization
                         </label>
@@ -479,7 +479,7 @@ export function ContactSection() {
                           value={organization}
                           onChange={(e) => setOrganization(e.target.value)}
                           placeholder="Optional"
-                          className="min-h-[46px] w-full rounded-xl border border-[#9BB2A3] bg-[#E2EAE4]/90 px-4 py-2.5 text-sm text-[#012B17] placeholder:text-[#4D6E5B] focus:border-[#012B17] focus:bg-[#EDF2EE] focus:outline-none"
+                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                         />
                       </div>
                     </div>
@@ -487,9 +487,9 @@ export function ContactSection() {
                     <div>
                       <label
                         htmlFor="contact-message"
-                        className="mb-1.5 block text-xs font-semibold text-[#185233]"
+                        className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                       >
-                        Your Message <span className="text-[#0A5C35]">*</span>
+                        Your Message <span className="text-[#547064]">*</span>
                       </label>
                       <textarea
                         id="contact-message"
@@ -497,14 +497,14 @@ export function ContactSection() {
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Share your questions, school commute needs, or partnership details..."
-                        className="w-full rounded-xl border border-[#9BB2A3] bg-[#E2EAE4]/90 px-4 py-3 text-sm leading-relaxed text-[#012B17] placeholder:text-[#4D6E5B] focus:border-[#012B17] focus:bg-[#EDF2EE] focus:outline-none"
+                        className="w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-3 text-sm leading-relaxed text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                       />
                     </div>
 
                     {error && (
                       <p
                         role="alert"
-                        className="rounded-xl bg-amber-50 px-3.5 py-2.5 text-xs font-semibold text-amber-900 ring-1 ring-amber-300"
+                        className="rounded-xl border border-[#D9B45B] bg-[#FFFFFF] px-3.5 py-2.5 text-xs font-semibold text-[#063B27]"
                       >
                         {error}
                       </p>
@@ -513,7 +513,7 @@ export function ContactSection() {
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#012B17] px-6 py-3 text-sm font-semibold text-[#DFBA78] transition-colors hover:bg-[#02391F]"
+                        className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#063B27] px-6 py-3 text-sm font-semibold text-[#E6C477] transition-colors hover:bg-[#032A1D]"
                       >
                         <span>Send message</span>
                         <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
