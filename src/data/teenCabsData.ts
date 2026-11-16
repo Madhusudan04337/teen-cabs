@@ -1,0 +1,322 @@
+export interface NeedItem {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface StatMetric {
+  value: string;
+  label: string;
+  ariaLabel: string;
+}
+
+export interface ApproachItem {
+  id: string;
+  title: string;
+  description: string;
+  detail: string;
+}
+
+export interface SafetyProtocol {
+  id: 'verified' | 'sos' | 'gps';
+  label: string;
+  heading: string;
+  summary: string;
+  checkpoints: string[];
+}
+
+export interface RideVibePreset {
+  id: 'lofi' | 'study' | 'quiet';
+  label: string;
+  trackTitle: string;
+  cabinSetting: string;
+  bars: number[];
+}
+
+export interface BoundaryRule {
+  id: string;
+  label: string;
+  status: string;
+  detail: string;
+  ruleValue: string;
+}
+
+export interface JourneyStep {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface TeamMember {
+  id: string;
+  initials: string;
+  name: string;
+  role: string;
+  group: 'founder' | 'leadership' | 'crew';
+  bio: string;
+  focusArea: string;
+  quote: string;
+}
+
+export const NAV_LINKS = [
+  { label: 'The need', href: '#the-need' },
+  { label: 'Our approach', href: '#our-approach' },
+  { label: 'Features', href: '#features' },
+  { label: 'How it works', href: '#how-it-works' },
+  { label: 'Team', href: '#team' },
+  { label: 'Contact', href: '#contact' },
+] as const;
+
+export const NEED_ITEMS: NeedItem[] = [
+  {
+    id: 'dedicated',
+    title: 'No dedicated cab system',
+    description:
+      'Existing ride-hailing apps are built for adults. Teens are left using platforms never designed for their safety or daily school commutes.',
+  },
+  {
+    id: 'safety',
+    title: 'Critical safety concerns',
+    description:
+      'Parents have little visibility into a teen’s ride, with no dedicated real-time route verification, emergency alerts, or teen-vetted driver profiles.',
+  },
+  {
+    id: 'supervision',
+    title: 'Zero parental supervision',
+    description:
+      'Once a teen books a standard ride, parents are left in the dark — without approval controls, spending guardrails, or peace of mind.',
+  },
+];
+
+export const BIGGER_PICTURE_STATS: StatMetric[] = [
+  {
+    value: '0',
+    label: 'Teen-dedicated platforms',
+    ariaLabel: 'Zero teen-dedicated ride platforms currently available',
+  },
+  {
+    value: '2x',
+    label: 'Higher risk vs adults',
+    ariaLabel: 'Two times higher safety risk compared to adult riders',
+  },
+  {
+    value: '1B+',
+    label: 'Teen rides needed yearly',
+    ariaLabel: 'Over one billion teen rides needed every year',
+  },
+  {
+    value: '9/10',
+    label: 'Parents want supervision',
+    ariaLabel: 'Nine out of ten parents want active ride supervision',
+  },
+];
+
+export const APPROACH_ITEMS: ApproachItem[] = [
+  {
+    id: 'parent-linked',
+    title: 'Parent-linked system',
+    description:
+      'Every teen account is connected to a verified parent account. Parents approve rides, set restrictions, and stay in full control.',
+    detail: 'Instant two-way sync between guardian and teen devices.',
+  },
+  {
+    id: 'monitored',
+    title: 'Safe & fully monitored',
+    description:
+      'Real-time GPS tracking, background-verified drivers, one-tap SOS alerts, and automatic ride summaries sent after every trip.',
+    detail: 'Continuous route adherence checks from pickup to drop-off.',
+  },
+  {
+    id: 'gen-z',
+    title: 'Built for Gen Z',
+    description:
+      'A fast, intuitive interface teens actually want to use. Quick booking, audio preferences, and calm visual clarity without friction.',
+    detail: 'Designed with teen commuters for everyday independence.',
+  },
+];
+
+export const SAFETY_PROTOCOLS: SafetyProtocol[] = [
+  {
+    id: 'verified',
+    label: 'Verified drivers',
+    heading: 'Multi-stage driver vetting',
+    summary:
+      'Every driver completes identity verification, multi-year background screening, and in-person safety onboarding before accepting teen trips.',
+    checkpoints: [
+      'Government ID & license verified',
+      'Annual criminal & driving record check',
+      'Live pre-pickup selfie match',
+    ],
+  },
+  {
+    id: 'sos',
+    label: 'SOS support',
+    heading: 'One-tap emergency response',
+    summary:
+      'Both teen and parent can trigger immediate escalation with live cabin audio check-in and automatic location dispatch.',
+    checkpoints: [
+      'Round-the-clock dedicated safety desk',
+      'Simultaneous guardian emergency alert',
+      'Instant route lock & live dispatch',
+    ],
+  },
+  {
+    id: 'gps',
+    label: 'Live GPS',
+    heading: 'Continuous corridor tracking',
+    summary:
+      'Smart route monitoring detects unexpected stops or detours and notifies connected parents automatically.',
+    checkpoints: [
+      'Sub-5-second live GPS telemetry refresh',
+      'Automatic detour & stop anomaly alerts',
+      'Verified drop-off confirmation notice',
+    ],
+  },
+];
+
+export const VIBE_PRESETS: RideVibePreset[] = [
+  {
+    id: 'lofi',
+    label: 'Music modes',
+    trackTitle: 'Late Afternoon Lo-Fi',
+    cabinSetting: 'Balanced cabin volume with warm ambient EQ',
+    bars: [38, 64, 52, 84, 70, 46, 78, 58, 42, 68],
+  },
+  {
+    id: 'study',
+    label: 'Custom profiles',
+    trackTitle: 'Exam Prep Focus',
+    cabinSetting: 'Low conversation mode with gentle climate preset',
+    bars: [24, 42, 36, 54, 48, 32, 46, 38, 28, 40],
+  },
+  {
+    id: 'quiet',
+    label: 'Personalisation',
+    trackTitle: 'Quiet Ride Mode',
+    cabinSetting: 'Zero cabin music with direct route notifications only',
+    bars: [12, 16, 14, 18, 14, 12, 16, 14, 12, 14],
+  },
+];
+
+export const BOUNDARY_RULES: BoundaryRule[] = [
+  {
+    id: 'destinations',
+    label: 'Approved destinations',
+    status: 'Active',
+    ruleValue: 'Home, Oakridge High & City Sports Complex',
+    detail:
+      'Teens can book freely between parent-whitelisted locations without waiting for manual approval.',
+  },
+  {
+    id: 'times',
+    label: 'Allowed ride times',
+    status: 'Set by parent',
+    ruleValue: 'Monday to Saturday, 6:30 AM to 9:30 PM',
+    detail:
+      'Rides requested outside permitted curfew hours automatically require explicit guardian sign-off.',
+  },
+  {
+    id: 'spending',
+    label: 'Spending limits',
+    status: 'Controlled',
+    ruleValue: 'Weekly family wallet allowance cap',
+    detail:
+      'Pre-funded family wallet keeps ride allowances predictable with zero surprise charges.',
+  },
+];
+
+export const JOURNEY_STEPS: JourneyStep[] = [
+  {
+    id: 'register',
+    title: 'Parent registers',
+    description:
+      'Parent creates a family account with quick identity verification and shared payment setup.',
+  },
+  {
+    id: 'link',
+    title: 'Teen profile linked',
+    description:
+      'Parent invites their teen and configures ride permissions, safe zones, and weekly spending limits.',
+  },
+  {
+    id: 'request',
+    title: 'Teen requests ride',
+    description:
+      'Teen books a ride through the app. Parent gets notified immediately and approves in one tap.',
+  },
+  {
+    id: 'track',
+    title: 'Safe tracked ride',
+    description:
+      'A verified driver picks up the teen. Live GPS tracking continues until arrival with an instant summary.',
+  },
+];
+
+export const TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: 'manish',
+    initials: 'MT',
+    name: 'Manish T',
+    role: 'Founder & CEO',
+    group: 'founder',
+    bio: 'Visionary behind Forgeit, Manish drives the company’s overall strategy, business development, and digital innovation. He leads the mission to help businesses build powerful digital foundations.',
+    focusArea: 'Overall Strategy & Mobility Vision',
+    quote:
+      'Every parent deserves calm visibility, and every teen deserves a ride built around their world.',
+  },
+  {
+    id: 'sriram',
+    initials: 'SV',
+    name: 'Sriram V',
+    role: 'Chief Visionary Officer',
+    group: 'leadership',
+    bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
+    focusArea: 'Future Mobility & Strategic Foresight',
+    quote:
+      'True independence for teens begins when safety is engineered into the foundation, not bolted on later.',
+  },
+  {
+    id: 'tharun',
+    initials: 'TV',
+    name: 'Tharun V',
+    role: 'Chief Technology Officer',
+    group: 'leadership',
+    bio: 'Oversees technical architecture ensuring every product is scalable and performant.',
+    focusArea: 'Scalable Architecture & Telemetry',
+    quote:
+      'Behind every calm parent notification is rock-solid real-time engineering.',
+  },
+  {
+    id: 'karthik',
+    initials: 'K',
+    name: 'Karthik',
+    role: 'Chief Marketing Officer',
+    group: 'leadership',
+    bio: 'Drives marketing strategy, brand growth, and audience engagement.',
+    focusArea: 'Brand Growth & Community Trust',
+    quote:
+      'We listen closely to both parents and teens so our platform earns trust across two generations.',
+  },
+  {
+    id: 'manobala',
+    initials: 'MC',
+    name: 'Manobala C',
+    role: 'Chief Designing Officer',
+    group: 'leadership',
+    bio: 'Leads UI/UX design strategy crafting visual experiences that are beautiful and purposeful.',
+    focusArea: 'Visual Systems & Product Craft',
+    quote:
+      'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
+  },
+  {
+    id: 'siva',
+    initials: 'SS',
+    name: 'Siva Sankara Moorthi R',
+    role: 'PRO',
+    group: 'leadership',
+    bio: 'Handles communication strategy ensuring Forgeit’s voice resonates clearly.',
+    focusArea: 'Public Relations & Family Outreach',
+    quote:
+      'Clear communication builds lasting confidence between families, schools, and our platform.',
+  },
+];

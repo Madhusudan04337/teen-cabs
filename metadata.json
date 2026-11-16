@@ -1,0 +1,6 @@
+{
+  "name": "Teen Cabs — Safe, Supervised Mobility for Teens",
+  "description": "A next-generation supervised ride platform built for teens, trusted by parents, and designed for peace of mind. A Forgeit Product.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

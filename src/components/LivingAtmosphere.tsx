@@ -1,0 +1,78 @@
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+export function LivingAtmosphere() {
+  const glowRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      if (progressRef.current) {
+        gsap.fromTo(
+          progressRef.current,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: document.documentElement,
+              start: 'top top',
+              end: 'bottom bottom',
+              scrub: 0.25,
+            },
+          }
+        );
+      }
+
+      const finePointer = window.matchMedia('(pointer: fine)').matches;
+      const glowEl = glowRef.current;
+
+      if (finePointer && glowEl) {
+        const xTo = gsap.quickTo(glowEl, 'x', { duration: 0.65, ease: 'power3.out' });
+        const yTo = gsap.quickTo(glowEl, 'y', { duration: 0.65, ease: 'power3.out' });
+
+        const handleMove = (e: PointerEvent) => {
+          xTo(e.clientX - 240);
+          yTo(e.clientY - 240);
+        };
+
+        window.addEventListener('pointermove', handleMove, { passive: true });
+        return () => window.removeEventListener('pointermove', handleMove);
+      }
+    });
+
+    return () => mm.revert();
+  });
+
+  return (
+    <>
+      {/* Top Scroll Progress Indicator */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed top-0 right-0 left-0 z-50 h-[2px] bg-transparent"
+      >
+        <div
+          ref={progressRef}
+          className="h-full w-full origin-left scale-x-0 bg-gradient-to-r from-[#82CFA0] via-[#DFBA78] to-[#ECCD93]"
+        />
+      </div>
+
+      {/* Subtle Pointer Ambient Light */}
+      <div
+        ref={glowRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed top-0 left-0 z-0 hidden h-[480px] w-[480px] rounded-full opacity-45 blur-3xl will-change-transform md:block"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(223, 186, 120, 0.1) 0%, rgba(130, 207, 160, 0.08) 45%, transparent 72%)',
+        }}
+      />
+    </>
+  );
+}
