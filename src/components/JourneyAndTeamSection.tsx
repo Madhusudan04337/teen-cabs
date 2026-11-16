@@ -20,7 +20,13 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const STEP_ICONS = [UserPlus, Link2, Navigation, ShieldCheck] as const;
 
-function EditorialPortraitFrame({ member }: { member: TeamMember }) {
+function EditorialPortraitFrame({
+  member,
+  className = 'aspect-[4/4.6]',
+}: {
+  member: TeamMember;
+  className?: string;
+}) {
   const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
@@ -30,7 +36,9 @@ function EditorialPortraitFrame({ member }: { member: TeamMember }) {
   const showPhoto = Boolean(member.portraitSrc) && !imgError;
 
   return (
-    <div className="relative aspect-[4/4.6] w-full overflow-hidden rounded-[2rem] border border-[#285640] bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D] shadow-2xl shadow-black/45">
+    <div
+      className={`relative w-full overflow-hidden rounded-[1.75rem] border border-[#285640] bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D] shadow-2xl shadow-black/45 ${className}`}
+    >
       {showPhoto ? (
         <>
           <img
@@ -55,11 +63,7 @@ function EditorialPortraitFrame({ member }: { member: TeamMember }) {
           />
 
           {/* Sculpted Editorial Bust Silhouette Fallback */}
-          <svg
-            viewBox="0 0 240 270"
-            className="h-full w-full"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 240 270" className="h-full w-full" aria-hidden="true">
             <defs>
               <linearGradient id={`editorial-sil-${member.id}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#E6C477" stopOpacity="0.32" />
@@ -123,11 +127,10 @@ export function JourneyAndTeamSection() {
   const prefersReducedMotion = useReducedMotion();
 
   const [activeStepIndex, setActiveStepIndex] = useState(0);
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(TEAM_MEMBERS[0].id);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const selectedIndex = TEAM_MEMBERS.findIndex((m) => m.id === selectedMemberId);
-  const activeMember = TEAM_MEMBERS[selectedIndex >= 0 ? selectedIndex : 0];
+  const founder = TEAM_MEMBERS[0];
+  const leadershipPair = [TEAM_MEMBERS[1], TEAM_MEMBERS[2]];
+  const crewGroup = [TEAM_MEMBERS[3], TEAM_MEMBERS[4], TEAM_MEMBERS[5]];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -136,17 +139,6 @@ export function JourneyAndTeamSection() {
     }, 3400);
     return () => window.clearInterval(timer);
   }, [prefersReducedMotion]);
-
-  useEffect(() => {
-    if (!isAutoPlaying || prefersReducedMotion) return;
-    const timer = window.setInterval(() => {
-      setSelectedMemberId((prevId) => {
-        const idx = TEAM_MEMBERS.findIndex((m) => m.id === prevId);
-        return TEAM_MEMBERS[(idx + 1) % TEAM_MEMBERS.length].id;
-      });
-    }, 5500);
-    return () => window.clearInterval(timer);
-  }, [isAutoPlaying, prefersReducedMotion]);
 
   useGSAP(
     () => {
@@ -194,58 +186,32 @@ export function JourneyAndTeamSection() {
           }
         );
 
-        // Team Editorial Split: Left Portrait Stage & Right Interactive Roster
-        gsap.fromTo(
-          '[data-team-stage]',
-          { x: -offset, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.85,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: '#team',
-              start: 'top 88%',
-              end: 'bottom 4%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
-
-        gsap.fromTo(
-          '[data-team-row]',
-          { x: offset, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.72,
-            stagger: 0.06,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: '[data-team-roster]',
-              start: 'top 90%',
-              end: 'bottom 4%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
+        // Team tiered reveal animations
+        gsap.utils.toArray<HTMLElement>('[data-team-card]').forEach((el, idx) => {
+          gsap.fromTo(
+            el,
+            { y: 32, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.85,
+              delay: idx * 0.07,
+              ease: 'expo.out',
+              scrollTrigger: {
+                trigger: '#team',
+                start: 'top 85%',
+                end: 'bottom 4%',
+                toggleActions: 'play reverse play reverse',
+              },
+            }
+          );
+        });
       });
 
       return () => mm.revert();
     },
     { scope: containerRef }
   );
-
-  const handleSelectMember = (id: string) => {
-    setIsAutoPlaying(false);
-    setSelectedMemberId(id);
-  };
-
-  const handleCycleMember = (direction: -1 | 1) => {
-    const nextIndex =
-      (selectedIndex + direction + TEAM_MEMBERS.length) % TEAM_MEMBERS.length;
-    handleSelectMember(TEAM_MEMBERS[nextIndex].id);
-  };
 
   return (
     <div ref={containerRef} className="relative z-10">
@@ -375,173 +341,153 @@ export function JourneyAndTeamSection() {
         </div>
       </section>
 
-      {/* Section 6: Meet the Team — Unboxed Asymmetric Portrait Stage + Clean 6-Leader Directory */}
+      {/* Section 6: Leadership & Craft Team Section */}
       <section
         id="team"
         aria-labelledby="team-heading"
         className="border-t border-[#285640] bg-[#063B27] py-16 sm:py-20 lg:py-24"
       >
         <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
-          <div className="flex flex-col justify-between gap-6 pb-10 sm:pb-12 lg:flex-row lg:items-end">
-            <div>
-              <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
-                Meet the team
-              </p>
-              <h2
-                id="team-heading"
-                className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
-              >
-                Good people.
-                <span className="font-editorial block font-normal italic text-[#E6C477]">
-                  Building Forgeit &amp; Teen Cabs.
-                </span>
-              </h2>
-            </div>
-
-            {/* Clean Spotlight Transport Controls */}
-            <div className="flex items-center gap-3">
-              <span className="mr-2 font-mono text-xs font-medium tabular-nums text-[#B7C8BA]">
-                0{(selectedIndex >= 0 ? selectedIndex : 0) + 1} / 0{TEAM_MEMBERS.length}
+          <div className="mx-auto max-w-2xl text-center pb-12 sm:pb-16">
+            <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
+              Our leadership
+            </p>
+            <h2
+              id="team-heading"
+              className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
+            >
+              Leadership &amp;
+              <span className="font-editorial block font-normal italic text-[#E6C477]">
+                Craft.
               </span>
+            </h2>
+            <p className="mt-4 text-base font-light text-[#D4E1D8] sm:text-[1.0625rem]">
+              The experienced minds and designers building Forgeit and Teen Cabs.
+            </p>
+          </div>
 
-              <button
-                type="button"
-                onClick={() => handleCycleMember(-1)}
-                aria-label="Previous team member"
-                className="inline-flex min-h-[42px] min-w-[42px] cursor-pointer items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#E8EEE8] transition-colors hover:border-[#D9B45B] hover:bg-[#E6C477] hover:text-[#032A1D]"
-              >
-                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-              </button>
+          {/* Tier 1: Prominent Centered Founder Profile Card at Top */}
+          <div className="mx-auto max-w-3xl pb-10 sm:pb-14">
+            <div
+              data-team-card
+              className="group relative overflow-hidden rounded-[2.5rem] border border-[#285640] bg-[#0B4933]/90 p-6 shadow-2xl shadow-black/45 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/60 sm:p-10"
+            >
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-24 right-0 h-72 w-72 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.14)_0%,transparent_70%)]"
+              />
 
-              <button
-                type="button"
-                onClick={() => setIsAutoPlaying((prev) => !prev)}
-                aria-label={
-                  isAutoPlaying ? 'Pause team spotlight' : 'Auto-play team spotlight'
-                }
-                className="inline-flex min-h-[42px] cursor-pointer items-center gap-2 rounded-full border border-[#285640] bg-[#0B4933] px-4 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
-              >
-                {isAutoPlaying ? (
-                  <>
-                    <Pause className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
-                    <span>Auto story</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
-                    <span>Manual</span>
-                  </>
-                )}
-              </button>
+              <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-12 md:gap-10">
+                <div className="md:col-span-5">
+                  <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D]">
+                    <EditorialPortraitFrame member={founder} className="aspect-[4/4.2]" />
+                  </div>
+                </div>
 
-              <button
-                type="button"
-                onClick={() => handleCycleMember(1)}
-                aria-label="Next team member"
-                className="inline-flex min-h-[42px] min-w-[42px] cursor-pointer items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#E8EEE8] transition-colors hover:border-[#D9B45B] hover:bg-[#E6C477] hover:text-[#032A1D]"
-              >
-                <ChevronRight className="h-4 w-4" aria-hidden="true" />
-              </button>
+                <div className="md:col-span-7">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#285640] bg-[#032A1D] px-3.5 py-1 text-xs font-semibold tracking-wider text-[#E6C477] uppercase">
+                    <span>Founder Spotlight</span>
+                  </div>
+
+                  <h3 className="font-editorial mt-3 text-3xl font-medium text-[#E8EEE8] sm:text-4xl">
+                    {founder.name}
+                  </h3>
+                  <p className="mt-1 text-xs font-bold tracking-[0.16em] text-[#E6C477] uppercase">
+                    {founder.role}
+                  </p>
+                  <p className="mt-1.5 font-mono text-xs text-[#B7C8BA]">
+                    {founder.focusArea}
+                  </p>
+
+                  <p className="mt-4 text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base">
+                    {founder.bio}
+                  </p>
+
+                  <blockquote className="mt-5 border-t border-[#285640] pt-4">
+                    <p className="font-editorial text-base italic text-[#E6C477] sm:text-lg">
+                      “{founder.quote}”
+                    </p>
+                  </blockquote>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Open 2-Column Editorial Spotlight + Clean 6-Member List */}
-          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
-            {/* Left: Sculpted Portrait Aperture & Open Editorial Quote */}
-            <div data-team-stage className="lg:col-span-5" aria-live="polite">
-              <div className="mx-auto max-w-[340px] lg:mx-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeMember.id}
-                    initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -8 }}
-                    transition={{ duration: 0.24, ease: 'easeOut' }}
-                  >
-                    <EditorialPortraitFrame member={activeMember} />
-
-                    <div className="mt-6">
-                      <p className="text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
-                        {activeMember.bio}
-                      </p>
-
-                      <blockquote className="mt-4 flex items-start gap-3 border-t border-[#285640] pt-4">
-                        <Quote
-                          className="mt-1 h-4 w-4 shrink-0 text-[#E6C477]"
-                          aria-hidden="true"
-                        />
-                        <p className="font-editorial text-lg leading-snug italic text-[#E8EEE8]">
-                          “{activeMember.quote}”
-                        </p>
-                      </blockquote>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-
-            {/* Right: 6 Open Hairline Member Rows */}
-            <div
-              data-team-roster
-              className="divide-y divide-[#285640] border-y border-[#285640] lg:col-span-7"
-            >
-              {TEAM_MEMBERS.map((member) => {
-                const isSelected = member.id === activeMember.id;
-                return (
-                  <button
-                    key={member.id}
-                    type="button"
-                    data-team-row
-                    onClick={() => handleSelectMember(member.id)}
-                    aria-pressed={isSelected}
-                    className="group relative flex w-full cursor-pointer items-center justify-between gap-4 py-4.5 text-left transition-colors sm:py-5"
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="team-active-underline"
-                        transition={{ type: 'spring', stiffness: 360, damping: 30 }}
-                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E6C477]"
-                      />
-                    )}
-                    <div className="flex min-w-0 items-center gap-4 sm:gap-5">
-                      <span
-                        className={`font-editorial flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base italic transition-all duration-200 ${
-                          isSelected
-                            ? 'bg-[#E6C477] text-[#032A1D] shadow-lg shadow-black/25'
-                            : 'border border-[#285640] bg-[#0B4933] text-[#E6C477] group-hover:border-[#D9B45B]'
-                        }`}
-                      >
-                        {member.initials}
-                      </span>
-
-                      <div className="min-w-0">
-                        <h3
-                          className={`font-editorial truncate text-xl font-medium transition-colors sm:text-2xl ${
-                            isSelected
-                              ? 'text-[#E6C477]'
-                              : 'text-[#E8EEE8] group-hover:text-[#E6C477]'
-                          }`}
-                        >
-                          {member.name}
-                        </h3>
-                        <p className="mt-0.5 text-xs font-semibold tracking-wider text-[#D4E1D8] uppercase">
-                          {member.role}
-                        </p>
-                      </div>
+          {/* Tier 2: Balanced Two-Column Row for Leadership Pair */}
+          <div className="mx-auto max-w-5xl pb-10 sm:pb-14">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              {leadershipPair.map((member) => (
+                <div
+                  key={member.id}
+                  data-team-card
+                  className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/80 p-6 shadow-xl shadow-black/35 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8"
+                >
+                  <div>
+                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-6">
+                      <EditorialPortraitFrame member={member} className="aspect-[4/4.2]" />
                     </div>
 
-                    <span
-                      className={`hidden shrink-0 text-xs font-medium transition-colors sm:inline ${
-                        isSelected
-                          ? 'text-[#E6C477]'
-                          : 'text-[#B7C8BA] group-hover:text-[#E8EEE8]'
-                      }`}
-                    >
+                    <h3 className="font-editorial text-2xl font-medium text-[#E8EEE8] sm:text-3xl">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
+                      {member.role}
+                    </p>
+                    <p className="mt-1 font-mono text-[11px] text-[#B7C8BA]">
                       {member.focusArea}
-                    </span>
-                  </button>
-                );
-              })}
+                    </p>
+
+                    <p className="mt-4 text-sm leading-[1.68] font-light text-[#D4E1D8]">
+                      {member.bio}
+                    </p>
+                  </div>
+
+                  <blockquote className="mt-6 border-t border-[#285640] pt-4">
+                    <p className="font-editorial text-sm italic text-[#E6C477]">
+                      “{member.quote}”
+                    </p>
+                  </blockquote>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tier 3: Three-Column Row on Desktop for Remaining Team Members */}
+          <div className="mx-auto max-w-[1200px]">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {crewGroup.map((member) => (
+                <div
+                  key={member.id}
+                  data-team-card
+                  className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-7"
+                >
+                  <div>
+                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-5">
+                      <EditorialPortraitFrame member={member} className="aspect-[4/4.4]" />
+                    </div>
+
+                    <h3 className="font-editorial text-xl font-medium text-[#E8EEE8] sm:text-2xl">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
+                      {member.role}
+                    </p>
+                    <p className="mt-1 font-mono text-[11px] text-[#B7C8BA]">
+                      {member.focusArea}
+                    </p>
+
+                    <p className="mt-3.5 text-xs leading-[1.65] font-light text-[#D4E1D8] sm:text-sm">
+                      {member.bio}
+                    </p>
+                  </div>
+
+                  <blockquote className="mt-5 border-t border-[#285640] pt-3.5">
+                    <p className="font-editorial text-xs italic text-[#E6C477] sm:text-sm">
+                      “{member.quote}”
+                    </p>
+                  </blockquote>
+                </div>
+              ))}
             </div>
           </div>
         </div>
