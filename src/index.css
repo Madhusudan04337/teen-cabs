@@ -152,3 +152,22 @@
 .animate-route-dash {
   animation: routeDashFlow 2.4s linear infinite;
 }
+
+/* Suppress Netlify injected drawer, feedback widget, or badge if present */
+#netlify-feedback-drawer,
+#netlify-badge,
+.netlify-badge,
+netlify-drawer,
+[data-netlify-drawer],
+div[class*="netlify-drawer"],
+iframe[src*="netlify"],
+iframe[title*="Netlify"],
+iframe[id*="netlify"],
+iframe[class*="netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}

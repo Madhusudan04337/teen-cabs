@@ -19,6 +19,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'><rect width='64' height='64' rx='16' fill='%23032A1D'/><path d='M14 27 H33 V46' stroke='%23E6C477' stroke-width='9.5' stroke-linecap='round' stroke-linejoin='miter'/><path d='M27 14 H47 V34' stroke='%23E6C477' stroke-width='9.5' stroke-linecap='round' stroke-linejoin='miter'/></svg>"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,SOFT,wght@0,9..144,100,400..700;1,9..144,100,400..600&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
@@ -26,6 +31,38 @@
   <body class="bg-[#063B27] text-[#E8EEE8] antialiased selection:bg-[#E6C477] selection:text-[#032A1D]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        function hideNetlifyWidgets() {
+          const selectors = [
+            '#netlify-feedback-drawer',
+            'netlify-drawer',
+            '[data-netlify-drawer]',
+            '.netlify-badge',
+            '#netlify-badge',
+            'iframe[src*="netlify"]',
+            'iframe[title*="Netlify"]'
+          ];
+          selectors.forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (el) {
+              el.style.setProperty('display', 'none', 'important');
+              el.style.setProperty('visibility', 'hidden', 'important');
+              el.style.setProperty('pointer-events', 'none', 'important');
+              el.style.setProperty('opacity', '0', 'important');
+            });
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', hideNetlifyWidgets);
+        } else {
+          hideNetlifyWidgets();
+        }
+        if (typeof MutationObserver !== 'undefined') {
+          const observer = new MutationObserver(hideNetlifyWidgets);
+          observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+      })();
+    </script>
   </body>
 </html>
 
