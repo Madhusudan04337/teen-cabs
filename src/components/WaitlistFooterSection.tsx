@@ -263,12 +263,12 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
               · All rights reserved.
             </p>
             <a
-              href="https://forge-it.netlify.app"
+              href="https://forgeit.co.in"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
             >
-              <span>forge-it.netlify.app</span>
+              <span>forgeit.co.in</span>
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           </div>

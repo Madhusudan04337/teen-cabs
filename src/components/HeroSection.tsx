@@ -20,7 +20,7 @@ interface HeroSectionProps {
   onOpenWaitlist: () => void;
 }
 
-const STAGES = ['pickup', 'enroute', 'dropoff'] as const;
+const STAGES = ['pickup', 'dropoff'] as const;
 type RideStage = (typeof STAGES)[number];
 
 const TYPING_ASSURANCES = [
@@ -38,7 +38,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const tiltYToRef = useRef<((val: number) => void) | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const [activeCheckpoint, setActiveCheckpoint] = useState<RideStage>('enroute');
+  const [activeCheckpoint, setActiveCheckpoint] = useState<RideStage>('pickup');
   const [perspectiveMode, setPerspectiveMode] = useState<'parent' | 'teen'>('parent');
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -186,13 +186,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
       location: 'Oakridge High North Gate',
       parentStatus: 'Teen boarded with verified driver Arjun K.',
       teenStatus: 'Driver arrived at North Gate — Seatbelt & Lo-Fi ready',
-    },
-    enroute: {
-      progressPercent: 64,
-      eta: 'Arriving in 8 minutes',
-      location: 'Parkview Safe Corridor',
-      parentStatus: 'Live GPS corridor lock active across every mile',
-      teenStatus: 'Smooth route via Parkview Ave — Cabin audio on',
     },
     dropoff: {
       progressPercent: 100,
@@ -443,7 +436,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                     {(
                       [
                         { id: 'pickup', label: 'Pickup' },
-                        { id: 'enroute', label: 'En route' },
                         { id: 'dropoff', label: 'Arrival' },
                       ] as const
                     ).map((stage) => {

@@ -27,7 +27,7 @@ const APPROACH_ICONS = {
 export function NeedAndApproachSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroMetricRef = useRef<HTMLSpanElement>(null);
-  const timelineSpineRef = useRef<HTMLDivElement>(null);
+  const timelineSpineRef = useRef<SVGPathElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const [activeNeedId, setActiveNeedId] = useState<string>(NEED_ITEMS[0].id);
@@ -81,23 +81,23 @@ export function NeedAndApproachSection() {
           );
         });
 
-        // Scroll-scrubbed gold progress spine on Introducing Teen Cabs timeline
+        // Scroll-scrubbed progressive dashed curve line drawing on Introducing Teen Cabs timeline
         if (timelineSpineRef.current) {
-          gsap.fromTo(
-            timelineSpineRef.current,
-            { scaleY: 0 },
-            {
-              scaleY: 1,
-              ease: 'none',
-              transformOrigin: 'top center',
-              scrollTrigger: {
-                trigger: '[data-approach-timeline]',
-                start: 'top 76%',
-                end: 'bottom 58%',
-                scrub: 0.35,
-              },
-            }
-          );
+          const length = timelineSpineRef.current.getTotalLength();
+          gsap.set(timelineSpineRef.current, {
+            strokeDasharray: length,
+            strokeDashoffset: length,
+          });
+          gsap.to(timelineSpineRef.current, {
+            strokeDashoffset: 0,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '[data-approach-timeline]',
+              start: 'top 76%',
+              end: 'bottom 58%',
+              scrub: 0.3,
+            },
+          });
         }
 
         // Staggered timeline milestone reveals
@@ -379,17 +379,28 @@ export function NeedAndApproachSection() {
 
           {/* Connected Alternating Storytelling Timeline */}
           <div data-approach-timeline className="relative mt-14 sm:mt-16">
-            {/* Background Connecting Spine Track */}
-            <div
+            {/* Connected SVG Connecting Spine with initially dashed curve line then line effect */}
+            <svg
+              viewBox="0 0 20 800"
+              preserveAspectRatio="none"
+              fill="none"
               aria-hidden="true"
-              className="absolute top-3 bottom-3 left-6 w-px bg-[#285640] md:left-1/2 md:-translate-x-1/2"
-            />
-            {/* Animated Gold Scroll Progress Spine */}
-            <div
-              ref={timelineSpineRef}
-              aria-hidden="true"
-              className="absolute top-3 bottom-3 left-6 w-[2px] -translate-x-[0.5px] bg-gradient-to-b from-[#E6C477] via-[#D9B45B] to-[#E6C477]/60 md:left-1/2 md:-translate-x-1/2"
-            />
+              className="absolute top-3 bottom-3 left-6 h-[calc(100%-1.5rem)] w-4 -translate-x-[7px] md:left-1/2 md:-translate-x-1/2"
+            >
+              <path
+                d="M 10 0 Q 14 200, 10 400 T 10 800"
+                stroke="#285640"
+                strokeWidth="2"
+                strokeDasharray="6 6"
+              />
+              <path
+                ref={timelineSpineRef}
+                d="M 10 0 Q 14 200, 10 400 T 10 800"
+                stroke="#E6C477"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
 
             <ol className="space-y-12 sm:space-y-16 lg:space-y-20">
               {APPROACH_ITEMS.map((item, index) => {

@@ -130,7 +130,7 @@ export function JourneyAndTeamSection() {
 
   const founder = TEAM_MEMBERS[0];
   const leadershipPair = [TEAM_MEMBERS[1], TEAM_MEMBERS[2]];
-  const crewGroup = [TEAM_MEMBERS[3], TEAM_MEMBERS[4], TEAM_MEMBERS[5]];
+  const crewGroup = [TEAM_MEMBERS[3], TEAM_MEMBERS[4]];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -452,21 +452,21 @@ export function JourneyAndTeamSection() {
             </div>
           </div>
 
-          {/* Tier 3: Three-Column Row on Desktop for Remaining Team Members */}
-          <div className="mx-auto max-w-[1200px]">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {/* Tier 3: Balanced Two-Column Row for Remaining Team Members */}
+          <div className="mx-auto max-w-5xl">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {crewGroup.map((member) => (
                 <div
                   key={member.id}
                   data-team-card
-                  className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-7"
+                  className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8"
                 >
                   <div>
-                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-5">
-                      <EditorialPortraitFrame member={member} className="aspect-[4/4.4]" />
+                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-6">
+                      <EditorialPortraitFrame member={member} className="aspect-[4/4.2]" />
                     </div>
 
-                    <h3 className="font-editorial text-xl font-medium text-[#E8EEE8] sm:text-2xl">
+                    <h3 className="font-editorial text-2xl font-medium text-[#E8EEE8] sm:text-3xl">
                       {member.name}
                     </h3>
                     <p className="mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
@@ -476,13 +476,13 @@ export function JourneyAndTeamSection() {
                       {member.focusArea}
                     </p>
 
-                    <p className="mt-3.5 text-xs leading-[1.65] font-light text-[#D4E1D8] sm:text-sm">
+                    <p className="mt-4 text-sm leading-[1.68] font-light text-[#D4E1D8]">
                       {member.bio}
                     </p>
                   </div>
 
-                  <blockquote className="mt-5 border-t border-[#285640] pt-3.5">
-                    <p className="font-editorial text-xs italic text-[#E6C477] sm:text-sm">
+                  <blockquote className="mt-6 border-t border-[#285640] pt-4">
+                    <p className="font-editorial text-sm italic text-[#E6C477]">
                       “{member.quote}”
                     </p>
                   </blockquote>

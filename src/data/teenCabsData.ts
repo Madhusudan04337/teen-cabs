@@ -252,7 +252,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: 'sriram',
     initials: 'SV',
     name: 'Sriram V',
-    role: 'Chief Visionary Officer',
+    role: 'Chief Innovation Officer',
     group: 'leadership',
     portraitSrc: sriramPortrait,
     bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
@@ -274,8 +274,8 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: 'karthik',
-    initials: 'K',
-    name: 'Karthik',
+    initials: 'KS',
+    name: 'Karthick S',
     role: 'Chief Marketing Officer',
     group: 'leadership',
     portraitSrc: karthikPortrait,
@@ -295,16 +295,5 @@ export const TEAM_MEMBERS: TeamMember[] = [
     focusArea: 'Visual Systems & Product Craft',
     quote:
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
-  },
-  {
-    id: 'siva',
-    initials: 'SS',
-    name: 'Siva Sankara Moorthi R',
-    role: 'PRO',
-    group: 'leadership',
-    bio: 'Handles communication strategy ensuring Forgeit’s voice resonates clearly.',
-    focusArea: 'Public Relations & Family Outreach',
-    quote:
-      'Clear communication builds lasting confidence between families, schools, and our platform.',
   },
 ];
