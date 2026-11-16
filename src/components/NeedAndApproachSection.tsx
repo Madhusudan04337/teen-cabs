@@ -243,7 +243,13 @@ export function NeedAndApproachSection() {
                         aria-label={stat.ariaLabel}
                         className="font-mono text-3xl leading-none font-medium tabular-nums text-[#E8EEE8] sm:text-4xl"
                       >
-                        {stat.value}
+                        {stat.value === '1st' ? (
+                          <>
+                            1<sup className="relative -top-[0.48em] ml-[1px] text-[0.52em] font-semibold">st</sup>
+                          </>
+                        ) : (
+                          stat.value
+                        )}
                       </dd>
                       <dt className="mt-2 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
                         {stat.label}

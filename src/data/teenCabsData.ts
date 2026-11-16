@@ -90,9 +90,9 @@ export const NEED_ITEMS: NeedItem[] = [
 
 export const BIGGER_PICTURE_STATS: StatMetric[] = [
   {
-    value: '0',
-    label: 'Teen-dedicated platforms',
-    ariaLabel: 'Zero teen-dedicated ride platforms currently available',
+    value: '1st',
+    label: 'Teen Dedicated Platform',
+    ariaLabel: '1st teen-dedicated ride platform built for teens and families',
   },
   {
     value: '2x',

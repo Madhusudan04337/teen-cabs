@@ -25,13 +25,6 @@ import {
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-const APPROVED_ZONES = ['Oakridge High', 'City Library', 'Sports Complex'] as const;
-const CURFEW_WINDOWS = [
-  { id: 'early', label: '6:30 AM – 8:30 PM', note: 'School & tuition' },
-  { id: 'standard', label: '6:30 AM – 9:30 PM', note: 'Standard curfew' },
-  { id: 'weekend', label: '7:00 AM – 10:30 PM', note: 'Weekend window' },
-] as const;
-
 export function ExperienceShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -40,13 +33,6 @@ export function ExperienceShowcase() {
   const [approvalState, setApprovalState] = useState<'pending' | 'approved' | 'declined'>('pending');
   const [activeVibeId, setActiveVibeId] = useState<'lofi' | 'study' | 'quiet'>('lofi');
   const [isAudioAnimating, setIsAudioAnimating] = useState(true);
-
-  const [enabledZones, setEnabledZones] = useState<string[]>([
-    'Oakridge High',
-    'City Library',
-  ]);
-  const [curfewId, setCurfewId] = useState<'early' | 'standard' | 'weekend'>('standard');
-  const [weeklyCap, setWeeklyCap] = useState<number>(1500);
 
   useGSAP(
     () => {
@@ -121,8 +107,6 @@ export function ExperienceShowcase() {
     SAFETY_PROTOCOLS.find((p) => p.id === activeSafetyId) ?? SAFETY_PROTOCOLS[0];
   const activeVibe =
     VIBE_PRESETS.find((v) => v.id === activeVibeId) ?? VIBE_PRESETS[0];
-  const activeCurfew =
-    CURFEW_WINDOWS.find((c) => c.id === curfewId) ?? CURFEW_WINDOWS[1];
 
   const parentCarStage = {
     pending: { left: '34%', top: '49%', status: 'Awaiting parent approval' },
@@ -152,16 +136,6 @@ export function ExperienceShowcase() {
   }[activeSafetyId];
 
   const SafetyVisualIcon = safetyVisualMeta.Icon;
-
-  const toggleZone = (zone: string) => {
-    setEnabledZones((prev) =>
-      prev.includes(zone)
-        ? prev.length > 1
-          ? prev.filter((z) => z !== zone)
-          : prev
-        : [...prev, zone]
-    );
-  };
 
   return (
     <section
@@ -497,8 +471,8 @@ export function ExperienceShowcase() {
             </div>
           </article>
 
-          {/* Flow 3 & 4: Gen Z Vibe + Interactive Guardrail Controls */}
-          <div className="grid grid-cols-1 items-start gap-12 border-t border-[#285640] pt-14 sm:pt-16 lg:grid-cols-12 lg:gap-16">
+          {/* Flow 3 & 4: Gen Z Vibe + Smarter Freedom */}
+          <div className="grid grid-cols-1 items-center gap-12 border-t border-[#285640] pt-14 sm:pt-16 lg:grid-cols-12 lg:gap-16">
             <article data-exp-left className="lg:col-span-6">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-medium tracking-wide text-[#D4E1D8]">
@@ -613,7 +587,7 @@ export function ExperienceShowcase() {
               </div>
             </article>
 
-            {/* Open Interactive Guardrails directly on the Primary Forest Green Canvas */}
+            {/* Smarter Freedom Summary */}
             <article data-exp-right className="lg:col-span-6">
               <p className="text-sm font-medium tracking-wide text-[#D4E1D8]">
                 Smarter freedom
@@ -625,95 +599,6 @@ export function ExperienceShowcase() {
                 Set approved zones, travel hours, and weekly wallet limits cleanly
                 in seconds.
               </p>
-
-              <div className="mt-8 space-y-6 divide-y divide-[#285640]">
-                <div className="pt-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
-                      Approved destinations
-                    </span>
-                    <span className="font-mono text-xs text-[#E6C477]">
-                      {enabledZones.length} active
-                    </span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2.5">
-                    {APPROVED_ZONES.map((zone) => {
-                      const active = enabledZones.includes(zone);
-                      return (
-                        <button
-                          key={zone}
-                          type="button"
-                          onClick={() => toggleZone(zone)}
-                          aria-pressed={active}
-                          className={`inline-flex min-h-[38px] cursor-pointer items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                            active
-                              ? 'bg-[#E6C477] text-[#032A1D]'
-                              : 'border border-[#285640] bg-[#0B4933] text-[#D4E1D8] hover:border-[#D9B45B] hover:text-[#E6C477]'
-                          }`}
-                        >
-                          {active && <Check className="h-3.5 w-3.5" aria-hidden="true" />}
-                          <span>{zone}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="pt-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
-                      Allowed ride window
-                    </span>
-                    <span className="text-xs text-[#D4E1D8]">
-                      {activeCurfew.note}
-                    </span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2.5">
-                    {CURFEW_WINDOWS.map((win) => {
-                      const selected = win.id === curfewId;
-                      return (
-                        <button
-                          key={win.id}
-                          type="button"
-                          onClick={() => setCurfewId(win.id)}
-                          aria-pressed={selected}
-                          className={`min-h-[38px] cursor-pointer rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-                            selected
-                              ? 'border border-[#D8D9C9] bg-[#F3F0E6] font-semibold text-[#063B27]'
-                              : 'border border-[#285640] bg-[#0B4933] text-[#D4E1D8] hover:border-[#D9B45B] hover:text-[#E6C477]'
-                          }`}
-                        >
-                          {win.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="pt-5">
-                  <div className="flex items-center justify-between gap-2">
-                    <label
-                      htmlFor="weekly-cap-range"
-                      className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase"
-                    >
-                      Weekly allowance cap
-                    </label>
-                    <span className="font-mono text-sm font-semibold tabular-nums text-[#E6C477]">
-                      ₹{weeklyCap.toLocaleString('en-IN')} / wk
-                    </span>
-                  </div>
-                  <input
-                    id="weekly-cap-range"
-                    type="range"
-                    min={500}
-                    max={3000}
-                    step={250}
-                    value={weeklyCap}
-                    onChange={(e) => setWeeklyCap(Number(e.target.value))}
-                    className="mt-3 h-2 w-full cursor-pointer accent-[#E6C477]"
-                  />
-                </div>
-              </div>
             </article>
           </div>
         </div>
