@@ -33,7 +33,7 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
       </a>
 
       <header className="sticky top-0 z-40 transform-gpu border-b border-[#285640] bg-[#032A1D]/95 backdrop-blur-md will-change-transform">
-        <div className="mx-auto flex h-[4.25rem] max-w-[1200px] items-center justify-between gap-8 px-6 sm:px-8 lg:px-10">
+        <div className="mx-auto flex h-[4.25rem] max-w-[1200px] items-center justify-between gap-4 px-6 sm:px-8 lg:gap-8 lg:px-10">
           {/* Zone 1: Official Twin-Chevron Brand Wordmark */}
           <a
             href="#top"
@@ -43,8 +43,8 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
             <span>Teen Cabs</span>
           </a>
 
-          {/* Zone 2: Concise single-line navigation links */}
-          <nav aria-label="Primary" className="hidden items-center gap-5 lg:gap-7 md:flex">
+          {/* Zone 2: Concise single-line navigation links (1024px+ only to prevent tablet overflow) */}
+          <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex xl:gap-7">
             {NAV_LINKS.map((item) => (
               <a
                 key={item.href}
@@ -61,7 +61,7 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
             <button
               type="button"
               onClick={onOpenWaitlist}
-              className="hidden min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[#E6C477] px-5 py-2 text-sm font-semibold text-[#032A1D] transition-colors duration-200 ease-out hover:bg-[#D9B45B] sm:inline-flex"
+              className="hidden min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[#E6C477] px-5 py-2 text-sm font-semibold text-[#032A1D] transition-colors duration-200 ease-out hover:bg-[#D9B45B] lg:inline-flex"
             >
               <span>Get early access</span>
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -73,7 +73,7 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
               aria-expanded={mobileOpen}
               aria-controls="mobile-navigation"
               aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-xl border border-[#285640] bg-[#0B4933] text-[#E8EEE8] transition-colors duration-200 ease-out hover:border-[#D9B45B] hover:text-[#E6C477] md:hidden"
+              className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-xl border border-[#285640] bg-[#0B4933] text-[#E8EEE8] transition-colors duration-200 ease-out hover:border-[#D9B45B] hover:text-[#E6C477] lg:hidden"
             >
               {mobileOpen ? (
                 <X className="h-5 w-5" aria-hidden="true" />
@@ -84,17 +84,17 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
           </div>
         </div>
 
-        {/* Accessible Mobile Navigation Drawer */}
+        {/* Accessible Mobile & Tablet Navigation Drawer */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.nav
               id="mobile-navigation"
-              aria-label="Mobile navigation"
+              aria-label="Mobile and tablet navigation"
               initial={prefersReducedMotion ? false : { opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden border-t border-[#285640] bg-[#032A1D] px-6 md:hidden"
+              className="overflow-hidden border-t border-[#285640] bg-[#032A1D] px-6 sm:px-8 lg:hidden"
             >
               <ul className="flex flex-col gap-1 py-4">
                 {NAV_LINKS.map((item) => (

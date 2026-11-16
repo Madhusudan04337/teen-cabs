@@ -26,10 +26,15 @@ const INQUIRY_TOPICS = [
 
 type InquiryTopic = (typeof INQUIRY_TOPICS)[number];
 
-const SOCIAL_PROFILES = [
+// TODO: Configure verified Teen Cabs / Forgeit social profile URLs before linking externally.
+const SOCIAL_PROFILES: ReadonlyArray<{
+  name: string;
+  href: string | null;
+  icon: React.ReactNode;
+}> = [
   {
     name: 'LinkedIn',
-    href: 'https://www.linkedin.com',
+    href: null,
     icon: (
       <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
         <path d="M6.94 8.5H3.56V19.5H6.94V8.5ZM5.25 3.5C4.14 3.5 3.25 4.39 3.25 5.5C3.25 6.6 4.14 7.5 5.25 7.5C6.35 7.5 7.25 6.6 7.25 5.5C7.25 4.39 6.35 3.5 5.25 3.5ZM20.44 13.02C20.44 9.88 18.76 8.22 16.16 8.22C14.38 8.22 13.48 9.2 13.02 9.93V8.5H9.65C9.7 9.48 9.65 19.5 9.65 19.5H13.02V13.36C13.02 13.02 13.05 12.69 13.15 12.45C13.42 11.78 14.03 11.09 15.07 11.09C16.41 11.09 17.06 12.11 17.06 13.6V19.5H20.44V13.02Z" />
@@ -38,7 +43,7 @@ const SOCIAL_PROFILES = [
   },
   {
     name: 'Instagram',
-    href: 'https://www.instagram.com',
+    href: null,
     icon: (
       <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2" aria-hidden="true">
         <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -49,20 +54,21 @@ const SOCIAL_PROFILES = [
   },
   {
     name: 'X',
-    href: 'https://x.com',
+    href: null,
     icon: (
       <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
         <path d="M18.244 2.25H21.552L14.325 10.51L22.827 21.75H16.17L10.956 14.933L4.99 21.75H1.68L9.41 12.915L1.254 2.25H8.08L12.793 8.481L18.244 2.25ZM17.083 19.77H18.916L7.084 4.126H5.117L17.083 19.77Z" />
       </svg>
     ),
   },
-] as const;
+];
 
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const [copiedField, setCopiedField] = useState<'phone' | 'email' | null>(null);
+  const [copyErrorField, setCopyErrorField] = useState<'phone' | 'email' | null>(null);
   const [topic, setTopic] = useState<InquiryTopic>('Parent & Family');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -121,15 +127,47 @@ export function ContactSection() {
   );
 
   const handleCopy = async (field: 'phone' | 'email', text: string) => {
+    setCopyErrorField(null);
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        setCopiedField(field);
+        window.setTimeout(() => {
+          setCopiedField((prev) => (prev === field ? null : prev));
+        }, 2000);
+        return;
+      } catch {
+        // Fall through to execCommand copy attempt before reporting failure
+      }
+    }
+
+    let fallbackSucceeded = false;
     try {
-      await navigator.clipboard.writeText(text);
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      fallbackSucceeded = document.execCommand('copy');
+      document.body.removeChild(textarea);
+    } catch {
+      fallbackSucceeded = false;
+    }
+
+    if (fallbackSucceeded) {
       setCopiedField(field);
       window.setTimeout(() => {
         setCopiedField((prev) => (prev === field ? null : prev));
       }, 2000);
-    } catch {
-      setCopiedField(field);
-      window.setTimeout(() => setCopiedField(null), 2000);
+    } else {
+      setCopiedField(null);
+      setCopyErrorField(field);
+      window.setTimeout(() => {
+        setCopyErrorField((prev) => (prev === field ? null : prev));
+      }, 3000);
     }
   };
 
@@ -220,13 +258,15 @@ export function ContactSection() {
                   type="button"
                   onClick={() => handleCopy('phone', '+918610336533')}
                   aria-label="Copy phone number"
-                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-1.5 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
+                  className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477] sm:min-h-[38px] sm:py-1.5"
                 >
                   {copiedField === 'phone' ? (
                     <>
                       <Check className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
                       <span className="text-[#E6C477]">Copied</span>
                     </>
+                  ) : copyErrorField === 'phone' ? (
+                    <span className="text-[#E6C477]">Copy failed</span>
                   ) : (
                     <>
                       <Copy className="h-3.5 w-3.5" aria-hidden="true" />
@@ -261,13 +301,15 @@ export function ContactSection() {
                   type="button"
                   onClick={() => handleCopy('email', 'info@forgeit.co.in')}
                   aria-label="Copy email address"
-                  className="inline-flex min-h-[36px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-1.5 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
+                  className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477] sm:min-h-[38px] sm:py-1.5"
                 >
                   {copiedField === 'email' ? (
                     <>
                       <Check className="h-3.5 w-3.5 text-[#E6C477]" aria-hidden="true" />
                       <span className="text-[#E6C477]">Copied</span>
                     </>
+                  ) : copyErrorField === 'email' ? (
+                    <span className="text-[#E6C477]">Copy failed</span>
                   ) : (
                     <>
                       <Copy className="h-3.5 w-3.5" aria-hidden="true" />
@@ -295,7 +337,7 @@ export function ContactSection() {
                       href="https://maps.google.com/?q=No.14+Prabhu+Nagar+Neelankarai+Link+Rd+Thoraipakkam+Chennai+600097"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline"
+                      className="mt-2 inline-flex min-h-[44px] items-center gap-1 py-2 text-xs font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline sm:min-h-[36px]"
                     >
                       <span>Open in Google Maps</span>
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -311,18 +353,29 @@ export function ContactSection() {
                 </div>
 
                 <div className="flex items-center gap-2.5">
-                  {SOCIAL_PROFILES.map((social) => (
-                    <a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Forgeit & Teen Cabs on ${social.name}`}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
-                    >
-                      {social.icon}
-                    </a>
-                  ))}
+                  {SOCIAL_PROFILES.map((social) =>
+                    social.href ? (
+                      <a
+                        key={social.name}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Forgeit & Teen Cabs on ${social.name}`}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+                      >
+                        {social.icon}
+                      </a>
+                    ) : (
+                      <span
+                        key={social.name}
+                        aria-label={`${social.name} profile link pending configuration`}
+                        title={`${social.name} profile URL pending manual configuration`}
+                        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#285640] bg-[#0B4933]/60 text-[#B7C8BA] opacity-70"
+                      >
+                        {social.icon}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             </dl>
@@ -397,7 +450,7 @@ export function ContactSection() {
                               type="button"
                               onClick={() => setTopic(item)}
                               aria-pressed={active}
-                              className={`min-h-[38px] cursor-pointer rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${
+                              className={`min-h-[44px] cursor-pointer rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:min-h-[38px] sm:py-1.5 ${
                                 active
                                   ? 'bg-[#063B27] text-[#E6C477]'
                                   : 'border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27] hover:bg-[#E8EEE8]'

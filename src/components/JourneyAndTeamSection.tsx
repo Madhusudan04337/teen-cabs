@@ -21,56 +21,83 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const STEP_ICONS = [UserPlus, Link2, Navigation, ShieldCheck] as const;
 
 function EditorialPortraitFrame({ member }: { member: TeamMember }) {
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [member.id, member.portraitSrc]);
+
+  const showPhoto = Boolean(member.portraitSrc) && !imgError;
+
   return (
     <div className="relative aspect-[4/4.6] w-full overflow-hidden rounded-[2rem] border border-[#285640] bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D] shadow-2xl shadow-black/45">
-      {/* Subtle Ambient Gold Rim Light */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-12 left-1/2 h-64 w-64 -translate-x-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.18)_0%,transparent_66%)]"
-      />
+      {showPhoto ? (
+        <>
+          <img
+            src={member.portraitSrc}
+            alt={`${member.name}, ${member.role} at Forgeit and Teen Cabs`}
+            onError={() => setImgError(true)}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover object-top"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#032A1D]/90 via-[#032A1D]/20 to-transparent"
+          />
+        </>
+      ) : (
+        <>
+          {/* Subtle Ambient Gold Rim Light */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-12 left-1/2 h-64 w-64 -translate-x-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.18)_0%,transparent_66%)]"
+          />
 
-      {/* Sculpted Editorial Bust Silhouette Shape */}
-      <svg
-        viewBox="0 0 240 270"
-        className="h-full w-full"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id={`editorial-sil-${member.id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#E6C477" stopOpacity="0.32" />
-            <stop offset="60%" stopColor="#D9B45B" stopOpacity="0.14" />
-            <stop offset="100%" stopColor="#032A1D" stopOpacity="0.04" />
-          </linearGradient>
-        </defs>
+          {/* Sculpted Editorial Bust Silhouette Fallback */}
+          <svg
+            viewBox="0 0 240 270"
+            className="h-full w-full"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id={`editorial-sil-${member.id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#E6C477" stopOpacity="0.32" />
+                <stop offset="60%" stopColor="#D9B45B" stopOpacity="0.14" />
+                <stop offset="100%" stopColor="#032A1D" stopOpacity="0.04" />
+              </linearGradient>
+            </defs>
 
-        <circle
-          cx="120"
-          cy="112"
-          r="76"
-          fill="none"
-          stroke="#E6C477"
-          strokeOpacity="0.22"
-          strokeWidth="1.2"
-          strokeDasharray="5 7"
-        />
+            <circle
+              cx="120"
+              cy="112"
+              r="76"
+              fill="none"
+              stroke="#E6C477"
+              strokeOpacity="0.22"
+              strokeWidth="1.2"
+              strokeDasharray="5 7"
+            />
 
-        <circle
-          cx="120"
-          cy="98"
-          r="34"
-          fill={`url(#editorial-sil-${member.id})`}
-          stroke="#E6C477"
-          strokeOpacity="0.5"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M44 270 C 44 196, 76 160, 120 160 C 164 160, 196 196, 196 270 Z"
-          fill={`url(#editorial-sil-${member.id})`}
-          stroke="#E6C477"
-          strokeOpacity="0.42"
-          strokeWidth="1.5"
-        />
-      </svg>
+            <circle
+              cx="120"
+              cy="98"
+              r="34"
+              fill={`url(#editorial-sil-${member.id})`}
+              stroke="#E6C477"
+              strokeOpacity="0.5"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M44 270 C 44 196, 76 160, 120 160 C 164 160, 196 196, 196 270 Z"
+              fill={`url(#editorial-sil-${member.id})`}
+              stroke="#E6C477"
+              strokeOpacity="0.42"
+              strokeWidth="1.5"
+            />
+          </svg>
+        </>
+      )}
 
       {/* Clean Editorial Role & Initials Overlay */}
       <div className="pointer-events-none absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
@@ -251,61 +278,84 @@ export function JourneyAndTeamSection() {
           </div>
 
           <div className="relative mt-14 sm:mt-16">
+            {/* Desktop Horizontal Connecting SVG Route Line aligned through all four icon centers */}
             <svg
-              viewBox="0 0 1100 80"
+              viewBox="0 0 1120 64"
+              preserveAspectRatio="none"
               fill="none"
               aria-hidden="true"
-              className="pointer-events-none absolute top-4 left-0 hidden w-full lg:block"
+              className="pointer-events-none absolute top-0 left-0 z-0 hidden h-16 w-full lg:block"
             >
               <path
-                d="M 80 40 Q 260 8, 420 40 T 760 40 T 1020 40"
+                d="M 32 32 Q 177 8, 322 32 T 612 32 T 902 32"
                 stroke="#285640"
                 strokeWidth="2"
                 strokeDasharray="6 6"
               />
               <path
                 ref={routePathRef}
-                d="M 80 40 Q 260 8, 420 40 T 760 40 T 1020 40"
+                d="M 32 32 Q 177 8, 322 32 T 612 32 T 902 32"
                 stroke="#E6C477"
                 strokeWidth="2.5"
                 strokeLinecap="round"
               />
             </svg>
 
-            <ol className="relative grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            {/* Mobile Vertical Connecting Line */}
+            <div
+              aria-hidden="true"
+              className="absolute top-6 bottom-6 left-7 w-px bg-[#285640] lg:hidden"
+            />
+
+            <ol className="relative z-10 grid grid-cols-1 gap-10 lg:grid-cols-4 lg:gap-10">
               {JOURNEY_STEPS.map((item, idx) => {
                 const Icon = STEP_ICONS[idx];
                 const isHighlighted = idx === activeStepIndex;
+                const stepNum = `0${idx + 1}`;
                 return (
-                  <li key={item.id} data-journey-node>
+                  <li key={item.id} data-journey-node className="relative pl-18 lg:pl-0">
                     <button
                       type="button"
                       onClick={() => setActiveStepIndex(idx)}
                       aria-current={isHighlighted ? 'step' : undefined}
-                      className={`group flex h-full w-full cursor-pointer flex-col items-start rounded-2xl border p-5 text-left transition-all duration-300 ${
-                        isHighlighted
-                          ? 'border-[#E6C477] bg-[#0B4933]'
-                          : 'border-[#285640] bg-[#0B4933]/85 hover:border-[#D9B45B]'
-                      }`}
+                      className="group flex w-full cursor-pointer flex-col items-start text-left"
                     >
-                      <span
-                        className={`relative flex h-16 w-16 items-center justify-center rounded-full transition-all duration-300 ${
-                          isHighlighted
-                            ? 'bg-[#E6C477] text-[#032A1D] shadow-xl shadow-black/25'
-                            : 'border border-[#285640] bg-[#032A1D] text-[#E6C477] group-hover:border-[#D9B45B]'
-                        }`}
-                      >
-                        {isHighlighted && (
-                          <span
-                            aria-hidden="true"
-                            className="animate-radar-ripple absolute inset-0 rounded-full ring-2 ring-[#E6C477]"
-                          />
-                        )}
-                        <Icon className="h-6 w-6" aria-hidden="true" />
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={`relative z-10 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300 max-lg:absolute max-lg:top-0 max-lg:left-0 lg:h-16 lg:w-16 ${
+                            isHighlighted
+                              ? 'bg-[#E6C477] text-[#032A1D] shadow-xl shadow-black/25'
+                              : 'border border-[#285640] bg-[#0B4933] text-[#E6C477] group-hover:border-[#D9B45B]'
+                          }`}
+                        >
+                          {isHighlighted && (
+                            <span
+                              aria-hidden="true"
+                              className="animate-radar-ripple absolute inset-0 rounded-full ring-2 ring-[#E6C477]"
+                            />
+                          )}
+                          <Icon className="h-5 w-5 lg:h-6 lg:w-6" aria-hidden="true" />
+                        </span>
+                      </div>
+
+                      <div className="mt-1 flex items-center gap-2 lg:mt-6">
+                        <span
+                          className={`font-mono text-xs font-semibold tracking-wider ${
+                            isHighlighted ? 'text-[#E6C477]' : 'text-[#B7C8BA]'
+                          }`}
+                        >
+                          STEP {stepNum}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className={`h-px w-8 transition-colors ${
+                            isHighlighted ? 'bg-[#E6C477]' : 'bg-[#285640]'
+                          }`}
+                        />
+                      </div>
 
                       <h3
-                        className={`mt-5 text-lg leading-snug font-medium transition-colors sm:text-xl ${
+                        className={`mt-2 text-lg leading-snug font-semibold transition-colors sm:text-xl ${
                           isHighlighted
                             ? 'text-[#E6C477]'
                             : 'text-[#E8EEE8] group-hover:text-[#E6C477]'
@@ -313,7 +363,7 @@ export function JourneyAndTeamSection() {
                       >
                         {item.title}
                       </h3>
-                      <p className="mt-2.5 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
+                      <p className="mt-2.5 text-sm leading-[1.68] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
                         {item.description}
                       </p>
                     </button>
@@ -350,6 +400,10 @@ export function JourneyAndTeamSection() {
 
             {/* Clean Spotlight Transport Controls */}
             <div className="flex items-center gap-3">
+              <span className="mr-2 font-mono text-xs font-medium tabular-nums text-[#B7C8BA]">
+                0{(selectedIndex >= 0 ? selectedIndex : 0) + 1} / 0{TEAM_MEMBERS.length}
+              </span>
+
               <button
                 type="button"
                 onClick={() => handleCycleMember(-1)}
@@ -393,21 +447,21 @@ export function JourneyAndTeamSection() {
 
           {/* Open 2-Column Editorial Spotlight + Clean 6-Member List */}
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
-            {/* Left: Sculpted Portrait Aperture & Bio Quote */}
+            {/* Left: Sculpted Portrait Aperture & Open Editorial Quote */}
             <div data-team-stage className="lg:col-span-5" aria-live="polite">
               <div className="mx-auto max-w-[340px] lg:mx-0">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeMember.id}
-                    initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={prefersReducedMotion ? undefined : { opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.26, ease: 'easeOut' }}
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, y: -8 }}
+                    transition={{ duration: 0.24, ease: 'easeOut' }}
                   >
                     <EditorialPortraitFrame member={activeMember} />
 
-                    <div className="mt-5 rounded-2xl border border-[#285640] bg-[#0B4933] p-5">
-                      <p className="text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
+                    <div className="mt-6">
+                      <p className="text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
                         {activeMember.bio}
                       </p>
 
@@ -440,8 +494,15 @@ export function JourneyAndTeamSection() {
                     data-team-row
                     onClick={() => handleSelectMember(member.id)}
                     aria-pressed={isSelected}
-                    className="group flex w-full cursor-pointer items-center justify-between gap-4 py-4.5 text-left transition-colors sm:py-5"
+                    className="group relative flex w-full cursor-pointer items-center justify-between gap-4 py-4.5 text-left transition-colors sm:py-5"
                   >
+                    {isSelected && (
+                      <motion.span
+                        layoutId="team-active-underline"
+                        transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E6C477]"
+                      />
+                    )}
                     <div className="flex min-w-0 items-center gap-4 sm:gap-5">
                       <span
                         className={`font-editorial flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-base italic transition-all duration-200 ${

@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ShieldAlert, Smartphone, UserCheck } from 'lucide-react';
+import { Compass, Link2, ShieldAlert, ShieldCheck, Smartphone, UserCheck } from 'lucide-react';
 import {
   APPROACH_ITEMS,
   BIGGER_PICTURE_STATS,
@@ -18,9 +18,16 @@ const NEED_ICONS = {
   supervision: UserCheck,
 } as const;
 
+const APPROACH_ICONS = {
+  'parent-linked': Link2,
+  monitored: ShieldCheck,
+  'gen-z': Compass,
+} as const;
+
 export function NeedAndApproachSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const heroMetricRef = useRef<HTMLSpanElement>(null);
+  const timelineSpineRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const [activeNeedId, setActiveNeedId] = useState<string>(NEED_ITEMS[0].id);
@@ -74,24 +81,44 @@ export function NeedAndApproachSection() {
           );
         });
 
-        // Staggered elevated pillars rising smoothly
-        gsap.fromTo(
-          '[data-approach-col]',
-          { y: 28, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.82,
-            stagger: 0.11,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: '[data-approach-grid]',
-              start: 'top 88%',
-              end: 'bottom 4%',
-              toggleActions: 'play reverse play reverse',
-            },
-          }
-        );
+        // Scroll-scrubbed gold progress spine on Introducing Teen Cabs timeline
+        if (timelineSpineRef.current) {
+          gsap.fromTo(
+            timelineSpineRef.current,
+            { scaleY: 0 },
+            {
+              scaleY: 1,
+              ease: 'none',
+              transformOrigin: 'top center',
+              scrollTrigger: {
+                trigger: '[data-approach-timeline]',
+                start: 'top 76%',
+                end: 'bottom 58%',
+                scrub: 0.35,
+              },
+            }
+          );
+        }
+
+        // Staggered timeline milestone reveals
+        gsap.utils.toArray<HTMLElement>('[data-approach-milestone]').forEach((el) => {
+          gsap.fromTo(
+            el,
+            { y: 28, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.85,
+              ease: 'expo.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                end: 'bottom 6%',
+                toggleActions: 'play reverse play reverse',
+              },
+            }
+          );
+        });
 
         // Counter animation for 73%
         if (heroMetricRef.current) {
@@ -236,20 +263,39 @@ export function NeedAndApproachSection() {
                   </p>
                 </div>
 
-                <dl className="grid grid-cols-2 gap-x-10 gap-y-8 border-t border-[#285640] pt-8">
-                  {BIGGER_PICTURE_STATS.map((stat) => (
-                    <div key={stat.label}>
+                {BIGGER_PICTURE_STATS.slice(0, 1).map((primaryStat) => (
+                  <div
+                    key={primaryStat.label}
+                    aria-label={primaryStat.ariaLabel}
+                    className="border-t border-[#285640] pt-7 pb-7"
+                  >
+                    <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                      <span className="font-mono text-3xl leading-none font-bold tracking-tight text-[#E6C477] sm:text-4xl">
+                        {primaryStat.value}
+                      </span>
+                      <span className="text-lg font-semibold tracking-tight text-[#F3F0E6] sm:text-xl">
+                        {primaryStat.label}
+                      </span>
+                    </div>
+                    {primaryStat.description && (
+                      <p className="mt-2 max-w-[44ch] text-xs leading-relaxed text-[#B7C8BA] sm:text-sm">
+                        {primaryStat.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+
+                <dl className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-[#285640] pt-7 sm:grid-cols-3 sm:gap-x-8">
+                  {BIGGER_PICTURE_STATS.slice(1).map((stat, idx) => (
+                    <div
+                      key={stat.label}
+                      className={idx === 2 ? 'col-span-2 sm:col-span-1' : undefined}
+                    >
                       <dd
                         aria-label={stat.ariaLabel}
-                        className="font-mono text-3xl leading-none font-medium tabular-nums text-[#E8EEE8] sm:text-4xl"
+                        className="font-mono text-2xl leading-none font-medium tabular-nums text-[#E8EEE8] sm:text-4xl"
                       >
-                        {stat.value === '1st' ? (
-                          <>
-                            1<sup className="relative -top-[0.48em] ml-[1px] text-[0.52em] font-semibold">st</sup>
-                          </>
-                        ) : (
-                          stat.value
-                        )}
+                        {stat.value}
                       </dd>
                       <dt className="mt-2 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
                         {stat.label}
@@ -331,48 +377,116 @@ export function NeedAndApproachSection() {
             </div>
           </div>
 
-          {/* 3-Column Elevated Pillars */}
-          <div
-            data-approach-grid
-            className="mt-12 grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-10 lg:gap-12"
-          >
-            {APPROACH_ITEMS.map((item) => {
-              const lensHighlight =
-                audienceLens === 'parent'
-                  ? item.detail
-                  : item.id === 'parent-linked'
-                    ? 'Book verified rides in two taps — zero cash friction.'
-                    : item.id === 'monitored'
-                      ? 'Share live ETA cleanly with family until doorstep arrival.'
-                      : 'Favorite music modes and quiet cabin settings saved automatically.';
+          {/* Connected Alternating Storytelling Timeline */}
+          <div data-approach-timeline className="relative mt-14 sm:mt-16">
+            {/* Background Connecting Spine Track */}
+            <div
+              aria-hidden="true"
+              className="absolute top-3 bottom-3 left-6 w-px bg-[#285640] md:left-1/2 md:-translate-x-1/2"
+            />
+            {/* Animated Gold Scroll Progress Spine */}
+            <div
+              ref={timelineSpineRef}
+              aria-hidden="true"
+              className="absolute top-3 bottom-3 left-6 w-[2px] -translate-x-[0.5px] bg-gradient-to-b from-[#E6C477] via-[#D9B45B] to-[#E6C477]/60 md:left-1/2 md:-translate-x-1/2"
+            />
 
-              return (
-                <article
-                  key={item.id}
-                  data-approach-col
-                  className="group rounded-2xl border border-[#285640] bg-[#0B4933] p-6 transition-colors hover:border-[#D9B45B]"
-                >
-                  <h3 className="text-xl leading-snug font-medium text-[#E8EEE8] transition-colors group-hover:text-[#E6C477] sm:text-2xl">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
-                    {item.description}
-                  </p>
-                  <AnimatePresence mode="wait">
-                    <motion.p
-                      key={`${item.id}-${audienceLens}`}
-                      initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
-                      transition={{ duration: 0.2 }}
-                      className="mt-4 text-xs font-semibold tracking-wide text-[#E6C477] sm:text-sm"
+            <ol className="space-y-12 sm:space-y-16 lg:space-y-20">
+              {APPROACH_ITEMS.map((item, index) => {
+                const Icon =
+                  APPROACH_ICONS[item.id as keyof typeof APPROACH_ICONS] ?? Link2;
+                const isEven = index % 2 === 0;
+                const lensHighlight =
+                  audienceLens === 'parent'
+                    ? item.detail
+                    : item.id === 'parent-linked'
+                      ? 'Book verified rides in two taps — zero cash friction.'
+                      : item.id === 'monitored'
+                        ? 'Share live ETA cleanly with family until doorstep arrival.'
+                        : 'Favorite music modes and quiet cabin settings saved automatically.';
+
+                return (
+                  <li
+                    key={item.id}
+                    data-approach-milestone
+                    className="relative grid grid-cols-1 items-start gap-6 pl-16 md:grid-cols-12 md:items-center md:gap-10 md:pl-0"
+                  >
+                    {/* Milestone Center Node */}
+                    <div
+                      aria-hidden="true"
+                      className="absolute top-0 left-0 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-[#E6C477]/60 bg-[#032A1D] font-mono text-sm font-semibold text-[#E6C477] shadow-lg shadow-black/35 ring-4 ring-[#032A1D] md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2"
                     >
-                      {lensHighlight}
-                    </motion.p>
-                  </AnimatePresence>
-                </article>
-              );
-            })}
+                      {item.stepNumber}
+                    </div>
+
+                    {/* Narrative Column — Alternates Left (even) / Right (odd) on Desktop */}
+                    <div
+                      className={
+                        isEven
+                          ? 'md:col-span-5 md:col-start-1 md:pr-6 md:text-right'
+                          : 'md:col-span-5 md:col-start-8 md:pl-6'
+                      }
+                    >
+                      <div
+                        className={`flex items-center gap-2.5 text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase ${
+                          isEven ? 'md:justify-end' : ''
+                        }`}
+                      >
+                        <span>{item.stepNumber}</span>
+                        <span aria-hidden="true" className="text-[#285640]">
+                          —
+                        </span>
+                        <span className="text-[#B7C8BA]">{item.subtitle}</span>
+                      </div>
+
+                      <h3 className="mt-2.5 text-2xl leading-snug font-semibold tracking-tight text-[#E8EEE8] sm:text-[1.75rem]">
+                        {item.title}
+                      </h3>
+
+                      <p className="mt-3 text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* Opposite Complementary Lens Detail Block */}
+                    <div
+                      className={
+                        isEven
+                          ? 'md:col-span-5 md:col-start-8 md:pl-6'
+                          : 'md:col-span-5 md:col-start-1 md:row-start-1 md:pr-6 md:text-right'
+                      }
+                    >
+                      <div
+                        className={`flex items-start gap-3.5 border-t border-[#285640] pt-4 md:border-t-0 md:pt-0 ${
+                          !isEven ? 'md:flex-row-reverse' : ''
+                        }`}
+                      >
+                        <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#285640] bg-[#0B4933] text-[#E6C477]">
+                          <Icon className="h-4 w-4" aria-hidden="true" />
+                        </span>
+                        <div className="min-w-0">
+                          <p className="text-[11px] font-semibold tracking-[0.14em] text-[#B7C8BA] uppercase">
+                            {audienceLens === 'parent' ? 'For parents' : 'For teens'}
+                          </p>
+                          <AnimatePresence mode="wait">
+                            <motion.p
+                              key={`${item.id}-${audienceLens}`}
+                              initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
+                              transition={{ duration: 0.22 }}
+                              className="mt-1 font-editorial text-base leading-snug italic text-[#E6C477] sm:text-lg"
+                            >
+                              {lensHighlight}
+                            </motion.p>
+                          </AnimatePresence>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         </div>
       </section>

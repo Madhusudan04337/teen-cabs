@@ -17,23 +17,66 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
   const headingId = useId();
   const errorId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    nameInputRef.current?.focus();
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    const focusTimer = window.setTimeout(() => {
+      if (nameInputRef.current) {
+        nameInputRef.current.focus();
+      } else {
+        dialogRef.current?.focus();
+      }
+    }, 10);
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
+        return;
+      }
+
+      if (event.key === 'Tab' && dialogRef.current) {
+        const focusable = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => el.offsetParent !== null);
+
+        if (focusable.length === 0) {
+          event.preventDefault();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+
+        if (event.shiftKey) {
+          if (!active || active === first || !dialogRef.current.contains(active)) {
+            event.preventDefault();
+            last.focus();
+          }
+        } else if (!active || active === last || !dialogRef.current.contains(active)) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
+      window.clearTimeout(focusTimer);
       window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
       previouslyFocused?.focus();
     };
   }, [isOpen, onClose]);
@@ -68,16 +111,19 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          data-lenis-prevent
           initial={prefersReducedMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={prefersReducedMotion ? undefined : { opacity: 0 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#032A1D]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#032A1D]/80 p-4 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) handleResetAndClose();
           }}
         >
           <motion.div
+            ref={dialogRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby={headingId}
@@ -85,7 +131,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={prefersReducedMotion ? undefined : { opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-md rounded-3xl border border-[#285640] bg-[#0B4933] p-6 shadow-2xl sm:p-8"
+            className="w-full max-w-md rounded-3xl border border-[#285640] bg-[#0B4933] p-6 shadow-2xl focus:outline-none sm:p-8"
           >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -104,7 +150,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             type="button"
             onClick={handleResetAndClose}
             aria-label="Close early access dialog"
-            className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-full border border-[#285640] bg-[#032A1D] text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
+            className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[#285640] bg-[#032A1D] text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -147,7 +193,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                   type="button"
                   onClick={() => setRole('parent')}
                   aria-pressed={role === 'parent'}
-                  className={`min-h-[40px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'parent'
                       ? 'bg-[#0B4933] text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
@@ -159,7 +205,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                   type="button"
                   onClick={() => setRole('teen')}
                   aria-pressed={role === 'teen'}
-                  className={`min-h-[40px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'teen'
                       ? 'bg-[#0B4933] text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'

@@ -87,10 +87,16 @@ export default function App() {
     window.addEventListener('load', refresh);
     const timer = window.setTimeout(refresh, 450);
 
+    let resizeDebounceTimer: number | undefined;
     const resizeObserver =
       typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(() => {
-            ScrollTrigger.refresh();
+            if (resizeDebounceTimer !== undefined) {
+              window.clearTimeout(resizeDebounceTimer);
+            }
+            resizeDebounceTimer = window.setTimeout(() => {
+              ScrollTrigger.refresh();
+            }, 180);
           })
         : null;
     resizeObserver?.observe(document.body);
@@ -99,6 +105,9 @@ export default function App() {
       document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('load', refresh);
       window.clearTimeout(timer);
+      if (resizeDebounceTimer !== undefined) {
+        window.clearTimeout(resizeDebounceTimer);
+      }
       resizeObserver?.disconnect();
       if (rafCallback) {
         gsap.ticker.remove(rafCallback);

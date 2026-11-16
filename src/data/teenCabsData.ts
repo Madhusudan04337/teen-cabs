@@ -1,3 +1,9 @@
+import karthikPortrait from '../assets/team/karthik-s.jpeg';
+import manishPortrait from '../assets/team/manish-t.jpeg';
+import manobalaPortrait from '../assets/team/manobala-c.jpeg';
+import sriramPortrait from '../assets/team/sriram-v.jpeg';
+import tharunPortrait from '../assets/team/tharun-v.jpeg';
+
 export interface NeedItem {
   id: string;
   title: string;
@@ -8,11 +14,14 @@ export interface StatMetric {
   value: string;
   label: string;
   ariaLabel: string;
+  description?: string;
 }
 
 export interface ApproachItem {
   id: string;
+  stepNumber: string;
   title: string;
+  subtitle: string;
   description: string;
   detail: string;
 }
@@ -33,14 +42,6 @@ export interface RideVibePreset {
   bars: number[];
 }
 
-export interface BoundaryRule {
-  id: string;
-  label: string;
-  status: string;
-  detail: string;
-  ruleValue: string;
-}
-
 export interface JourneyStep {
   id: string;
   title: string;
@@ -53,6 +54,7 @@ export interface TeamMember {
   name: string;
   role: string;
   group: 'founder' | 'leadership' | 'crew';
+  portraitSrc?: string;
   bio: string;
   focusArea: string;
   quote: string;
@@ -90,9 +92,11 @@ export const NEED_ITEMS: NeedItem[] = [
 
 export const BIGGER_PICTURE_STATS: StatMetric[] = [
   {
-    value: '1st',
-    label: 'Teen Dedicated Platform',
-    ariaLabel: '1st teen-dedicated ride platform built for teens and families',
+    value: 'FIRST',
+    label: 'Teen-Dedicated Platform',
+    ariaLabel: 'First teen-dedicated platform purpose-built for teens and families',
+    description:
+      'Purpose-built from the ground up for daily teen commutes and parental peace of mind.',
   },
   {
     value: '2x',
@@ -114,21 +118,27 @@ export const BIGGER_PICTURE_STATS: StatMetric[] = [
 export const APPROACH_ITEMS: ApproachItem[] = [
   {
     id: 'parent-linked',
-    title: 'Parent-linked system',
+    stepNumber: '01',
+    title: 'Built around families',
+    subtitle: 'Parent-linked system',
     description:
       'Every teen account is connected to a verified parent account. Parents approve rides, set restrictions, and stay in full control.',
     detail: 'Instant two-way sync between guardian and teen devices.',
   },
   {
     id: 'monitored',
-    title: 'Safe & fully monitored',
+    stepNumber: '02',
+    title: 'Safety at every step',
+    subtitle: 'Safe & fully monitored',
     description:
       'Real-time GPS tracking, background-verified drivers, one-tap SOS alerts, and automatic ride summaries sent after every trip.',
     detail: 'Continuous route adherence checks from pickup to drop-off.',
   },
   {
     id: 'gen-z',
-    title: 'Built for Gen Z',
+    stepNumber: '03',
+    title: 'Designed for a new generation',
+    subtitle: 'Built for Gen Z',
     description:
       'A fast, intuitive interface teens actually want to use. Quick booking, audio preferences, and calm visual clarity without friction.',
     detail: 'Designed with teen commuters for everyday independence.',
@@ -198,33 +208,6 @@ export const VIBE_PRESETS: RideVibePreset[] = [
   },
 ];
 
-export const BOUNDARY_RULES: BoundaryRule[] = [
-  {
-    id: 'destinations',
-    label: 'Approved destinations',
-    status: 'Active',
-    ruleValue: 'Home, Oakridge High & City Sports Complex',
-    detail:
-      'Teens can book freely between parent-whitelisted locations without waiting for manual approval.',
-  },
-  {
-    id: 'times',
-    label: 'Allowed ride times',
-    status: 'Set by parent',
-    ruleValue: 'Monday to Saturday, 6:30 AM to 9:30 PM',
-    detail:
-      'Rides requested outside permitted curfew hours automatically require explicit guardian sign-off.',
-  },
-  {
-    id: 'spending',
-    label: 'Spending limits',
-    status: 'Controlled',
-    ruleValue: 'Weekly family wallet allowance cap',
-    detail:
-      'Pre-funded family wallet keeps ride allowances predictable with zero surprise charges.',
-  },
-];
-
 export const JOURNEY_STEPS: JourneyStep[] = [
   {
     id: 'register',
@@ -259,6 +242,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Manish T',
     role: 'Founder & CEO',
     group: 'founder',
+    portraitSrc: manishPortrait,
     bio: 'Visionary behind Forgeit, Manish drives the company’s overall strategy, business development, and digital innovation. He leads the mission to help businesses build powerful digital foundations.',
     focusArea: 'Overall Strategy & Mobility Vision',
     quote:
@@ -270,6 +254,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Sriram V',
     role: 'Chief Visionary Officer',
     group: 'leadership',
+    portraitSrc: sriramPortrait,
     bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
     focusArea: 'Future Mobility & Strategic Foresight',
     quote:
@@ -281,6 +266,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Tharun V',
     role: 'Chief Technology Officer',
     group: 'leadership',
+    portraitSrc: tharunPortrait,
     bio: 'Oversees technical architecture ensuring every product is scalable and performant.',
     focusArea: 'Scalable Architecture & Telemetry',
     quote:
@@ -292,6 +278,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Karthik',
     role: 'Chief Marketing Officer',
     group: 'leadership',
+    portraitSrc: karthikPortrait,
     bio: 'Drives marketing strategy, brand growth, and audience engagement.',
     focusArea: 'Brand Growth & Community Trust',
     quote:
@@ -303,6 +290,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'Manobala C',
     role: 'Chief Designing Officer',
     group: 'leadership',
+    portraitSrc: manobalaPortrait,
     bio: 'Leads UI/UX design strategy crafting visual experiences that are beautiful and purposeful.',
     focusArea: 'Visual Systems & Product Craft',
     quote:

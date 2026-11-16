@@ -12,6 +12,7 @@ import {
   Play,
   ShieldCheck,
 } from 'lucide-react';
+import { RouteMapCanvas } from './RouteMapCanvas';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -32,7 +33,6 @@ const TYPING_ASSURANCES = [
 export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageVisualRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const ctaBtnRef = useRef<HTMLButtonElement>(null);
   const tiltXToRef = useRef<((val: number) => void) | null>(null);
   const tiltYToRef = useRef<((val: number) => void) | null>(null);
@@ -45,16 +45,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(TYPING_ASSURANCES[0].length);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    if (prefersReducedMotion || !isAutoPlaying) {
-      video.pause();
-    } else {
-      video.play().catch(() => {});
-    }
-  }, [isAutoPlaying, prefersReducedMotion]);
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -356,7 +346,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                         type="button"
                         onClick={() => setPerspectiveMode(mode.id)}
                         aria-pressed={active}
-                        className={`relative min-h-[36px] cursor-pointer py-1.5 text-xs font-semibold transition-colors ${
+                        className={`relative min-h-[44px] cursor-pointer py-2 text-xs font-semibold transition-colors sm:min-h-[38px] sm:py-1.5 ${
                           active ? 'text-[#E6C477]' : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
                         }`}
                       >
@@ -381,7 +371,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                       ? 'Pause live vehicle preview'
                       : 'Play live vehicle preview'
                   }
-                  className="inline-flex min-h-[36px] cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-1.5 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
+                  className="inline-flex min-h-[44px] cursor-pointer items-center gap-1.5 rounded-full border border-[#285640] bg-[#0B4933] px-3.5 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477] sm:min-h-[38px] sm:py-1.5"
                 >
                   {isAutoPlaying ? (
                     <>
@@ -397,18 +387,12 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                 </button>
               </div>
 
-              <div className="mask-canvas-soft relative aspect-[4/3] w-full overflow-hidden">
-                <video
-                  ref={videoRef}
-                  src="/assets/aistudio/Screencast_From_2026-11-16_14-46-40_3ee8c9e8.webm"
-                  autoPlay={!prefersReducedMotion}
-                  loop
-                  muted
-                  playsInline
-                  aria-label="Teen Cabs electric vehicle traveling along a dark-emerald topographical GPS route with live ride tracking and parent supervision indicators"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+              <RouteMapCanvas
+                variant="hero"
+                activeStage={activeCheckpoint}
+                perspectiveMode={perspectiveMode}
+                isAutoPlaying={isAutoPlaying}
+              />
 
               <div aria-live="polite" className="mt-2 px-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -473,7 +457,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                             setIsAutoPlaying(false);
                           }}
                           aria-pressed={active}
-                          className={`relative min-h-[36px] cursor-pointer py-1.5 text-xs font-semibold transition-colors ${
+                          className={`relative min-h-[44px] cursor-pointer py-2 text-xs font-semibold transition-colors sm:min-h-[38px] sm:py-1.5 ${
                             active
                               ? 'text-[#E6C477]'
                               : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
