@@ -264,7 +264,7 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
             <p>
               © {new Date().getFullYear()} Teen Cabs — A Forgeit Product. Designed by{' '}
               <a
-                href="https://forge-it.netlify.app"
+                href="https://mdk-portfolio.netlify.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-[#DFBA78] underline-offset-4 hover:underline"

@@ -15,64 +15,39 @@ import {
   UserPlus,
 } from 'lucide-react';
 import { JOURNEY_STEPS, TEAM_MEMBERS, type TeamMember } from '../data/teenCabsData';
+import chiefMentorImage from '../../assets/chief-mentor.jpg';
+import karthikImage from '../../assets/karthik-s.jpeg';
+import manishImage from '../../assets/manish-t.jpeg';
+import manobalaImage from '../../assets/manobala-c.jpeg';
+import sriramImage from '../../assets/sriram-v.jpeg';
+import tharunImage from '../../assets/tharun-v.jpeg';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const STEP_ICONS = [UserPlus, Link2, Navigation, ShieldCheck] as const;
+const TEAM_IMAGES: Record<TeamMember['id'], string> = {
+  manish: manishImage,
+  sriram: sriramImage,
+  tharun: tharunImage,
+  karthik: karthikImage,
+  manobala: manobalaImage,
+  siva: chiefMentorImage,
+};
 
 function EditorialPortraitFrame({ member }: { member: TeamMember }) {
   return (
     <div className="relative aspect-[4/4.6] w-full overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#075832] via-[#033A20] to-[#012111] ring-1 ring-[#1A7347]/55 shadow-2xl shadow-black/45">
-      {/* Subtle Ambient Gold Rim Light */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-12 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(223,186,120,0.28)_0%,transparent_70%)] blur-2xl"
       />
 
-      {/* Sculpted Editorial Bust Silhouette Shape */}
-      <svg
-        viewBox="0 0 240 270"
-        className="h-full w-full"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id={`editorial-sil-${member.id}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#DFBA78" stopOpacity="0.34" />
-            <stop offset="60%" stopColor="#82CFA0" stopOpacity="0.16" />
-            <stop offset="100%" stopColor="#012B17" stopOpacity="0.04" />
-          </linearGradient>
-        </defs>
+      <img
+        src={TEAM_IMAGES[member.id]}
+        alt={`${member.name}, ${member.role}`}
+        className="h-full w-full object-cover object-center"
+      />
 
-        <circle
-          cx="120"
-          cy="112"
-          r="76"
-          fill="none"
-          stroke="#DFBA78"
-          strokeOpacity="0.22"
-          strokeWidth="1.2"
-          strokeDasharray="5 7"
-        />
-
-        <circle
-          cx="120"
-          cy="98"
-          r="34"
-          fill={`url(#editorial-sil-${member.id})`}
-          stroke="#DFBA78"
-          strokeOpacity="0.5"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M44 270 C 44 196, 76 160, 120 160 C 164 160, 196 196, 196 270 Z"
-          fill={`url(#editorial-sil-${member.id})`}
-          stroke="#DFBA78"
-          strokeOpacity="0.42"
-          strokeWidth="1.5"
-        />
-      </svg>
-
-      {/* Clean Editorial Role & Initials Overlay */}
       <div className="pointer-events-none absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.16em] text-[#DFBA78] uppercase">
