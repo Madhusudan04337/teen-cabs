@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { ChevronDown } from 'lucide-react';
 import { BIGGER_PICTURE_STATS, NEED_ITEMS } from '../data/teenCabsData';
 
 interface NeedSectionProps {
@@ -12,11 +13,48 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const heroMetricRef = useRef<HTMLSpanElement>(null);
   const prefersReducedMotion = useReducedMotion();
+  const [activeItem, setActiveItem] = useState<string>(NEED_ITEMS[0].id);
 
   const primaryStat = BIGGER_PICTURE_STATS[0];
   const riskStat = BIGGER_PICTURE_STATS[1];
   const volumeStat = BIGGER_PICTURE_STATS[2];
   const supervisionStat = BIGGER_PICTURE_STATS[3];
+
+  const statTrackRef = useRef<HTMLDivElement>(null);
+  const [activeStatIndex, setActiveStatIndex] = useState(0);
+
+  const statsList = [
+    {
+      stat: primaryStat,
+      desc: 'Purpose-built for teen commutes and parental peace of mind.',
+      gold: true,
+    },
+    {
+      stat: riskStat,
+      desc: 'Safety risk comparison vs adult ride-hailing apps.',
+      gold: false,
+    },
+    {
+      stat: volumeStat,
+      desc: 'Estimated annual rides required for youth commutes.',
+      gold: false,
+    },
+    {
+      stat: supervisionStat,
+      desc: 'Parents want active ride supervision and real-time verification.',
+      gold: true,
+    },
+  ];
+
+  const handleStatScroll = () => {
+    const track = statTrackRef.current;
+    if (!track) return;
+    const scrollLeft = track.scrollLeft;
+    const card = track.firstElementChild as HTMLElement | null;
+    const cardWidth = card ? card.offsetWidth : 230;
+    const idx = Math.round(scrollLeft / (cardWidth + 12));
+    setActiveStatIndex(Math.min(3, Math.max(0, idx)));
+  };
 
   useGSAP(
     () => {
@@ -24,17 +62,16 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const isDesktop = window.innerWidth >= 768;
-        const offset = isDesktop ? 32 : 14;
+        const offset = isDesktop ? 28 : 14;
 
-        // Chapter reveals
-        gsap.utils.toArray<HTMLElement>('[data-chapter]').forEach((el) => {
+        gsap.utils.toArray<HTMLElement>('[data-need-reveal]').forEach((el) => {
           gsap.fromTo(
             el,
             { y: offset, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 0.85,
+              duration: 0.75,
               ease: 'expo.out',
               clearProps: 'transform,opacity',
               scrollTrigger: {
@@ -47,30 +84,7 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
           );
         });
 
-        // Progressive gold corridor draw
-        const corridorLine = sectionRef.current?.querySelector<SVGPathElement>(
-          '[data-corridor-path]'
-        );
-        if (corridorLine) {
-          const length = corridorLine.getTotalLength();
-          gsap.set(corridorLine, {
-            strokeDasharray: length,
-            strokeDashoffset: length,
-          });
-          gsap.to(corridorLine, {
-            strokeDashoffset: 0,
-            duration: 1.6,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-          });
-        }
-
-        // Hero 73% statistic counter animation
+        // 73% stat counter
         if (heroMetricRef.current) {
           const counter = { val: 0 };
           gsap.to(counter, {
@@ -103,216 +117,185 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
       ref={sectionRef}
       aria-labelledby="need-heading"
       className={`relative z-10 overflow-x-clip bg-[#063B27] ${
-        compact ? 'py-18 sm:py-24 lg:py-32' : 'py-20 sm:py-28 lg:py-36'
+        compact ? 'py-16 sm:py-20 lg:py-24' : 'py-20 sm:py-24 lg:py-28'
       }`}
     >
-      {/* Continuous Subtle Vertical Gold Corridor Motif on Left Edge */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 bottom-0 left-6 z-0 w-px bg-[rgba(230,196,119,0.14)] sm:left-10 lg:left-16"
-      >
-        <svg
-          className="absolute top-0 left-1/2 h-full w-4 -translate-x-1/2 overflow-visible"
-          preserveAspectRatio="none"
-          viewBox="0 0 16 1000"
-          fill="none"
-        >
-          <path
-            data-corridor-path
-            d="M 8 0 L 8 1000"
-            stroke="#E6C477"
-            strokeWidth="1.5"
-            strokeDasharray="4 8"
-          />
-        </svg>
-      </div>
+        className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.07)_0%,transparent_68%)]"
+      />
 
-      <div className="relative z-10 mx-auto max-w-[1100px] px-8 sm:px-12 lg:px-16">
-        {/* SECTION INTRO */}
-        <div className="mb-16 sm:mb-20 lg:mb-24">
-          <p className="mb-3 text-xs font-medium tracking-wide text-[#D4E1D8] sm:text-sm">
+      <div className="relative z-10 mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
+        {/* SECTION HEADER */}
+        <div data-need-reveal className="mb-10 max-w-3xl sm:mb-12 lg:mb-14">
+          <p className="mb-3 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
             Why we are building this
           </p>
           <h2
             id="need-heading"
             className="text-balance text-3xl leading-[1.08] font-semibold tracking-[-0.025em] text-[#E8EEE8] sm:text-4xl lg:text-[3.25rem]"
           >
-            The Three Chapters of{' '}
+            Growing up means{' '}
             <span className="font-editorial block font-normal italic text-[#E6C477]">
-              Independent Transit.
+              going places.
             </span>
           </h2>
+          <p className="mt-4 max-w-[54ch] text-base leading-[1.75] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
+            Teenagers need everyday mobility to grow into independent adults,
+            yet they are left navigating adult-oriented apps and unvetted transit.
+          </p>
         </div>
 
-        <div className="space-y-20 sm:space-y-28 lg:space-y-36">
-          {/* CHAPTER 01 — THE PARENT'S VIEW */}
-          <article data-chapter aria-labelledby="chapter-01-heading" className="relative">
-            <div className="flex items-center gap-3 text-xs font-medium tracking-wide text-[#E6C477] sm:text-sm">
-              <span className="font-mono tabular-nums">01</span>
-              <span aria-hidden="true" className="h-px w-8 bg-[#D9B45B]/55" />
-              <span>The parent's view</span>
+        {/* TWO-COLUMN LAYOUT: 3 Problem Items (Left) vs 73% & Metrics Bento (Right) */}
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-14">
+          {/* LEFT: 3 Problem Accordion Cards */}
+          <div data-need-reveal className="lg:col-span-6">
+            <div className="flex items-center gap-3 border-b border-[#285640] pb-3 text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase">
+              <span>The Current Reality</span>
+              <span aria-hidden="true" className="text-[#285640]">·</span>
+              <span className="font-mono text-[#B7C8BA]">03 Key Gaps</span>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 items-baseline gap-8 lg:grid-cols-12 lg:gap-12">
-              <div className="lg:col-span-5">
-                <span
-                  ref={heroMetricRef}
-                  className="block font-editorial text-7xl leading-none font-normal italic tabular-nums text-[#E6C477] sm:text-8xl lg:text-[8.5rem]"
-                >
-                  73%
-                </span>
-              </div>
-              <div className="lg:col-span-7">
-                <h3
-                  id="chapter-01-heading"
-                  className="font-editorial text-2xl leading-[1.3] font-normal italic text-[#F3F0E6] sm:text-3xl lg:text-[2.25rem]"
-                >
-                  “of parents worry about teen transport safety every day”
-                </h3>
-                <p className="mt-5 max-w-[44ch] text-base leading-[1.78] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
-                  Getting to school, tuition, or weekend practice should never mean
-                  compromising on safety. Today’s ride platforms were never built
-                  around teens or the families supporting them.
-                </p>
-              </div>
-            </div>
-          </article>
-
-          {/* CHAPTER 02 — THE TEEN'S VIEW */}
-          <article data-chapter aria-labelledby="chapter-02-heading" className="relative">
-            <div className="flex items-center gap-3 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
-              <span className="font-mono text-[#E6C477] tabular-nums">02</span>
-              <span aria-hidden="true" className="h-px w-8 bg-[#285640]" />
-              <span>The teen's view</span>
-            </div>
-
-            <h3
-              id="chapter-02-heading"
-              className="mt-6 text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.025em] text-[#E8EEE8] sm:text-4xl lg:text-[2.75rem]"
-            >
-              Growing up means{' '}
-              <span className="font-editorial block font-normal italic text-[#E6C477]">
-                going places.
-              </span>
-            </h3>
-
-            <p className="mt-5 max-w-[48ch] text-base leading-[1.78] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
-              Teenagers need reliable everyday mobility to grow into independent adults,
-              yet they are left navigating adult-oriented apps and unvetted transit.
-            </p>
-
-            {/* Three Open Editorial Problem Statements (No Accordions) */}
-            <div className="mt-10 grid grid-cols-1 gap-8 border-t border-[#285640] pt-10 lg:grid-cols-3 lg:gap-10">
+            <div className="mt-5 space-y-3.5">
               {NEED_ITEMS.map((item, idx) => {
-                const indexLabel = `0${idx + 1}`;
+                const isOpen = activeItem === item.id;
+                const stepNum = `0${idx + 1}`;
+
                 return (
-                  <div key={item.id} className="flex flex-col justify-between">
-                    <div>
-                      <span className="font-mono text-xs font-medium text-[#E6C477] tabular-nums">
-                        {indexLabel}
+                  <div
+                    key={item.id}
+                    className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
+                      isOpen
+                        ? 'border-[#E6C477]/70 bg-[#0B4933]/70 shadow-lg shadow-black/20'
+                        : 'border-[#285640]/80 bg-[#032A1D]/60 hover:border-[#D9B45B]/50 hover:bg-[#0B4933]/30'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setActiveItem(isOpen ? '' : item.id)}
+                      aria-expanded={isOpen}
+                      className="flex min-h-[58px] w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
+                    >
+                      <div className="flex items-center gap-3.5 sm:gap-4">
+                        <span
+                          className={`font-mono text-sm font-semibold tabular-nums transition-colors duration-200 ${
+                            isOpen ? 'text-[#E6C477]' : 'text-[#B7C8BA]/70'
+                          }`}
+                        >
+                          {stepNum}
+                        </span>
+                        <h3
+                          className={`text-base font-semibold tracking-tight transition-colors duration-200 sm:text-lg ${
+                            isOpen ? 'text-[#F3F0E6]' : 'text-[#E8EEE8]'
+                          }`}
+                        >
+                          {item.title}
+                        </h3>
+                      </div>
+                      <span
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-all duration-200 ${
+                          isOpen
+                            ? 'border-[#E6C477]/60 bg-[#E6C477]/15 text-[#E6C477] rotate-180'
+                            : 'border-[#285640] bg-[#063B27] text-[#B7C8BA]'
+                        }`}
+                        aria-hidden="true"
+                      >
+                        <ChevronDown className="h-4 w-4 transition-transform duration-200" />
                       </span>
-                      <h4 className="mt-2 text-xl font-semibold tracking-tight text-[#E8EEE8]">
-                        {item.title}
-                      </h4>
-                      <p className="mt-3 text-sm leading-[1.72] font-light text-[#D4E1D8]">
-                        {item.description}
-                      </p>
-                    </div>
+                    </button>
+
+                    <AnimatePresence initial={false}>
+                      {isOpen && (
+                        <motion.div
+                          key="content"
+                          initial={prefersReducedMotion ? false : { height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={prefersReducedMotion ? undefined : { height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
+                        >
+                          <div className="border-t border-[#285640]/60 px-5 pt-3 pb-5 sm:px-6">
+                            <p className="text-sm leading-[1.72] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
+                              {item.description}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })}
             </div>
-          </article>
+          </div>
 
-          {/* CHAPTER 03 — THE ENGINEERED SOLUTION */}
-          <article data-chapter aria-labelledby="chapter-03-heading" className="relative">
-            <div className="flex items-center gap-3 text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm">
-              <span className="font-mono text-[#E6C477] tabular-nums">03</span>
-              <span aria-hidden="true" className="h-px w-8 bg-[#285640]" />
-              <span>The engineered solution</span>
+          {/* RIGHT: 73% Hero Stat Card + Metrics Bento */}
+          <div data-need-reveal className="space-y-4 lg:col-span-6">
+            {/* 73% Hero Callout Card */}
+            <div className="relative overflow-hidden rounded-2xl border border-[rgba(230,196,119,0.28)] bg-gradient-to-b from-[#0B4933] to-[#032A1D] p-6 shadow-xl shadow-black/25 sm:p-7">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+                <span
+                  ref={heroMetricRef}
+                  className="font-editorial text-6xl leading-none font-normal italic tabular-nums text-[#E6C477] sm:text-7xl lg:text-[5.5rem]"
+                >
+                  73%
+                </span>
+                <div className="min-w-0">
+                  <h3 className="font-editorial text-xl leading-[1.3] font-normal italic text-[#F3F0E6] sm:text-2xl">
+                    “of parents worry about teen transport safety every day”
+                  </h3>
+                  <p className="mt-2 text-xs leading-relaxed text-[#B7C8BA] sm:text-sm">
+                    Getting to school, tuition, or coaching shouldn't mean compromising on safety.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <h3
-              id="chapter-03-heading"
-              className="mt-6 text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.025em] text-[#E8EEE8] sm:text-4xl lg:text-[2.75rem]"
-            >
-              Supervised mobility{' '}
-              <span className="font-editorial block font-normal italic text-[#E6C477]">
-                built for families.
-              </span>
-            </h3>
-
-            <p className="mt-5 max-w-[48ch] text-base leading-[1.78] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
-              Uniting parent-linked approvals, background-verified drivers, and live
-              corridor telemetry into one cohesive platform.
-            </p>
-
-            {/* Asymmetric Editorial Data Composition (Hairlines & Typography instead of cards) */}
-            <div className="mt-12 divide-y divide-[#285640] border-y border-[#285640]">
-              {/* Stat 01 */}
-              <div className="grid grid-cols-1 py-8 sm:grid-cols-12 sm:items-center sm:gap-8">
-                <div className="sm:col-span-4">
-                  <span className="font-mono text-4xl leading-none font-semibold tabular-nums text-[#E6C477] sm:text-5xl">
-                    {primaryStat.value}
-                  </span>
-                </div>
-                <div className="mt-3 sm:mt-0 sm:col-span-8">
-                  <h4 className="text-xl font-semibold text-[#E8EEE8]">
-                    {primaryStat.label}
-                  </h4>
-                  {primaryStat.description && (
-                    <p className="mt-1.5 text-sm font-light text-[#D4E1D8]">
-                      {primaryStat.description}
+            {/* Metrics: Horizontal Swipeable Snap-Carousel on Mobile, 2x2 Bento on Tablet/Desktop */}
+            <div className="relative">
+              <div
+                ref={statTrackRef}
+                onScroll={handleStatScroll}
+                className="-mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto px-6 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden"
+              >
+                {statsList.map((item) => (
+                  <div
+                    key={item.stat.label}
+                    className="w-[72vw] max-w-[250px] shrink-0 snap-start rounded-xl border border-[#285640]/70 bg-[#032A1D]/80 p-4 transition-colors duration-200 hover:border-[#D9B45B]/40 sm:w-auto sm:max-w-none sm:p-5"
+                  >
+                    <span
+                      className={`font-mono text-2xl font-semibold sm:text-3xl ${
+                        item.gold ? 'text-[#E6C477]' : 'text-[#F3F0E6]'
+                      }`}
+                    >
+                      {item.stat.value}
+                    </span>
+                    <h4 className="mt-1.5 text-xs font-semibold text-[#E8EEE8] sm:text-sm">
+                      {item.stat.label}
+                    </h4>
+                    <p className="mt-1 text-[11px] leading-relaxed text-[#B7C8BA] sm:text-xs">
+                      {item.desc}
                     </p>
-                  )}
-                </div>
+                  </div>
+                ))}
               </div>
 
-              {/* Stat 02 & 03 Split Row */}
-              <div className="grid grid-cols-1 gap-8 py-8 sm:grid-cols-12 sm:gap-8">
-                <div className="sm:col-span-6">
-                  <span className="font-mono text-4xl leading-none font-semibold tabular-nums text-[#F3F0E6] sm:text-5xl">
-                    {riskStat.value}
-                  </span>
-                  <h4 className="mt-2.5 text-base font-medium text-[#E8EEE8]">
-                    {riskStat.label}
-                  </h4>
-                  <p className="mt-1 text-xs text-[#B7C8BA]">
-                    Safety risk comparison vs adult ride-hailing trips.
-                  </p>
-                </div>
-
-                <div className="sm:col-span-6">
-                  <span className="font-mono text-4xl leading-none font-semibold tabular-nums text-[#F3F0E6] sm:text-5xl">
-                    {volumeStat.value}
-                  </span>
-                  <h4 className="mt-2.5 text-base font-medium text-[#E8EEE8]">
-                    {volumeStat.label}
-                  </h4>
-                  <p className="mt-1 text-xs text-[#B7C8BA]">
-                    Estimated annual rides required for school and coaching commutes.
-                  </p>
-                </div>
-              </div>
-
-              {/* Stat 04 */}
-              <div className="grid grid-cols-1 py-8 sm:grid-cols-12 sm:items-center sm:gap-8">
-                <div className="sm:col-span-4">
-                  <span className="font-mono text-4xl leading-none font-semibold tabular-nums text-[#E6C477] sm:text-5xl">
-                    {supervisionStat.value}
-                  </span>
-                </div>
-                <div className="mt-3 sm:mt-0 sm:col-span-8">
-                  <h4 className="text-xl font-semibold text-[#E8EEE8]">
-                    {supervisionStat.label}
-                  </h4>
-                  <p className="mt-1.5 text-sm font-light text-[#D4E1D8]">
-                    Active ride supervision and real-time guardian verification.
-                  </p>
-                </div>
+              {/* Mobile pagination indicator dots */}
+              <div
+                aria-hidden="true"
+                className="mt-2.5 flex items-center justify-center gap-1.5 sm:hidden"
+              >
+                {statsList.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-1 rounded-full transition-all duration-300 ${
+                      activeStatIndex === i
+                        ? 'w-4 bg-[#E6C477]'
+                        : 'w-1 bg-[#285640]'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
-          </article>
+          </div>
         </div>
       </div>
     </section>

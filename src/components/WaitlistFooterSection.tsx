@@ -133,7 +133,7 @@ export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProp
 
 export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
   return (
-    <footer className="relative z-10 border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24">
+    <footer className="relative z-10 border-t border-[#E6C477]/20 bg-[#061a12] py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         {/* PART 2 — SITE FOOTER (Spacious Asymmetric Editorial Grid on Desktop, Intentional Grouping on Mobile) */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
@@ -266,7 +266,7 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
         </div>
 
         {/* Bottom Signature & Copyright Bar */}
-        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-[#285640] pt-8 text-xs text-[#B7C8BA]">
+        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-[#E6C477]/15 pt-8 text-xs text-[#B7C8BA]">
           <p>
             © {new Date().getFullYear()} Teen Cabs — A Forgeit Product. Designed by{' '}
             <a

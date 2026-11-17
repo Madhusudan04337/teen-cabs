@@ -52,13 +52,6 @@ interface HeroSectionProps {
 const STAGES = ['pickup', 'dropoff'] as const;
 type RideStage = (typeof STAGES)[number];
 
-const TYPING_ASSURANCES = [
-  'Verified drivers screened for every ride.',
-  'Live route telemetry shared calmly with parents.',
-  'Built for teens who value effortless independence.',
-  'Approved zones and predictable family ride limits.',
-];
-
 export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const mapRevealRef = useRef<HTMLDivElement>(null);
@@ -71,37 +64,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const [activeCheckpoint, setActiveCheckpoint] = useState<RideStage>('pickup');
   const [perspectiveMode, setPerspectiveMode] = useState<'parent' | 'teen'>('parent');
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(TYPING_ASSURANCES[0].length);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setCharIndex(TYPING_ASSURANCES[0].length);
-      return;
-    }
-
-    const currentPhrase = TYPING_ASSURANCES[phraseIndex];
-    let delay = isDeleting ? 26 : 42;
-    if (!isDeleting && charIndex === currentPhrase.length) delay = 2400;
-    else if (isDeleting && charIndex === 0) delay = 360;
-
-    const timer = window.setTimeout(() => {
-      if (!isDeleting && charIndex < currentPhrase.length) {
-        setCharIndex((c) => c + 1);
-      } else if (!isDeleting && charIndex === currentPhrase.length) {
-        setIsDeleting(true);
-      } else if (isDeleting && charIndex > 0) {
-        setCharIndex((c) => c - 1);
-      } else {
-        setIsDeleting(false);
-        setPhraseIndex((i) => (i + 1) % TYPING_ASSURANCES.length);
-      }
-    }, delay);
-
-    return () => window.clearTimeout(timer);
-  }, [charIndex, isDeleting, phraseIndex, prefersReducedMotion]);
 
   useEffect(() => {
     if (!isAutoPlaying || prefersReducedMotion) return;
@@ -283,10 +245,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
     },
   }[activeCheckpoint];
 
-  const typedText = prefersReducedMotion
-    ? TYPING_ASSURANCES[0]
-    : TYPING_ASSURANCES[phraseIndex].slice(0, charIndex);
-
   return (
     <section
       ref={sectionRef}
@@ -316,14 +274,14 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
             <h1
               id="hero-heading"
-              className="text-balance text-[clamp(2.125rem,4.2vw,4.25rem)] leading-[1.06] sm:leading-[1.04] font-semibold tracking-[-0.025em] text-[#E8EEE8]"
+              className="text-balance text-[clamp(1.875rem,5.2vw,4.25rem)] leading-[1.08] sm:leading-[1.04] font-semibold tracking-[-0.025em] text-[#E8EEE8]"
             >
-              <span className="block overflow-hidden pb-1">
+              <span className="block overflow-hidden pr-2 pb-1">
                 <span data-hero-line className="block">
                   Safe rides.
                 </span>
               </span>
-              <span className="block overflow-hidden pb-1">
+              <span className="block overflow-hidden pr-2 pb-1.5">
                 <span
                   data-hero-line
                   className="font-editorial block font-normal italic text-[#E6C477]"
@@ -331,7 +289,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                   Smarter teens.
                 </span>
               </span>
-              <span className="block overflow-hidden pb-1">
+              <span className="block overflow-hidden pr-2 pb-1">
                 <span data-hero-line className="block">
                   Peaceful parents.
                 </span>
@@ -342,8 +300,8 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
               data-hero-copy
               className="pt-2 sm:pt-1 w-full min-w-0"
             >
-              <p className="font-editorial text-[0.9375rem] leading-relaxed italic text-[#E6C477] whitespace-normal sm:text-lg">
-                <span>{typedText}</span>
+              <p className="font-editorial text-[1rem] leading-snug italic text-[#E6C477] break-words sm:text-lg">
+                Live route telemetry shared calmly with parents.
               </p>
             </div>
 

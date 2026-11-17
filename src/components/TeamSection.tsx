@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { gsap, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
@@ -142,6 +142,17 @@ export function TeamSection() {
   const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const isProgrammaticScrollRef = useRef(false);
+  const scrollTimeoutRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current !== undefined) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const categoryCounts = useMemo(() => {
     const counts: Record<TeamCategoryId, number> = {
       all: TEAM_MEMBERS.length,
@@ -209,6 +220,14 @@ export function TeamSection() {
       const card = cardRefs.current[index];
       if (!track || !card) return;
 
+      isProgrammaticScrollRef.current = true;
+      if (scrollTimeoutRef.current !== undefined) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = window.setTimeout(() => {
+        isProgrammaticScrollRef.current = false;
+      }, 500);
+
       const trackRect = track.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
       const cardLeftInTrack = cardRect.left - trackRect.left + track.scrollLeft;
@@ -228,6 +247,13 @@ export function TeamSection() {
       setActiveCategory(nextCategory);
       setActiveIndex(0);
       if (trackRef.current) {
+        isProgrammaticScrollRef.current = true;
+        if (scrollTimeoutRef.current !== undefined) {
+          window.clearTimeout(scrollTimeoutRef.current);
+        }
+        scrollTimeoutRef.current = window.setTimeout(() => {
+          isProgrammaticScrollRef.current = false;
+        }, 500);
         trackRef.current.scrollTo({
           left: 0,
           behavior: prefersReducedMotion ? 'auto' : 'smooth',
@@ -236,6 +262,44 @@ export function TeamSection() {
     },
     [prefersReducedMotion]
   );
+
+  const handleTrackScroll = useCallback(() => {
+    if (isProgrammaticScrollRef.current) return;
+    const track = trackRef.current;
+    if (!track) return;
+
+    if (scrollTimeoutRef.current !== undefined) {
+      window.clearTimeout(scrollTimeoutRef.current);
+    }
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      if (isProgrammaticScrollRef.current) return;
+      const trackEl = trackRef.current;
+      if (!trackEl) return;
+
+      const trackRect = trackEl.getBoundingClientRect();
+      let closestIdx = -1;
+      let minDistance = Infinity;
+
+      cardRefs.current.forEach((card, idx) => {
+        if (!card) return;
+        const cardRect = card.getBoundingClientRect();
+        const distance = Math.abs(cardRect.left - trackRect.left);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIdx = idx;
+        }
+      });
+
+      if (
+        closestIdx !== -1 &&
+        closestIdx !== safeActiveIndex &&
+        closestIdx < filteredMembers.length
+      ) {
+        setActiveIndex(closestIdx);
+      }
+    }, 120);
+  }, [filteredMembers.length, safeActiveIndex]);
 
   const handleSelectMember = useCallback(
     (index: number) => {
@@ -374,39 +438,97 @@ export function TeamSection() {
               })}
             </nav>
 
-            {/* Tablet & Mobile Horizontally Scrollable Category Strip */}
-            <nav
+            {/* Tablet & Mobile Two-Dropdown Navigation */}
+            <div
               data-team-intro
-              aria-label="Filter team members by category"
-              className="mt-7 flex items-center gap-6 overflow-x-auto border-b border-[#285640] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:hidden"
+              className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:hidden"
             >
-              {TEAM_CATEGORIES.map((category) => {
-                const isActive = activeCategory === category.id;
-                const count = categoryCounts[category.id];
-                return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    aria-pressed={isActive}
-                    onClick={() => handleCategoryChange(category.id)}
-                    className={`relative flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 border-b-2 pb-2.5 text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
-                      isActive
-                        ? 'border-[#E6C477] text-[#E6C477]'
-                        : 'border-transparent text-[#D4E1D8] hover:text-[#E8EEE8]'
-                    }`}
+              {/* Category Dropdown */}
+              <div className="min-w-0">
+                <label
+                  htmlFor="team-category-select"
+                  className="block text-[11px] font-semibold tracking-[0.14em] text-[#B7C8BA] uppercase"
+                >
+                  Category
+                </label>
+                <div className="relative mt-1.5">
+                  <select
+                    id="team-category-select"
+                    value={activeCategory}
+                    aria-label="Filter team by category"
+                    onChange={(e) =>
+                      handleCategoryChange(e.target.value as TeamCategoryId)
+                    }
+                    className="flex min-h-[44px] w-full cursor-pointer appearance-none items-center truncate rounded-lg border border-[#285640] bg-[#032A1D] py-2.5 pr-8 pl-3 text-xs font-medium text-[#E8EEE8] transition-colors hover:border-[#D9B45B]/60 focus:border-[#E6C477] focus:ring-1 focus:ring-[#E6C477] focus:outline-none sm:text-sm"
                   >
-                    <span>{category.label}</span>
-                    <span
-                      className={`font-mono text-[11px] tabular-nums ${
-                        isActive ? 'text-[#E6C477]' : 'text-[#B7C8BA]/70'
-                      }`}
-                    >
-                      {formatIndex(count)}
-                    </span>
-                  </button>
-                );
-              })}
-            </nav>
+                    {TEAM_CATEGORIES.map((category) => (
+                      <option
+                        key={category.id}
+                        value={category.id}
+                        className="bg-[#032A1D] text-[#E8EEE8]"
+                      >
+                        {category.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#E6C477]"
+                  />
+                </div>
+              </div>
+
+              {/* Role Dropdown */}
+              <div className="min-w-0">
+                <label
+                  htmlFor="team-role-select"
+                  className="block text-[11px] font-semibold tracking-[0.14em] text-[#B7C8BA] uppercase"
+                >
+                  Role
+                </label>
+                <div className="relative mt-1.5">
+                  <select
+                    id="team-role-select"
+                    value={selectedMember.id}
+                    aria-label="Filter team member by role"
+                    onChange={(e) => {
+                      const nextId = e.target.value;
+                      const nextIndex = filteredMembers.findIndex(
+                        (member) => member.id === nextId
+                      );
+                      if (nextIndex !== -1) {
+                        handleSelectMember(nextIndex);
+                      }
+                    }}
+                    className="flex min-h-[44px] w-full cursor-pointer appearance-none items-center truncate rounded-lg border border-[#285640] bg-[#032A1D] py-2.5 pr-8 pl-3 text-xs font-medium text-[#E8EEE8] transition-colors hover:border-[#D9B45B]/60 focus:border-[#E6C477] focus:ring-1 focus:ring-[#E6C477] focus:outline-none sm:text-sm"
+                  >
+                    {filteredMembers.map((member) => {
+                      const sameRoleCount = filteredMembers.filter(
+                        (m) => m.role === member.role
+                      ).length;
+                      const roleOptionLabel =
+                        sameRoleCount > 1
+                          ? `${member.role} (${member.name})`
+                          : member.role;
+
+                      return (
+                        <option
+                          key={member.id}
+                          value={member.id}
+                          className="bg-[#032A1D] text-[#E8EEE8]"
+                        >
+                          {roleOptionLabel}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#E6C477]"
+                  />
+                </div>
+              </div>
+            </div>
           </aside>
 
           {/* RIGHT CONTENT: Horizontal Editorial Portrait Gallery & Active Member Detail */}
@@ -470,6 +592,7 @@ export function TeamSection() {
                   role="region"
                   aria-label={`${activeCategoryLabel} portrait gallery`}
                   tabIndex={0}
+                  onScroll={handleTrackScroll}
                   onKeyDown={handleGalleryKeyDown}
                   className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-3 scroll-smooth focus:outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:gap-7"
                 >
