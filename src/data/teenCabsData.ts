@@ -3,6 +3,9 @@ import manishPortrait from '../assets/team/manish-t.jpeg';
 import manobalaPortrait from '../assets/team/manobala-c.jpeg';
 import sriramPortrait from '../assets/team/sriram-v.jpeg';
 import tharunPortrait from '../assets/team/tharun-v.jpeg';
+import kaavyaPortrait from '../../assets/Kaavya.jpeg';
+import sudarshanPortrait from '../../assets/Sudarshan.jpeg';
+import vedaanthPortrait from '../../assets/Vedaanth.jpeg';
 
 export interface NeedItem {
   id: string;
@@ -252,7 +255,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: 'sriram',
     initials: 'SV',
     name: 'Sriram V',
-    role: 'Chief Visionary Officer',
+    role: 'Chief Innovation Officer',
     group: 'leadership',
     portraitSrc: sriramPortrait,
     bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
@@ -274,7 +277,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: 'karthik',
-    initials: 'KS',
+    initials: 'S',
     name: 'Karthik',
     role: 'Chief Marketing Officer',
     group: 'crew',
@@ -307,5 +310,38 @@ export const TEAM_MEMBERS: TeamMember[] = [
     focusArea: 'Public Relations & Strategic Outreach',
     quote:
       'Meaningful mobility begins with transparent public trust and authentic community connection.',
+  },
+  {
+    id: 'kaavya',
+    initials: 'K',
+    name: 'Kaavya',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: kaavyaPortrait,
+    bio: 'Contributes to product development and user experience.',
+    focusArea: 'Product Development & User Experience',
+    quote: 'Every thoughtful detail should make the journey feel simpler.',
+  },
+  {
+    id: 'sudarshan',
+    initials: 'S',
+    name: 'Sudarshan',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: sudarshanPortrait,
+    bio: 'Works on building and refining core features.',
+    focusArea: 'Core Product Features',
+    quote: 'The best features make safe journeys feel effortless.',
+  },
+  {
+    id: 'vedaanth',
+    initials: 'V',
+    name: 'Vedaanth',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: vedaanthPortrait,
+    bio: 'Supports development and product innovation.',
+    focusArea: 'Development & Product Innovation',
+    quote: 'Innovation matters most when it improves everyday confidence.',
   },
 ];

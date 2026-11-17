@@ -131,6 +131,7 @@ export function JourneyAndTeamSection() {
   const founder = TEAM_MEMBERS[0];
   const leadershipPair = [TEAM_MEMBERS[1], TEAM_MEMBERS[2]];
   const tier3Team = [TEAM_MEMBERS[3], TEAM_MEMBERS[4], TEAM_MEMBERS[5]];
+  const productTeam = [TEAM_MEMBERS[6], TEAM_MEMBERS[7], TEAM_MEMBERS[8]];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -493,6 +494,40 @@ export function JourneyAndTeamSection() {
                         “{member.quote}”
                       </p>
                     </blockquote>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 max-w-6xl sm:mt-14">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {productTeam.map((member, idx) => (
+                <div
+                  key={member.id}
+                  data-team-card
+                  className={`group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8 ${
+                    idx === 2
+                      ? 'md:col-span-2 md:max-w-md md:mx-auto lg:col-span-1 lg:max-w-none w-full'
+                      : 'w-full'
+                  }`}
+                >
+                  <div className="flex h-full flex-col justify-between">
+                    <div>
+                      <div className="mb-6 w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D]">
+                        <EditorialPortraitFrame member={member} className="aspect-[4/4]" />
+                      </div>
+
+                      <h3 className="font-sans text-2xl font-semibold tracking-tight text-[#E8EEE8] sm:text-3xl">
+                        {member.name}
+                      </h3>
+                      <p className="font-sans mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
+                        {member.role}
+                      </p>
+                      <p className="mt-4 text-sm leading-[1.68] font-normal text-[#D4E1D8]">
+                        {member.bio}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
