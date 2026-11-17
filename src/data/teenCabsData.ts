@@ -3,6 +3,8 @@ import manishPortrait from '../assets/team/manish-t.jpeg';
 import manobalaPortrait from '../assets/team/manobala-c.jpeg';
 import sriramPortrait from '../assets/team/sriram-v.jpeg';
 import tharunPortrait from '../assets/team/tharun-v.jpeg';
+import kaavyaPortrait from '../../assets/Kaavya.jpeg';
+import vedaanthPortrait from '../../assets/Vedaanth.jpeg';
 
 export interface NeedItem {
   id: string;
@@ -295,5 +297,38 @@ export const TEAM_MEMBERS: TeamMember[] = [
     focusArea: 'Visual Systems & Product Craft',
     quote:
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
+  },
+  {
+    id: 'kaavya',
+    initials: 'K',
+    name: 'Kaavya',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: kaavyaPortrait,
+    bio: 'Contributes to product development and user experience.',
+    focusArea: 'Product Development & User Experience',
+    quote: 'Every thoughtful detail should make the journey feel simpler.',
+  },
+  {
+    id: 'sudarshan',
+    initials: 'S',
+    name: 'Sudarshan',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: '/assets/team/sudarshan.jpeg',
+    bio: 'Works on building and refining core features.',
+    focusArea: 'Core Product Features',
+    quote: 'The best features make safe journeys feel effortless.',
+  },
+  {
+    id: 'vedaanth',
+    initials: 'V',
+    name: 'Vedaanth',
+    role: 'Product Team',
+    group: 'crew',
+    portraitSrc: vedaanthPortrait,
+    bio: 'Supports development and product innovation.',
+    focusArea: 'Development & Product Innovation',
+    quote: 'Innovation matters most when it improves everyday confidence.',
   },
 ];

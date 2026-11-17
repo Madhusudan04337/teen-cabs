@@ -131,6 +131,7 @@ export function JourneyAndTeamSection() {
   const founder = TEAM_MEMBERS[0];
   const leadershipPair = [TEAM_MEMBERS[1], TEAM_MEMBERS[2]];
   const crewGroup = [TEAM_MEMBERS[3], TEAM_MEMBERS[4]];
+  const coreTeam = [TEAM_MEMBERS[5], TEAM_MEMBERS[6], TEAM_MEMBERS[7]];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -486,6 +487,33 @@ export function JourneyAndTeamSection() {
                       “{member.quote}”
                     </p>
                   </blockquote>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Additional product team cards within Leadership & Craft */}
+          <div className="mx-auto mt-10 max-w-6xl sm:mt-14">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {coreTeam.map((member) => (
+                <div
+                  key={member.id}
+                  data-team-card
+                  className="group overflow-hidden rounded-[1.75rem] border border-[#285640] bg-[#0B4933]/75 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50"
+                >
+                  <EditorialPortraitFrame member={member} className="aspect-[4/3.6] rounded-none border-0" />
+
+                  <div className="p-5 sm:p-6">
+                    <div className="inline-flex rounded-full border border-[#806B26] bg-[#032A1D] px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#E6C477] uppercase">
+                      {member.role}
+                    </div>
+                    <h3 className="font-editorial mt-3 text-2xl font-medium text-[#E8EEE8]">
+                      {member.name}
+                    </h3>
+                    <p className="mt-2 text-sm leading-[1.65] font-light text-[#B7C8BA]">
+                      {member.bio}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
