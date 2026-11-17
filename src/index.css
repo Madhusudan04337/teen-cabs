@@ -54,19 +54,32 @@
       scroll-behavior: auto !important;
     }
 
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+    .animate-living-breath,
+    .animate-radar-ripple,
+    .animate-wave-bar,
+    .animate-marquee-glide,
+    .animate-marquee-reverse,
+    .animate-route-dash,
+    .animate-spin,
+    .animate-pulse {
+      animation: none !important;
+    }
+
+    .animate-radar-ripple {
+      opacity: 0.35;
+    }
+
+    [class*="transition-transform"],
+    [class*="transition-all"] {
+      transition-property: color, background-color, border-color, opacity !important;
     }
   }
 }
 
 .font-editorial {
   font-family: var(--font-serif-editorial);
-  font-variation-settings: "SOFT" 100, "opsz" 72;
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 100;
 }
 
 .tabular-nums {
@@ -121,6 +134,15 @@
   }
 }
 
+@keyframes marqueeGlideReverse {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes routeDashFlow {
   to {
     stroke-dashoffset: -48;
@@ -144,8 +166,14 @@
   animation: marqueeGlide 38s linear infinite;
 }
 
+.animate-marquee-reverse {
+  animation: marqueeGlideReverse 44s linear infinite;
+}
+
 .group:hover .animate-marquee-glide,
-.group:focus-within .animate-marquee-glide {
+.group:hover .animate-marquee-reverse,
+.group:focus-within .animate-marquee-glide,
+.group:focus-within .animate-marquee-reverse {
   animation-play-state: paused;
 }
 

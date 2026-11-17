@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { BrandLogoMark } from './BrandLogoMark';
 
@@ -6,7 +7,7 @@ interface WaitlistFooterSectionProps {
   onOpenWaitlist: () => void;
 }
 
-export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionProps) {
+export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProps) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [joined, setJoined] = useState(false);
@@ -27,32 +28,34 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
 
   return (
     <div className="relative z-10">
-      {/* Section 7: Open Canvas Final CTA */}
+      {/* PART 1 — WAITLIST CTA ("The Editorial Monograph Ending") */}
       <section
         id="waitlist"
         aria-labelledby="waitlist-heading"
-        className="relative overflow-hidden border-t border-[#285640] bg-[#063B27] py-20 sm:py-24 lg:py-28"
+        className="relative overflow-hidden border-t border-[#285640] bg-[#063B27] py-20 sm:py-24 lg:py-32"
       >
         <div
           aria-hidden="true"
-          className="animate-living-breath pointer-events-none absolute top-1/2 left-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.08)_0%,transparent_66%)]"
+          className="animate-living-breath pointer-events-none absolute top-1/2 left-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.1)_0%,transparent_68%)]"
         />
 
         <div className="relative mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="mb-3 text-sm font-medium tracking-wide text-[#D4E1D8]">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="mb-4 text-xs font-medium tracking-[0.14em] text-[#D4E1D8] uppercase sm:text-sm">
               Your next ride starts here
             </p>
+
             <h2
               id="waitlist-heading"
-              className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.02em] text-[#E8EEE8] sm:text-4xl lg:text-[3rem]"
+              className="text-balance text-3xl leading-[1.12] font-semibold tracking-[-0.025em] text-[#E8EEE8] sm:text-4xl lg:text-[3.375rem]"
             >
               Be among the first to{' '}
               <span className="font-editorial block font-normal italic text-[#E6C477]">
                 experience Teen Cabs.
               </span>
             </h2>
-            <p className="mx-auto mt-5 max-w-[44ch] text-base leading-[1.65] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
+
+            <p className="mx-auto mt-6 max-w-[46ch] text-base leading-[1.78] font-light text-[#D4E1D8] sm:text-[1.0625rem]">
               We’re opening early access to a select group of families. Join the
               waitlist and help shape the future of supervised teen mobility.
             </p>
@@ -60,7 +63,7 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
             {joined ? (
               <div
                 role="status"
-                className="mx-auto mt-9 inline-flex items-center justify-center gap-2.5 rounded-full border border-[#285640] bg-[#0B4933] px-6 py-4 text-sm font-medium text-[#E8EEE8]"
+                className="mx-auto mt-10 inline-flex items-center justify-center gap-3 rounded-full border border-[#285640] bg-[#032A1D] px-7 py-4 text-sm font-medium text-[#E8EEE8] shadow-lg shadow-black/30"
               >
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-[#E6C477]" aria-hidden="true" />
                 <span>
@@ -72,9 +75,9 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
               <form
                 onSubmit={handleInlineSubmit}
                 noValidate
-                className="mx-auto mt-9 max-w-md"
+                className="mx-auto mt-10 max-w-lg"
               >
-                <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex flex-col gap-3.5 sm:flex-row">
                   <label htmlFor="footer-waitlist-email" className="sr-only">
                     Email address for early access
                   </label>
@@ -87,11 +90,11 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
                     aria-invalid={Boolean(error)}
                     aria-describedby={error ? 'footer-waitlist-error' : undefined}
                     placeholder="Enter parent or family email"
-                    className="min-h-[48px] flex-1 rounded-full border border-[#285640] bg-[#0B4933] px-5 py-3 text-sm text-[#E8EEE8] placeholder:text-[#B7C8BA] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                    className="min-h-[50px] flex-1 rounded-full border border-[#285640] bg-[#032A1D] px-6 py-3.5 text-sm text-[#E8EEE8] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="inline-flex min-h-[48px] shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-[#E6C477] px-7 py-3 text-sm font-semibold text-[#032A1D] transition-colors hover:bg-[#D9B45B]"
+                    className="inline-flex min-h-[50px] shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#E6C477] px-8 py-3.5 text-sm font-semibold text-[#032A1D] shadow-lg shadow-black/25 transition-colors hover:bg-[#D9B45B]"
                   >
                     <span>Join the beta</span>
                     <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -102,14 +105,15 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
                   <p
                     id="footer-waitlist-error"
                     role="alert"
-                    className="mt-2.5 rounded-xl border border-[#D9B45B]/55 bg-[#032A1D] px-3.5 py-2 text-center text-xs font-medium text-[#E6C477] sm:text-left"
+                    className="mt-3 rounded-xl border border-[#D9B45B]/55 bg-[#032A1D] px-4 py-2.5 text-center text-xs font-semibold text-[#E6C477] sm:text-left"
                   >
                     {error}
                   </p>
                 )}
 
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-4 text-xs text-[#B7C8BA]">
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-[#B7C8BA]">
                   <span>No spam, no commitment. Just early access.</span>
+                  <span aria-hidden="true" className="text-[#285640]">·</span>
                   <button
                     type="button"
                     onClick={onOpenWaitlist}
@@ -123,60 +127,70 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
           </div>
         </div>
       </section>
+    </div>
+  );
+}
 
-      {/* Quiet Open Footer */}
-      <footer className="border-t border-[#285640] bg-[#032A1D] py-14 sm:py-16">
-        <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-12 lg:gap-12">
-            <div className="md:col-span-5">
-              <div className="flex items-center gap-3">
-                <BrandLogoMark size={30} className="shrink-0" />
-                <div>
-                  <p className="text-base font-bold text-[#E6C477]">Teen Cabs</p>
-                  <p className="text-xs text-[#B7C8BA]">A Forgeit Groups Company</p>
-                </div>
+export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
+  return (
+    <footer className="relative z-10 border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
+        {/* PART 2 — SITE FOOTER (Spacious Asymmetric Editorial Grid on Desktop, Intentional Grouping on Mobile) */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Left: Brand Identity & Manifesto */}
+          <div className="lg:col-span-5">
+            <Link to="/" className="inline-flex items-center gap-3">
+              <BrandLogoMark size={32} className="shrink-0" />
+              <div>
+                <p className="text-lg font-bold tracking-tight text-[#E6C477]">Teen Cabs</p>
+                <p className="font-mono text-[11px] font-medium tracking-[0.14em] text-[#B7C8BA] uppercase">
+                  A Forgeit Groups Company
+                </p>
               </div>
+            </Link>
 
-              <p className="mt-4 max-w-[34ch] text-sm leading-[1.65] font-light text-[#D4E1D8]">
-                A safe, supervised ride platform for teens. Built by Forgeit —
-                Built Strong. Built Online.
-              </p>
-            </div>
+            <p className="mt-5 max-w-[38ch] text-sm leading-[1.78] font-light text-[#D4E1D8]">
+              A safe, supervised ride platform for teens. Built by Forgeit —
+              Built Strong. Built Online.
+            </p>
+          </div>
 
-            <div className="md:col-span-2">
-              <h3 className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
+          {/* Middle: Organized Product & Company Navigation */}
+          <div className="grid grid-cols-2 gap-8 lg:col-span-4 lg:grid-cols-2">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase">
                 The Product
-              </h3>
-              <ul className="mt-4 space-y-2.5 text-sm">
+              </p>
+              <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <a
-                    href="#our-approach"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/about#our-approach"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Our approach
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#features"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/features"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Features
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#how-it-works"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/how-it-works"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     How it works
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <button
                     type="button"
                     onClick={onOpenWaitlist}
-                    className="cursor-pointer text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                    className="cursor-pointer text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Join beta
                   </button>
@@ -184,96 +198,107 @@ export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionP
               </ul>
             </div>
 
-            <div className="md:col-span-2">
-              <h3 className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase">
                 Forgeit
-              </h3>
-              <ul className="mt-4 space-y-2.5 text-sm">
+              </p>
+              <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <a
-                    href="#top"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Home
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#the-need"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/about"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     About
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#team"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/team"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Team
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
-                    href="#contact"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+                  <Link
+                    to="/contact"
+                    className="text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
                   >
                     Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="md:col-span-3">
-              <h3 className="text-xs font-semibold tracking-wider text-[#B7C8BA] uppercase">
-                Get in Touch
-              </h3>
-              <ul className="mt-4 space-y-2.5 text-sm">
-                <li>
-                  <a
-                    href="tel:+918610336533"
-                    className="font-mono text-xs text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
-                  >
-                    +91 86103 36533
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="mailto:info@forgeit.co.in"
-                    className="text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
-                  >
-                    info@forgeit.co.in
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[#285640] pt-8 text-xs text-[#B7C8BA]">
-            <p>
-              © {new Date().getFullYear()} Teen Cabs — A Forgeit Product. Designed by{' '}
-              <a
-                href="https://mdk-portfolio.netlify.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline"
-              >
-                Madhusudan
-              </a>{' '}
-              · All rights reserved.
+          {/* Right: Direct Verified Contact Channels */}
+          <div className="lg:col-span-3">
+            <p className="text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase">
+              Get in Touch
             </p>
-            <a
-              href="https://forgeit.co.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
-            >
-              <span>forgeit.co.in</span>
-              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
+            <ul className="mt-5 space-y-3 text-sm">
+              <li>
+                <a
+                  href="tel:+918610336533"
+                  className="font-mono text-xs tracking-wide text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
+                >
+                  +91 86103 36533
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:info@forgeit.co.in"
+                  className="text-sm font-medium text-[#D4E1D8] underline-offset-4 transition-colors hover:text-[#E6C477] hover:underline"
+                >
+                  info@forgeit.co.in
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
-      </footer>
+
+        {/* Bottom Signature & Copyright Bar */}
+        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-[#285640] pt-8 text-xs text-[#B7C8BA]">
+          <p>
+            © {new Date().getFullYear()} Teen Cabs — A Forgeit Product. Designed by{' '}
+            <a
+              href="https://mdk-portfolio.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline"
+            >
+              Madhusudan
+            </a>{' '}
+            · All rights reserved.
+          </p>
+          <a
+            href="https://forgeit.co.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-medium text-[#D4E1D8] underline-offset-4 hover:text-[#E6C477] hover:underline"
+          >
+            <span>forgeit.co.in</span>
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+export function WaitlistFooterSection({ onOpenWaitlist }: WaitlistFooterSectionProps) {
+  return (
+    <div className="relative z-10">
+      <WaitlistCtaSection onOpenWaitlist={onOpenWaitlist} />
+      <SiteFooter onOpenWaitlist={onOpenWaitlist} />
     </div>
   );
 }

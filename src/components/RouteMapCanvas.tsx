@@ -90,30 +90,38 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     targetCarTRef.current = stageTargetT;
   }, [stageTargetT]);
 
-  // Smooth GSAP solid route-line draw entrance on initial mount
+  // Smooth GSAP solid route-line draw and staggered destination pin entrance
   useEffect(() => {
     if (!isHero || prefersReducedMotion) return;
-    const paths = [primaryRouteRef.current, bikeRouteRef.current].filter(
-      Boolean
-    ) as SVGPathElement[];
+    const ctx = gsap.context(() => {
+      const paths = [primaryRouteRef.current, bikeRouteRef.current].filter(
+        Boolean
+      ) as SVGPathElement[];
 
-    const tweens: gsap.core.Tween[] = [];
-    paths.forEach((path, idx) => {
-      const length = path.getTotalLength();
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-      tweens.push(
+      paths.forEach((path, idx) => {
+        const length = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
         gsap.to(path, {
           strokeDashoffset: 0,
-          duration: 1.35,
-          delay: 0.25 + idx * 0.2,
+          duration: 1.25,
+          delay: 0.25 + idx * 0.18,
           ease: 'power3.out',
-        })
-      );
-    });
+        });
+      });
 
-    return () => {
-      tweens.forEach((tween) => tween.kill());
-    };
+      gsap.from('[data-hero-pin]', {
+        scale: 0.65,
+        opacity: 0,
+        duration: 0.55,
+        delay: 0.35,
+        stagger: 0.14,
+        ease: 'back.out(1.6)',
+        transformOrigin: 'center center',
+        clearProps: 'transform,opacity',
+      });
+    }, mapContainerRef);
+
+    return () => ctx.revert();
   }, [isHero, prefersReducedMotion]);
 
   // Track responsive map pixel box and position Hero markers purely via GPU transforms
@@ -470,7 +478,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           />
 
           {/* Pickup Location Marker (A) with Soft Pulse */}
-          <g transform={`translate(${HERO_PICKUP.x}, ${HERO_PICKUP.y})`}>
+          <g data-hero-pin transform={`translate(${HERO_PICKUP.x}, ${HERO_PICKUP.y})`}>
             <circle r="24" fill="#063B27" fillOpacity="0.14" className="animate-living-breath" />
             <circle r="14" fill="#063B27" stroke="#FFFFFF" strokeWidth="3" />
             <text
@@ -486,7 +494,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           </g>
 
           {/* Destination Location Marker (B) with Soft Pulse */}
-          <g transform={`translate(${HERO_DROPOFF.x}, ${HERO_DROPOFF.y})`}>
+          <g data-hero-pin transform={`translate(${HERO_DROPOFF.x}, ${HERO_DROPOFF.y})`}>
             <circle r="24" fill="#D9B45B" fillOpacity="0.28" className="animate-living-breath" />
             <circle r="14" fill="#E6C477" stroke="#FFFFFF" strokeWidth="3" />
             <text

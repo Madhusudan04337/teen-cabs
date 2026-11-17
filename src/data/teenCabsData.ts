@@ -56,7 +56,7 @@ export interface TeamMember {
   initials: string;
   name: string;
   role: string;
-  group: 'founder' | 'leadership' | 'crew';
+  group: 'founder' | 'leadership' | 'core' | 'product';
   portraitSrc?: string;
   bio: string;
   focusArea: string;
@@ -64,12 +64,12 @@ export interface TeamMember {
 }
 
 export const NAV_LINKS = [
-  { label: 'The need', href: '#the-need' },
-  { label: 'Our approach', href: '#our-approach' },
-  { label: 'Features', href: '#features' },
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Team', href: '#team' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
+  { label: 'Features', to: '/features' },
+  { label: 'How it works', to: '/how-it-works' },
+  { label: 'Team', to: '/team' },
+  { label: 'Contact', to: '/contact' },
 ] as const;
 
 export const NEED_ITEMS: NeedItem[] = [
@@ -280,7 +280,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'S',
     name: 'Karthik',
     role: 'Chief Marketing Officer',
-    group: 'crew',
+    group: 'core',
     portraitSrc: karthikPortrait,
     bio: 'Drives marketing strategy, brand growth, and audience engagement.',
     focusArea: 'Brand Growth & Community Trust',
@@ -292,7 +292,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'MC',
     name: 'Manobala C',
     role: 'Chief Designing Officer',
-    group: 'crew',
+    group: 'core',
     portraitSrc: manobalaPortrait,
     bio: 'Leads UI/UX design strategy crafting visual experiences that are beautiful and purposeful.',
     focusArea: 'Visual Systems & Product Craft',
@@ -304,7 +304,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'SM',
     name: 'Siva Sankara Moorthi R',
     role: 'PRO',
-    group: 'crew',
+    group: 'core',
     portraitSrc: undefined,
     bio: 'Fosters public relations, strategic outreach, and community alignment across educational and civic partnerships.',
     focusArea: 'Public Relations & Strategic Outreach',
@@ -316,7 +316,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'K',
     name: 'Kaavya',
     role: 'Product Team',
-    group: 'crew',
+    group: 'product',
     portraitSrc: kaavyaPortrait,
     bio: 'Contributes to product development and user experience.',
     focusArea: 'Product Development & User Experience',
@@ -327,7 +327,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'S',
     name: 'Sudarshan',
     role: 'Product Team',
-    group: 'crew',
+    group: 'product',
     portraitSrc: sudarshanPortrait,
     bio: 'Works on building and refining core features.',
     focusArea: 'Core Product Features',
@@ -338,7 +338,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'V',
     name: 'Vedaanth',
     role: 'Product Team',
-    group: 'crew',
+    group: 'product',
     portraitSrc: vedaanthPortrait,
     bio: 'Supports development and product innovation.',
     focusArea: 'Development & Product Innovation',

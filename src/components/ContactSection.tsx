@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
@@ -14,8 +13,6 @@ import {
   Phone,
   RotateCcw,
 } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const INQUIRY_TOPICS = [
   'Parent & Family',
@@ -95,7 +92,7 @@ export function ContactSection() {
             duration: 0.85,
             ease: 'expo.out',
             scrollTrigger: {
-              trigger: '#contact',
+              trigger: sectionRef.current,
               start: 'top 90%',
               end: 'bottom 4%',
               toggleActions: 'play reverse play reverse',
@@ -112,7 +109,7 @@ export function ContactSection() {
             duration: 0.85,
             ease: 'expo.out',
             scrollTrigger: {
-              trigger: '#contact',
+              trigger: sectionRef.current,
               start: 'top 90%',
               end: 'bottom 4%',
               toggleActions: 'play reverse play reverse',

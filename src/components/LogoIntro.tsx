@@ -2,18 +2,43 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(useGSAP);
+const LOGO_INTRO_SESSION_KEY = 'teencabs_logo_intro_seen';
+
+function hasSeenIntroInSession(): boolean {
+  try {
+    if (typeof window === 'undefined') return false;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+    return window.sessionStorage.getItem(LOGO_INTRO_SESSION_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function markIntroSeenInSession(): void {
+  try {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(LOGO_INTRO_SESSION_KEY, 'true');
+    }
+  } catch {
+    // Ignore storage errors in restricted browsing contexts
+  }
+}
 
 export function LogoIntro() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const logoWrapRef = useRef<HTMLDivElement>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useState<boolean>(hasSeenIntroInSession);
 
   useEffect(() => {
+    if (dismissed) {
+      markIntroSeenInSession();
+      return;
+    }
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      markIntroSeenInSession();
       setDismissed(true);
     }
-  }, []);
+  }, [dismissed]);
 
   useGSAP(
     () => {
@@ -22,7 +47,10 @@ export function LogoIntro() {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const tl = gsap.timeline({
-          onComplete: () => setDismissed(true),
+          onComplete: () => {
+            markIntroSeenInSession();
+            setDismissed(true);
+          },
         });
 
         tl.fromTo(
@@ -64,7 +92,10 @@ export function LogoIntro() {
   return (
     <div
       ref={overlayRef}
-      onClick={() => setDismissed(true)}
+      onClick={() => {
+        markIntroSeenInSession();
+        setDismissed(true);
+      }}
       role="presentation"
       className="fixed inset-0 z-[100] flex cursor-pointer flex-col items-center justify-center bg-[#032A1D]"
     >

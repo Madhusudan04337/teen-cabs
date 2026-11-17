@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { CheckCircle2, X } from 'lucide-react';
+import { useLenis } from '../motion/LenisContext';
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface WaitlistModalProps {
 }
 
 export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
+  const { stopScroll, startScroll } = useLenis();
   const prefersReducedMotion = useReducedMotion();
   const [role, setRole] = useState<'parent' | 'teen'>('parent');
   const [name, setName] = useState('');
@@ -24,10 +26,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     if (!isOpen) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const prevBodyOverflow = document.body.style.overflow;
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
+    stopScroll('waitlist-modal');
 
     const focusTimer = window.setTimeout(() => {
       if (nameInputRef.current) {
@@ -75,11 +74,10 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     return () => {
       window.clearTimeout(focusTimer);
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = prevBodyOverflow;
-      document.documentElement.style.overflow = prevHtmlOverflow;
+      startScroll('waitlist-modal');
       previouslyFocused?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, stopScroll, startScroll]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
