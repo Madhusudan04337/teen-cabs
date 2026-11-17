@@ -3,8 +3,6 @@ import manishPortrait from '../assets/team/manish-t.jpeg';
 import manobalaPortrait from '../assets/team/manobala-c.jpeg';
 import sriramPortrait from '../assets/team/sriram-v.jpeg';
 import tharunPortrait from '../assets/team/tharun-v.jpeg';
-import kaavyaPortrait from '../../assets/Kaavya.jpeg';
-import vedaanthPortrait from '../../assets/Vedaanth.jpeg';
 
 export interface NeedItem {
   id: string;
@@ -254,7 +252,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     id: 'sriram',
     initials: 'SV',
     name: 'Sriram V',
-    role: 'Chief Innovation Officer',
+    role: 'Chief Visionary Officer',
     group: 'leadership',
     portraitSrc: sriramPortrait,
     bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
@@ -277,9 +275,9 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'karthik',
     initials: 'KS',
-    name: 'Karthick S',
+    name: 'Karthik',
     role: 'Chief Marketing Officer',
-    group: 'leadership',
+    group: 'crew',
     portraitSrc: karthikPortrait,
     bio: 'Drives marketing strategy, brand growth, and audience engagement.',
     focusArea: 'Brand Growth & Community Trust',
@@ -291,7 +289,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     initials: 'MC',
     name: 'Manobala C',
     role: 'Chief Designing Officer',
-    group: 'leadership',
+    group: 'crew',
     portraitSrc: manobalaPortrait,
     bio: 'Leads UI/UX design strategy crafting visual experiences that are beautiful and purposeful.',
     focusArea: 'Visual Systems & Product Craft',
@@ -299,36 +297,15 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
   },
   {
-    id: 'kaavya',
-    initials: 'K',
-    name: 'Kaavya',
-    role: 'Product Team',
+    id: 'siva',
+    initials: 'SM',
+    name: 'Siva Sankara Moorthi R',
+    role: 'PRO',
     group: 'crew',
-    portraitSrc: kaavyaPortrait,
-    bio: 'Contributes to product development and user experience.',
-    focusArea: 'Product Development & User Experience',
-    quote: 'Every thoughtful detail should make the journey feel simpler.',
-  },
-  {
-    id: 'sudarshan',
-    initials: 'S',
-    name: 'Sudarshan',
-    role: 'Product Team',
-    group: 'crew',
-    portraitSrc: '/assets/team/sudarshan.jpeg',
-    bio: 'Works on building and refining core features.',
-    focusArea: 'Core Product Features',
-    quote: 'The best features make safe journeys feel effortless.',
-  },
-  {
-    id: 'vedaanth',
-    initials: 'V',
-    name: 'Vedaanth',
-    role: 'Product Team',
-    group: 'crew',
-    portraitSrc: vedaanthPortrait,
-    bio: 'Supports development and product innovation.',
-    focusArea: 'Development & Product Innovation',
-    quote: 'Innovation matters most when it improves everyday confidence.',
+    portraitSrc: undefined,
+    bio: 'Fosters public relations, strategic outreach, and community alignment across educational and civic partnerships.',
+    focusArea: 'Public Relations & Strategic Outreach',
+    quote:
+      'Meaningful mobility begins with transparent public trust and authentic community connection.',
   },
 ];

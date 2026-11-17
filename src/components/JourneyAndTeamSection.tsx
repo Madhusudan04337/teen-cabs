@@ -106,10 +106,10 @@ function EditorialPortraitFrame({
       {/* Clean Editorial Role & Initials Overlay */}
       <div className="pointer-events-none absolute inset-x-5 bottom-5 flex items-end justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold tracking-[0.16em] text-[#E6C477] uppercase">
+          <p className="font-sans text-xs font-semibold tracking-[0.14em] text-[#E6C477] uppercase">
             {member.role}
           </p>
-          <p className="font-editorial mt-0.5 text-2xl font-medium text-[#E8EEE8]">
+          <p className="font-sans mt-0.5 text-2xl font-semibold tracking-tight text-[#E8EEE8]">
             {member.name}
           </p>
         </div>
@@ -130,8 +130,7 @@ export function JourneyAndTeamSection() {
 
   const founder = TEAM_MEMBERS[0];
   const leadershipPair = [TEAM_MEMBERS[1], TEAM_MEMBERS[2]];
-  const crewGroup = [TEAM_MEMBERS[3], TEAM_MEMBERS[4]];
-  const coreTeam = [TEAM_MEMBERS[5], TEAM_MEMBERS[6], TEAM_MEMBERS[7]];
+  const tier3Team = [TEAM_MEMBERS[3], TEAM_MEMBERS[4], TEAM_MEMBERS[5]];
 
   useEffect(() => {
     if (prefersReducedMotion) return;
@@ -368,7 +367,7 @@ export function JourneyAndTeamSection() {
           </div>
 
           {/* Tier 1: Prominent Centered Founder Profile Card at Top */}
-          <div className="mx-auto max-w-3xl pb-10 sm:pb-14">
+          <div className="mx-auto max-w-4xl pb-10 sm:pb-14">
             <div
               data-team-card
               className="group relative overflow-hidden rounded-[2.5rem] border border-[#285640] bg-[#0B4933]/90 p-6 shadow-2xl shadow-black/45 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/60 sm:p-10"
@@ -386,21 +385,21 @@ export function JourneyAndTeamSection() {
                 </div>
 
                 <div className="md:col-span-7">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#285640] bg-[#032A1D] px-3.5 py-1 text-xs font-semibold tracking-wider text-[#E6C477] uppercase">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#285640] bg-[#032A1D] px-3.5 py-1 text-xs font-semibold tracking-wider text-[#E6C477] uppercase font-sans">
                     <span>Founder Spotlight</span>
                   </div>
 
-                  <h3 className="font-editorial mt-3 text-3xl font-medium text-[#E8EEE8] sm:text-4xl">
+                  <h3 className="font-sans mt-3 text-3xl font-semibold tracking-tight text-[#E8EEE8] sm:text-4xl">
                     {founder.name}
                   </h3>
-                  <p className="mt-1 text-xs font-bold tracking-[0.16em] text-[#E6C477] uppercase">
+                  <p className="font-sans mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
                     {founder.role}
                   </p>
                   <p className="mt-1.5 font-mono text-xs text-[#B7C8BA]">
                     {founder.focusArea}
                   </p>
 
-                  <p className="mt-4 text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base">
+                  <p className="mt-4 text-sm leading-[1.7] font-normal text-[#D4E1D8] sm:text-base">
                     {founder.bio}
                   </p>
 
@@ -423,96 +422,77 @@ export function JourneyAndTeamSection() {
                   data-team-card
                   className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/80 p-6 shadow-xl shadow-black/35 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8"
                 >
-                  <div>
-                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-6">
-                      <EditorialPortraitFrame member={member} className="aspect-[4/4.2]" />
+                  <div className="flex h-full flex-col justify-between">
+                    <div>
+                      <div className="mb-6 w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D]">
+                        <EditorialPortraitFrame member={member} className="aspect-[4/4]" />
+                      </div>
+
+                      <h3 className="font-sans text-2xl font-semibold tracking-tight text-[#E8EEE8] sm:text-3xl">
+                        {member.name}
+                      </h3>
+                      <p className="font-sans mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
+                        {member.role}
+                      </p>
+                      <p className="mt-1.5 font-mono text-xs text-[#B7C8BA]">
+                        {member.focusArea}
+                      </p>
+
+                      <p className="mt-4 text-sm leading-[1.68] font-normal text-[#D4E1D8]">
+                        {member.bio}
+                      </p>
                     </div>
 
-                    <h3 className="font-editorial text-2xl font-medium text-[#E8EEE8] sm:text-3xl">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
-                      {member.role}
-                    </p>
-                    <p className="mt-1 font-mono text-[11px] text-[#B7C8BA]">
-                      {member.focusArea}
-                    </p>
-
-                    <p className="mt-4 text-sm leading-[1.68] font-light text-[#D4E1D8]">
-                      {member.bio}
-                    </p>
+                    <blockquote className="mt-6 border-t border-[#285640] pt-4">
+                      <p className="font-editorial text-sm italic text-[#E6C477] sm:text-base">
+                        “{member.quote}”
+                      </p>
+                    </blockquote>
                   </div>
-
-                  <blockquote className="mt-6 border-t border-[#285640] pt-4">
-                    <p className="font-editorial text-sm italic text-[#E6C477]">
-                      “{member.quote}”
-                    </p>
-                  </blockquote>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Tier 3: Balanced Two-Column Row for Remaining Team Members */}
-          <div className="mx-auto max-w-5xl">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-              {crewGroup.map((member) => (
+          {/* Tier 3: Three Equally Proportioned Cards on Desktop, Balanced Two-Column on Tablet */}
+          <div className="mx-auto max-w-6xl">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {tier3Team.map((member, idx) => (
                 <div
                   key={member.id}
                   data-team-card
-                  className="group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8"
+                  className={`group flex flex-col justify-between overflow-hidden rounded-[2rem] border border-[#285640] bg-[#0B4933]/70 p-6 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50 sm:p-8 ${
+                    idx === 2
+                      ? 'md:col-span-2 md:max-w-md md:mx-auto lg:col-span-1 lg:max-w-none w-full'
+                      : 'w-full'
+                  }`}
                 >
-                  <div>
-                    <div className="w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D] mb-6">
-                      <EditorialPortraitFrame member={member} className="aspect-[4/4.2]" />
+                  <div className="flex h-full flex-col justify-between">
+                    <div>
+                      <div className="mb-6 w-full overflow-hidden rounded-2xl border border-[#285640] bg-[#032A1D]">
+                        <EditorialPortraitFrame member={member} className="aspect-[4/4]" />
+                      </div>
+
+                      <h3 className="font-sans text-2xl font-semibold tracking-tight text-[#E8EEE8] sm:text-3xl">
+                        {member.name}
+                      </h3>
+                      <p className="font-sans mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
+                        {member.role}
+                      </p>
+                      <p className="mt-1.5 font-mono text-xs text-[#B7C8BA]">
+                        {member.focusArea}
+                      </p>
+
+                      <p className="mt-4 text-sm leading-[1.68] font-normal text-[#D4E1D8]">
+                        {member.bio}
+                      </p>
                     </div>
 
-                    <h3 className="font-editorial text-2xl font-medium text-[#E8EEE8] sm:text-3xl">
-                      {member.name}
-                    </h3>
-                    <p className="mt-1 text-xs font-bold tracking-[0.14em] text-[#E6C477] uppercase">
-                      {member.role}
-                    </p>
-                    <p className="mt-1 font-mono text-[11px] text-[#B7C8BA]">
-                      {member.focusArea}
-                    </p>
-
-                    <p className="mt-4 text-sm leading-[1.68] font-light text-[#D4E1D8]">
-                      {member.bio}
-                    </p>
-                  </div>
-
-                  <blockquote className="mt-6 border-t border-[#285640] pt-4">
-                    <p className="font-editorial text-sm italic text-[#E6C477]">
-                      “{member.quote}”
-                    </p>
-                  </blockquote>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Additional product team cards within Leadership & Craft */}
-          <div className="mx-auto mt-10 max-w-6xl sm:mt-14">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {coreTeam.map((member) => (
-                <div
-                  key={member.id}
-                  data-team-card
-                  className="group overflow-hidden rounded-[1.75rem] border border-[#285640] bg-[#0B4933]/75 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 hover:border-[#D9B45B]/50"
-                >
-                  <EditorialPortraitFrame member={member} className="aspect-[4/3.6] rounded-none border-0" />
-
-                  <div className="p-5 sm:p-6">
-                    <div className="inline-flex rounded-full border border-[#806B26] bg-[#032A1D] px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#E6C477] uppercase">
-                      {member.role}
-                    </div>
-                    <h3 className="font-editorial mt-3 text-2xl font-medium text-[#E8EEE8]">
-                      {member.name}
-                    </h3>
-                    <p className="mt-2 text-sm leading-[1.65] font-light text-[#B7C8BA]">
-                      {member.bio}
-                    </p>
+                    <blockquote className="mt-6 border-t border-[#285640] pt-4">
+                      <p className="font-editorial text-sm italic text-[#E6C477] sm:text-base">
+                        “{member.quote}”
+                      </p>
+                    </blockquote>
                   </div>
                 </div>
               ))}
