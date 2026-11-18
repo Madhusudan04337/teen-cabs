@@ -32,12 +32,8 @@ export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProp
       <section
         id="waitlist"
         aria-labelledby="waitlist-heading"
-        className="relative overflow-hidden border-t border-[#285640] bg-[#063B27] py-20 sm:py-24 lg:py-32"
+        className="relative overflow-hidden border-t border-[#d4af37]/12 bg-transparent py-20 sm:py-24 lg:py-32"
       >
-        <div
-          aria-hidden="true"
-          className="animate-living-breath pointer-events-none absolute top-1/2 left-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.1)_0%,transparent_68%)]"
-        />
 
         <div className="relative mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
           <div className="mx-auto max-w-3xl text-center">

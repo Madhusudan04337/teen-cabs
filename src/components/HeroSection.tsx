@@ -249,17 +249,8 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
     <section
       ref={sectionRef}
       aria-labelledby="hero-heading"
-      className="relative z-10 overflow-hidden bg-[#032A1D] pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24"
+      className="relative z-10 overflow-hidden bg-transparent pt-20 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24"
     >
-      {/* Restrained Ambient Lighting */}
-      <div
-        aria-hidden="true"
-        className="animate-living-breath pointer-events-none absolute -top-24 right-0 h-[400px] w-[400px] transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.08)_0%,transparent_66%)] sm:h-[620px] sm:w-[620px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 -left-32 h-[360px] w-[360px] transform-gpu rounded-full bg-[radial-gradient(circle,rgba(11,73,51,0.42)_0%,transparent_70%)]"
-      />
 
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">

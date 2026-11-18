@@ -172,14 +172,10 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
       id="the-need"
       ref={sectionRef}
       aria-labelledby="need-heading"
-      className={`relative z-10 overflow-x-clip bg-[#063B27] ${
+      className={`relative z-10 overflow-x-clip border-t border-[#d4af37]/12 bg-[#061a12]/25 ${
         compact ? 'py-16 sm:py-20 lg:py-24' : 'py-20 sm:py-24 lg:py-28'
       }`}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.07)_0%,transparent_68%)]"
-      />
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         {/* SECTION HEADER */}
@@ -220,10 +216,10 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
                 return (
                   <div
                     key={item.id}
-                    className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
+                    className={`glass-emerald overflow-hidden rounded-2xl transition-all duration-200 ${
                       isOpen
-                        ? 'border-[#E6C477]/70 bg-[#0B4933]/70 shadow-lg shadow-black/20'
-                        : 'border-[#285640]/80 bg-[#032A1D]/60 hover:border-[#D9B45B]/50 hover:bg-[#0B4933]/30'
+                        ? 'border-[#d4af37]/45 shadow-lg shadow-black/25'
+                        : 'glass-emerald-hover'
                     }`}
                   >
                     <button
@@ -286,7 +282,7 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
           {/* RIGHT: 73% Hero Stat Card + Metrics Bento */}
           <div data-need-reveal className="space-y-4 lg:col-span-6">
             {/* 73% Hero Callout Card */}
-            <div className="relative overflow-hidden rounded-2xl border border-[rgba(230,196,119,0.28)] bg-gradient-to-b from-[#0B4933] to-[#032A1D] p-6 shadow-xl shadow-black/25 sm:p-7">
+            <div className="glass-emerald relative overflow-hidden rounded-2xl p-6 shadow-xl shadow-black/25 sm:p-7">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
                 <SmoothPercentageStat
                   target={73}
@@ -313,7 +309,7 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
                 {statsList.map((item) => (
                   <div
                     key={item.stat.label}
-                    className="w-[72vw] max-w-[250px] shrink-0 snap-start rounded-xl border border-[#285640]/70 bg-[#032A1D]/80 p-4 transition-colors duration-200 hover:border-[#D9B45B]/40 sm:w-auto sm:max-w-none sm:p-5"
+                    className="glass-emerald glass-emerald-hover w-[72vw] max-w-[250px] shrink-0 snap-start rounded-xl p-4 sm:w-auto sm:max-w-none sm:p-5"
                   >
                     <span
                       className={`font-mono text-2xl font-semibold sm:text-3xl ${

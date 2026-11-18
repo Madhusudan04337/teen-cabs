@@ -192,10 +192,10 @@ export function ExperienceShowcase() {
       id="features"
       ref={sectionRef}
       aria-labelledby="features-heading"
-      className="relative z-10 overflow-x-clip bg-[#063B27]"
+      className="relative z-10 overflow-x-clip bg-transparent"
     >
       {/* Editorial Narrative Opener */}
-      <div className="border-b border-[#285640] bg-[#032A1D] py-14 sm:py-18 lg:py-20">
+      <div className="border-b border-[#d4af37]/15 bg-[#061a12]/35 py-14 sm:py-18 lg:py-20">
         <div className="mx-auto flex max-w-[1200px] flex-col justify-between gap-6 px-6 sm:px-8 lg:flex-row lg:items-end lg:px-10">
           <div className="max-w-[38rem]">
             <p className="text-xs font-medium tracking-wide text-[#D4E1D8] sm:text-sm">
@@ -221,18 +221,14 @@ export function ExperienceShowcase() {
       </div>
 
       {/* Continuous Vertical Scroll Narrative */}
-      <div className="divide-y divide-[#285640]">
+      <div className="divide-y divide-[#d4af37]/12">
         {/* SECTION 1 (SAFETY): Clean side-by-side driver verification details and badge */}
         <article
           id="feature-panel-safety"
           data-story-panel
           aria-labelledby="panel-safety-title"
-          className="relative bg-[#063B27] py-16 sm:py-22 lg:py-28"
+          className="relative bg-transparent py-16 sm:py-22 lg:py-28"
         >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_62%_70%_at_74%_50%,rgba(11,73,51,0.72),transparent_72%)]"
-          />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-12 lg:px-10">
             {/* Left Narrative Column: All Safety Pillars Open in Scroll Flow */}
@@ -289,7 +285,7 @@ export function ExperienceShowcase() {
 
             {/* Right Visual Stage: Verified Driver Photography & Verification Summary */}
             <div data-panel-visual className="lg:col-span-7">
-              <div className="overflow-hidden rounded-3xl border border-[#285640] bg-[#032A1D] shadow-2xl shadow-black/35">
+              <div className="glass-emerald overflow-hidden rounded-3xl shadow-2xl shadow-black/35">
                 <div className="grid grid-cols-1 md:grid-cols-12">
                   {/* Side A: Authentic Uniformed Chauffeur Portrait */}
                   <div className="relative md:col-span-6">
@@ -329,7 +325,7 @@ export function ExperienceShowcase() {
                       </ul>
                     </div>
 
-                    <div className="mt-7 grid grid-cols-2 gap-4 border-t border-[#285640] pt-5">
+                    <div className="mt-7 grid grid-cols-2 gap-4 border-t border-[#d4af37]/15 pt-5">
                       <div>
                         <p className="text-xs font-medium text-[#B7C8BA]">
                           SOS support
@@ -359,12 +355,8 @@ export function ExperienceShowcase() {
           id="feature-panel-control"
           data-story-panel
           aria-labelledby="panel-control-title"
-          className="relative bg-[#032A1D] py-16 sm:py-22 lg:py-28"
+          className="relative bg-[#061a12]/25 py-16 sm:py-22 lg:py-28"
         >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_65%_at_30%_52%,rgba(11,73,51,0.55),transparent_72%)]"
-          />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-12 lg:px-10">
             {/* Left Visual Mockup: Parent Dashboard & Route Tracker */}
@@ -513,12 +505,8 @@ export function ExperienceShowcase() {
           id="feature-panel-genz"
           data-story-panel
           aria-labelledby="panel-genz-title"
-          className="relative bg-[#063B27] py-16 sm:py-22 lg:py-28"
+          className="relative bg-transparent py-16 sm:py-22 lg:py-28"
         >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_50%,rgba(230,196,119,0.08),transparent_60%)]"
-          />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-12 lg:px-10">
             {/* Left Column: All 3 Music Presets & Audio Preferences Openly Displayed */}
@@ -557,10 +545,10 @@ export function ExperienceShowcase() {
                       type="button"
                       onClick={() => setActiveVibeId(preset.id)}
                       aria-pressed={selected}
-                      className={`group flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl px-4 py-3.5 text-left transition-colors duration-200 ${
+                      className={`group flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border px-4 py-3.5 text-left transition-colors duration-200 ${
                         selected
-                          ? 'bg-[#E8EEE8]/[0.08] backdrop-blur-xs'
-                          : 'hover:bg-[#E8EEE8]/[0.04]'
+                          ? 'glass-emerald border-[#d4af37]/30'
+                          : 'border-transparent hover:bg-[#0b2d20]/30'
                       }`}
                     >
                       <div className="min-w-0">
@@ -598,7 +586,7 @@ export function ExperienceShowcase() {
 
             {/* Right Visual Stage: Editorial Cabin Photography & Audio Preference Bar */}
             <div data-panel-visual className="lg:col-span-7">
-              <div className="overflow-hidden rounded-3xl border border-[#285640] bg-[#032A1D] shadow-2xl shadow-black/35">
+              <div className="glass-emerald overflow-hidden rounded-3xl shadow-2xl shadow-black/35">
                 <img
                   src={calmCabinImg}
                   alt="Teenager seated comfortably in a clean cab backseat wearing headphones and looking out at sunlit trees"
@@ -606,7 +594,7 @@ export function ExperienceShowcase() {
                   className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10]"
                 />
 
-                <div className="border-t border-[#285640] p-6 sm:p-7">
+                <div className="border-t border-[#d4af37]/15 p-6 sm:p-7">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 text-xs font-medium text-[#D4E1D8]">
@@ -697,12 +685,8 @@ export function ExperienceShowcase() {
           id="feature-panel-freedom"
           data-story-panel
           aria-labelledby="panel-freedom-title"
-          className="relative bg-[#032A1D] py-16 sm:py-22 lg:py-28"
+          className="relative bg-[#061a12]/25 py-16 sm:py-22 lg:py-28"
         >
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_65%_at_25%_45%,rgba(11,73,51,0.58),transparent_72%)]"
-          />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-10 px-6 sm:px-8 lg:grid-cols-12 lg:gap-14 lg:px-10">
             <div data-panel-copy className="lg:col-span-6">
@@ -737,13 +721,13 @@ export function ExperienceShowcase() {
             </div>
 
             <div data-panel-visual className="lg:col-span-6">
-              <div className="divide-y divide-[#285640] border-y border-[#285640]">
+              <div className="glass-emerald divide-y divide-[#d4af37]/12 overflow-hidden rounded-2xl shadow-xl shadow-black/25">
                 {STORY_CHAPTERS.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => scrollToChapter(item.id)}
-                    className="group flex w-full cursor-pointer items-center justify-between gap-6 py-5 text-left transition-colors duration-200 hover:bg-[#0B4933]/35 sm:px-3"
+                    className="group flex w-full cursor-pointer items-center justify-between gap-6 px-5 py-5 text-left transition-colors duration-200 hover:bg-[#0b2d20]/45 sm:px-6"
                   >
                     <div className="flex items-start gap-4">
                       <span className="mt-0.5 font-mono text-xs font-semibold text-[#E6C477] tabular-nums">

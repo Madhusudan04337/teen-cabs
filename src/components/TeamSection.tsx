@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { gsap, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
@@ -30,14 +30,14 @@ const TEAM_CATEGORIES: ReadonlyArray<{
   { id: 'product', label: 'Product Team' },
 ];
 
-function EditorialPortraitFrame({
+function PortraitAsset({
   member,
-  isSelected,
-  eager,
+  eager = false,
+  compact = false,
 }: {
   member: TeamMember;
-  isSelected: boolean;
-  eager: boolean;
+  eager?: boolean;
+  compact?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -47,87 +47,44 @@ function EditorialPortraitFrame({
 
   const showPhoto = Boolean(member.portraitSrc) && !imgError;
 
+  if (showPhoto) {
+    return (
+      <img
+        src={member.portraitSrc}
+        alt={`${member.name}, ${member.role} at Forgeit and Teen Cabs`}
+        onError={() => setImgError(true)}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        referrerPolicy="no-referrer"
+        className="h-full w-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+      />
+    );
+  }
+
   return (
-    <div
-      className={`relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D] transition-colors duration-200 ${
-        isSelected
-          ? 'ring-1 ring-[#E6C477]/80'
-          : 'ring-1 ring-[#285640]/80 group-hover:ring-[#D9B45B]/55'
-      }`}
-    >
-      {showPhoto ? (
-        <>
-          <img
-            src={member.portraitSrc}
-            alt={`${member.name}, ${member.role} at Forgeit and Teen Cabs`}
-            onError={() => setImgError(true)}
-            loading={eager ? 'eager' : 'lazy'}
-            decoding="async"
-            referrerPolicy="no-referrer"
-            className="h-full w-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.02]"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#032A1D]/55 via-transparent to-transparent"
-          />
-        </>
-      ) : (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -top-12 left-1/2 h-56 w-56 -translate-x-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.16)_0%,transparent_66%)]"
-          />
-
-          <svg viewBox="0 0 240 300" className="h-full w-full" aria-hidden="true">
-            <defs>
-              <linearGradient
-                id={`editorial-sil-${member.id}`}
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor="#E6C477" stopOpacity="0.32" />
-                <stop offset="60%" stopColor="#D9B45B" stopOpacity="0.14" />
-                <stop offset="100%" stopColor="#032A1D" stopOpacity="0.04" />
-              </linearGradient>
-            </defs>
-
-            <circle
-              cx="120"
-              cy="126"
-              r="76"
-              fill="none"
-              stroke="#E6C477"
-              strokeOpacity="0.22"
-              strokeWidth="1.2"
-              strokeDasharray="5 7"
-            />
-            <circle
-              cx="120"
-              cy="112"
-              r="34"
-              fill={`url(#editorial-sil-${member.id})`}
-              stroke="#E6C477"
-              strokeOpacity="0.5"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M44 300 C 44 218, 76 178, 120 178 C 164 178, 196 218, 196 300 Z"
-              fill={`url(#editorial-sil-${member.id})`}
-              stroke="#E6C477"
-              strokeOpacity="0.42"
-              strokeWidth="1.5"
-            />
-          </svg>
-
-          <span
-            aria-hidden="true"
-            className="font-editorial pointer-events-none absolute right-4 bottom-4 text-sm italic text-[#E6C477]/85"
-          >
-            {member.initials}
-          </span>
-        </>
+    <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-8 left-1/2 h-40 w-40 -translate-x-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.2)_0%,transparent_68%)]"
+      />
+      <div
+        aria-hidden="true"
+        className={`flex items-center justify-center rounded-full border border-[#E6C477]/35 bg-[#032A1D]/55 ${
+          compact ? 'h-16 w-16 -translate-y-4 sm:h-20 sm:w-20' : 'h-24 w-24'
+        }`}
+      >
+        <span
+          className={`font-editorial font-normal italic text-[#E6C477] ${
+            compact ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+          }`}
+        >
+          {member.initials}
+        </span>
+      </div>
+      {!compact && (
+        <span className="mt-3 text-[10px] font-medium tracking-[0.2em] text-[#B7C8BA]/80 uppercase">
+          {member.role}
+        </span>
       )}
     </div>
   );
@@ -135,23 +92,11 @@ function EditorialPortraitFrame({
 
 export function TeamSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const { prefersReducedMotion } = useLenis();
+  const contentRef = useRef<HTMLDivElement>(null);
+  const { prefersReducedMotion, scrollTo } = useLenis();
 
   const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
   const [activeIndex, setActiveIndex] = useState(0);
-
-  const isProgrammaticScrollRef = useRef(false);
-  const scrollTimeoutRef = useRef<number | undefined>(undefined);
-
-  useEffect(() => {
-    return () => {
-      if (scrollTimeoutRef.current !== undefined) {
-        window.clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<TeamCategoryId, number> = {
@@ -214,108 +159,32 @@ export function TeamSection() {
     { scope: sectionRef, dependencies: [prefersReducedMotion] }
   );
 
-  const scrollCardIntoTrack = useCallback(
-    (index: number) => {
-      const track = trackRef.current;
-      const card = cardRefs.current[index];
-      if (!track || !card) return;
+  const handleCategoryChange = useCallback((nextCategory: TeamCategoryId) => {
+    setActiveCategory(nextCategory);
+    setActiveIndex(0);
+  }, []);
 
-      isProgrammaticScrollRef.current = true;
-      if (scrollTimeoutRef.current !== undefined) {
-        window.clearTimeout(scrollTimeoutRef.current);
-      }
-      scrollTimeoutRef.current = window.setTimeout(() => {
-        isProgrammaticScrollRef.current = false;
-      }, 500);
+  const handleInspectFromAll = useCallback(
+    (member: TeamMember) => {
+      const groupMembers = TEAM_MEMBERS.filter((m) => m.group === member.group);
+      const indexInGroup = Math.max(
+        0,
+        groupMembers.findIndex((m) => m.id === member.id)
+      );
+      setActiveCategory(member.group);
+      setActiveIndex(indexInGroup);
 
-      const trackRect = track.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      const cardLeftInTrack = cardRect.left - trackRect.left + track.scrollLeft;
-      const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-      const targetLeft = Math.min(maxScroll, Math.max(0, cardLeftInTrack));
-
-      track.scrollTo({
-        left: targetLeft,
-        behavior: prefersReducedMotion ? 'auto' : 'smooth',
-      });
-    },
-    [prefersReducedMotion]
-  );
-
-  const handleCategoryChange = useCallback(
-    (nextCategory: TeamCategoryId) => {
-      setActiveCategory(nextCategory);
-      setActiveIndex(0);
-      if (trackRef.current) {
-        isProgrammaticScrollRef.current = true;
-        if (scrollTimeoutRef.current !== undefined) {
-          window.clearTimeout(scrollTimeoutRef.current);
+      if (window.innerWidth < 1024 && contentRef.current) {
+        const rect = contentRef.current.getBoundingClientRect();
+        if (rect.top < 72 || rect.top > window.innerHeight * 0.6) {
+          scrollTo(contentRef.current, {
+            offset: -84,
+            immediate: prefersReducedMotion,
+          });
         }
-        scrollTimeoutRef.current = window.setTimeout(() => {
-          isProgrammaticScrollRef.current = false;
-        }, 500);
-        trackRef.current.scrollTo({
-          left: 0,
-          behavior: prefersReducedMotion ? 'auto' : 'smooth',
-        });
       }
     },
-    [prefersReducedMotion]
-  );
-
-  const handleTrackScroll = useCallback(() => {
-    if (isProgrammaticScrollRef.current) return;
-    const track = trackRef.current;
-    if (!track) return;
-
-    if (scrollTimeoutRef.current !== undefined) {
-      window.clearTimeout(scrollTimeoutRef.current);
-    }
-
-    scrollTimeoutRef.current = window.setTimeout(() => {
-      if (isProgrammaticScrollRef.current) return;
-      const trackEl = trackRef.current;
-      if (!trackEl) return;
-
-      const maxScroll = Math.max(0, trackEl.scrollWidth - trackEl.clientWidth);
-      if (maxScroll > 0 && trackEl.scrollLeft >= maxScroll - 6) {
-        const lastIdx = filteredMembers.length - 1;
-        if (lastIdx >= 0 && lastIdx !== safeActiveIndex) {
-          setActiveIndex(lastIdx);
-        }
-        return;
-      }
-
-      const trackRect = trackEl.getBoundingClientRect();
-      let closestIdx = -1;
-      let minDistance = Infinity;
-
-      cardRefs.current.forEach((card, idx) => {
-        if (!card || idx >= filteredMembers.length) return;
-        const cardRect = card.getBoundingClientRect();
-        const distance = Math.abs(cardRect.left - trackRect.left);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIdx = idx;
-        }
-      });
-
-      if (
-        closestIdx !== -1 &&
-        closestIdx !== safeActiveIndex &&
-        closestIdx < filteredMembers.length
-      ) {
-        setActiveIndex(closestIdx);
-      }
-    }, 100);
-  }, [filteredMembers.length, safeActiveIndex]);
-
-  const handleSelectMember = useCallback(
-    (index: number) => {
-      setActiveIndex(index);
-      scrollCardIntoTrack(index);
-    },
-    [scrollCardIntoTrack]
+    [prefersReducedMotion, scrollTo]
   );
 
   const canGoPrev = safeActiveIndex > 0;
@@ -323,58 +192,42 @@ export function TeamSection() {
 
   const handlePrev = useCallback(() => {
     if (!canGoPrev) return;
-    const nextIdx = safeActiveIndex - 1;
-    setActiveIndex(nextIdx);
-    scrollCardIntoTrack(nextIdx);
-  }, [canGoPrev, safeActiveIndex, scrollCardIntoTrack]);
+    setActiveIndex((prev) => Math.max(0, prev - 1));
+  }, [canGoPrev]);
 
   const handleNext = useCallback(() => {
     if (!canGoNext) return;
-    const nextIdx = safeActiveIndex + 1;
-    setActiveIndex(nextIdx);
-    scrollCardIntoTrack(nextIdx);
-  }, [canGoNext, safeActiveIndex, scrollCardIntoTrack]);
+    setActiveIndex((prev) => Math.min(filteredMembers.length - 1, prev + 1));
+  }, [canGoNext, filteredMembers.length]);
 
-  const handleGalleryKeyDown = useCallback(
+  const handleSpotlightKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
-      if (event.key === 'ArrowRight') {
+      if (activeCategory === 'all') return;
+      if (event.key === 'ArrowRight' && canGoNext) {
         event.preventDefault();
-        if (canGoNext) {
-          const nextIdx = safeActiveIndex + 1;
-          setActiveIndex(nextIdx);
-          scrollCardIntoTrack(nextIdx);
-          cardRefs.current[nextIdx]?.focus({ preventScroll: true });
-        }
-      } else if (event.key === 'ArrowLeft') {
+        handleNext();
+      } else if (event.key === 'ArrowLeft' && canGoPrev) {
         event.preventDefault();
-        if (canGoPrev) {
-          const prevIdx = safeActiveIndex - 1;
-          setActiveIndex(prevIdx);
-          scrollCardIntoTrack(prevIdx);
-          cardRefs.current[prevIdx]?.focus({ preventScroll: true });
-        }
+        handlePrev();
       }
     },
-    [canGoNext, canGoPrev, safeActiveIndex, scrollCardIntoTrack]
+    [activeCategory, canGoNext, canGoPrev, handleNext, handlePrev]
   );
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
+  const isAllView = activeCategory === 'all';
 
   return (
     <section
       id="team"
       ref={sectionRef}
       aria-labelledby="team-heading"
-      className="relative z-10 overflow-x-clip bg-[#063B27] py-10 sm:py-16 lg:py-24"
+      className="relative z-10 overflow-x-clip bg-transparent py-12 sm:py-16 lg:py-24"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-28 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.07)_0%,transparent_68%)]"
-      />
 
       <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
-        <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
-          {/* LEFT SIDEBAR: Editorial Heading, Intro Copy & Category Navigation */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
+          {/* LEFT SIDEBAR: Editorial Heading, 3-4 Line Description & Category Filter */}
           <aside className="lg:sticky lg:top-28 lg:col-span-4">
             <p
               data-team-intro
@@ -396,9 +249,12 @@ export function TeamSection() {
 
             <p
               data-team-intro
-              className="mt-4 max-w-[36ch] text-sm leading-[1.72] font-light text-[#D4E1D8] sm:text-base"
+              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-light text-[#D4E1D8] sm:text-[0.9375rem]"
             >
-              The experienced minds and designers building Forgeit and Teen Cabs.
+              Forgeit and Teen Cabs are built by a multidisciplinary team of
+              strategists, engineers, designers, and outreach leads united by a
+              single goal: giving parents calm visibility while helping teens move
+              with confidence and everyday independence.
             </p>
 
             {/* Desktop Vertical Category Selectors */}
@@ -447,250 +303,189 @@ export function TeamSection() {
               })}
             </nav>
 
-            {/* Tablet & Mobile Two-Dropdown Navigation */}
-            <div
+            {/* Mobile & Tablet Horizontal Category Tabs */}
+            <nav
               data-team-intro
-              className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:hidden"
+              aria-label="Filter team members by category"
+              className="-mx-6 mt-6 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:hidden"
             >
-              {/* Category Dropdown */}
-              <div className="min-w-0">
-                <label
-                  htmlFor="team-category-select"
-                  className="block text-[11px] font-semibold tracking-[0.14em] text-[#B7C8BA] uppercase"
-                >
-                  Category
-                </label>
-                <div className="relative mt-1.5">
-                  <select
-                    id="team-category-select"
-                    value={activeCategory}
-                    aria-label="Filter team by category"
-                    onChange={(e) =>
-                      handleCategoryChange(e.target.value as TeamCategoryId)
-                    }
-                    className="flex min-h-[44px] w-full cursor-pointer appearance-none items-center truncate rounded-lg border border-[#285640] bg-[#032A1D] py-2.5 pr-8 pl-3 text-xs font-medium text-[#E8EEE8] transition-colors hover:border-[#D9B45B]/60 focus:border-[#E6C477] focus:ring-1 focus:ring-[#E6C477] focus:outline-none sm:text-sm"
+              {TEAM_CATEGORIES.map((category) => {
+                const isActive = activeCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    onClick={() => handleCategoryChange(category.id)}
+                    className={`inline-flex min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-colors duration-150 ${
+                      isActive
+                        ? 'glass-emerald border-[#d4af37]/45 text-[#E6C477]'
+                        : 'glass-emerald text-[#D4E1D8] hover:border-[#d4af37]/30'
+                    }`}
                   >
-                    {TEAM_CATEGORIES.map((category) => (
-                      <option
-                        key={category.id}
-                        value={category.id}
-                        className="bg-[#032A1D] text-[#E8EEE8]"
-                      >
-                        {category.label}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown
-                    aria-hidden="true"
-                    className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#E6C477]"
-                  />
-                </div>
-              </div>
-
-              {/* Role Dropdown */}
-              <div className="min-w-0">
-                <label
-                  htmlFor="team-role-select"
-                  className="block text-[11px] font-semibold tracking-[0.14em] text-[#B7C8BA] uppercase"
-                >
-                  Role
-                </label>
-                <div className="relative mt-1.5">
-                  <select
-                    id="team-role-select"
-                    value={selectedMember.id}
-                    aria-label="Filter team member by role"
-                    onChange={(e) => {
-                      const nextId = e.target.value;
-                      const nextIndex = filteredMembers.findIndex(
-                        (member) => member.id === nextId
-                      );
-                      if (nextIndex !== -1) {
-                        handleSelectMember(nextIndex);
-                      }
-                    }}
-                    className="flex min-h-[44px] w-full cursor-pointer appearance-none items-center truncate rounded-lg border border-[#285640] bg-[#032A1D] py-2.5 pr-8 pl-3 text-xs font-medium text-[#E8EEE8] transition-colors hover:border-[#D9B45B]/60 focus:border-[#E6C477] focus:ring-1 focus:ring-[#E6C477] focus:outline-none sm:text-sm"
-                  >
-                    {filteredMembers.map((member) => {
-                      const sameRoleCount = filteredMembers.filter(
-                        (m) => m.role === member.role
-                      ).length;
-                      const roleOptionLabel =
-                        sameRoleCount > 1
-                          ? `${member.role} (${member.name})`
-                          : member.role;
-
-                      return (
-                        <option
-                          key={member.id}
-                          value={member.id}
-                          className="bg-[#032A1D] text-[#E8EEE8]"
-                        >
-                          {roleOptionLabel}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <ChevronDown
-                    aria-hidden="true"
-                    className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-[#E6C477]"
-                  />
-                </div>
-              </div>
-            </div>
+                    <span>{category.label}</span>
+                    <span className="font-mono text-[10px] opacity-75 tabular-nums">
+                      {formatIndex(categoryCounts[category.id])}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
           </aside>
 
-          {/* RIGHT CONTENT: Horizontal Editorial Portrait Gallery & Active Member Detail */}
-          <div className="min-w-0 lg:col-span-8">
-            {/* Gallery Header Bar: Category Status + Previous / Next Controls */}
-            <div className="mb-4 flex items-center justify-between gap-4 border-b border-[#285640]/80 pb-3 sm:mb-6 sm:pb-4">
+          {/* RIGHT CONTENT: All-Members Directory Grid OR Single-Category Spotlight */}
+          <div
+            ref={contentRef}
+            onKeyDown={handleSpotlightKeyDown}
+            tabIndex={-1}
+            className="min-w-0 focus:outline-none lg:col-span-8"
+          >
+            {/* Top Status & Arrow Navigation Header */}
+            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#285640]/80 pb-3.5 sm:mb-8 sm:pb-4">
               <div className="flex items-center gap-2.5 font-mono text-xs tabular-nums">
-                <span className="text-[#E6C477] uppercase tracking-[0.12em]">
+                <span className="tracking-[0.12em] text-[#E6C477] uppercase">
                   {activeCategoryLabel}
                 </span>
                 <span aria-hidden="true" className="text-[#285640]">
                   /
                 </span>
-                <span className="text-[#E8EEE8]">
-                  {formatIndex(safeActiveIndex + 1)}
-                </span>
-                <span aria-hidden="true" className="text-[#B7C8BA]/60">
-                  of
-                </span>
-                <span className="text-[#B7C8BA]">
-                  {formatIndex(filteredMembers.length)}
-                </span>
+                {isAllView ? (
+                  <span className="text-[#B7C8BA]">
+                    {formatIndex(filteredMembers.length)} Members
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-[#E8EEE8]">
+                      {formatIndex(safeActiveIndex + 1)}
+                    </span>
+                    <span aria-hidden="true" className="text-[#B7C8BA]/60">
+                      of
+                    </span>
+                    <span className="text-[#B7C8BA]">
+                      {formatIndex(filteredMembers.length)}
+                    </span>
+                  </>
+                )}
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={handlePrev}
-                  disabled={!canGoPrev}
-                  aria-label="Previous team member"
-                  className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-200 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
-                >
-                  <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={!canGoNext}
-                  aria-label="Next team member"
-                  className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-200 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
-                >
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </button>
-              </div>
+              {!isAllView && filteredMembers.length > 1 && (
+                <div className="flex items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={handlePrev}
+                    disabled={!canGoPrev}
+                    aria-label="Previous team member"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-150 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                  >
+                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={!canGoNext}
+                    aria-label="Next team member"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-150 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                  >
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Horizontal Portrait Track */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={activeCategory}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={prefersReducedMotion ? undefined : { opacity: 0, y: -6 }}
-                transition={{
-                  duration: prefersReducedMotion ? 0 : 0.24,
-                  ease: MOTION_EASE.motionEditorial,
-                }}
-              >
-                <div
-                  ref={trackRef}
-                  role="region"
-                  aria-label={`${activeCategoryLabel} portrait gallery`}
-                  tabIndex={0}
-                  onScroll={handleTrackScroll}
-                  onKeyDown={handleGalleryKeyDown}
-                  className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 scroll-smooth focus:outline-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-6 sm:pb-3 lg:gap-7"
-                >
-                  {filteredMembers.map((member, index) => {
-                    const isSelected = index === safeActiveIndex;
-                    return (
-                      <article
-                        key={member.id}
-                        className="w-[58vw] max-w-[220px] shrink-0 snap-start sm:w-[250px] sm:max-w-none lg:w-[280px]"
-                      >
-                        <button
-                          ref={(el) => {
-                            cardRefs.current[index] = el;
-                          }}
-                          type="button"
-                          onClick={() => handleSelectMember(index)}
-                          aria-pressed={isSelected}
-                          className="group block w-full cursor-pointer rounded-xl text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#E6C477]"
-                        >
-                          <EditorialPortraitFrame
-                            member={member}
-                            isSelected={isSelected}
-                            eager={index < 3}
-                          />
-
-                          <div className="mt-3 sm:mt-4">
-                            <p className="font-sans text-[10px] font-semibold tracking-[0.14em] text-[#E6C477] uppercase sm:text-[11px]">
-                              {member.role}
-                            </p>
-                            <h2 className="font-sans mt-0.5 text-lg font-semibold tracking-tight text-[#E8EEE8] transition-colors duration-200 group-hover:text-[#F3F0E6] sm:mt-1 sm:text-xl">
-                              {member.name}
-                            </h2>
-                            <p className="mt-1.5 hidden text-xs leading-relaxed text-[#B7C8BA] sm:block">
-                              {member.focusArea}
-                            </p>
-                            <div
-                              aria-hidden="true"
-                              className={`mt-2.5 h-px w-full transition-colors duration-200 sm:mt-3.5 ${
-                                isSelected
-                                  ? 'bg-[#E6C477]'
-                                  : 'bg-[#285640]/70 group-hover:bg-[#D9B45B]/55'
-                              }`}
-                            />
-                          </div>
-                        </button>
-                      </article>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Selected Member Editorial Biography & Pull-Quote Band */}
-            <div
-              aria-live="polite"
-              className="mt-4 border-t border-[#285640] pt-4 sm:mt-8 sm:pt-7"
-            >
+            {/* VIEW SWITCH: All Members Grid vs Single Member Spotlight */}
+            <div aria-live="polite" className="relative">
               <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={selectedMember.id}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
-                  transition={{
-                    duration: prefersReducedMotion ? 0 : 0.22,
-                    ease: MOTION_EASE.motionEditorial,
-                  }}
-                  className="grid grid-cols-1 gap-3.5 md:grid-cols-12 md:items-start md:gap-8"
-                >
-                  <blockquote className="order-1 md:order-2 md:col-span-5">
-                    <p className="font-editorial text-base leading-[1.45] italic text-[#E6C477] sm:text-lg sm:leading-[1.48] lg:text-[1.1875rem]">
-                      “{selectedMember.quote}”
-                    </p>
-                  </blockquote>
+                {isAllView ? (
+                  <motion.div
+                    key="all-grid"
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                    transition={{
+                      duration: prefersReducedMotion ? 0 : 0.12,
+                      ease: 'easeOut',
+                    }}
+                    className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-5"
+                  >
+                    {filteredMembers.map((member, index) => (
+                      <button
+                        key={member.id}
+                        type="button"
+                        onClick={() => handleInspectFromAll(member)}
+                        aria-label={`View profile for ${member.name}, ${member.role}`}
+                        className="group glass-emerald glass-emerald-hover relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl text-left shadow-lg shadow-black/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E6C477]"
+                      >
+                        <PortraitAsset
+                          member={member}
+                          eager={index < 6}
+                          compact
+                        />
 
-                  <div className="order-2 md:order-1 md:col-span-7">
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-medium text-[#B7C8BA]">
-                      <span className="text-[#E8EEE8]">{selectedMember.name}</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="text-[#E6C477]">{selectedMember.role}</span>
-                      <span aria-hidden="true">·</span>
-                      <span>{selectedMember.focusArea}</span>
+                        <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#061a12]/92 via-[#061a12]/48 to-transparent"
+                        />
+
+                        <div className="absolute inset-x-3.5 bottom-3 sm:inset-x-4 sm:bottom-3.5">
+                          <p className="truncate text-[10px] font-semibold tracking-[0.12em] text-[#E6C477] uppercase sm:text-[11px]">
+                            {member.role}
+                          </p>
+                          <h2 className="mt-0.5 truncate text-sm font-semibold tracking-tight text-[#F3F0E6] sm:text-base">
+                            {member.name}
+                          </h2>
+                        </div>
+                      </button>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.article
+                    key={selectedMember.id}
+                    initial={prefersReducedMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                    transition={{
+                      duration: prefersReducedMotion ? 0 : 0.11,
+                      ease: 'easeOut',
+                    }}
+                    className="glass-emerald grid grid-cols-1 items-stretch gap-6 rounded-3xl p-5 shadow-2xl shadow-black/35 sm:p-7 md:grid-cols-12 md:gap-8 lg:gap-10 lg:p-8"
+                  >
+                    {/* Featured Single Portrait */}
+                    <div className="md:col-span-5">
+                      <div className="mx-auto aspect-[4/5] w-full max-w-[300px] overflow-hidden rounded-2xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-xl shadow-black/30 md:mx-0 md:max-w-none">
+                        <PortraitAsset member={selectedMember} eager />
+                      </div>
                     </div>
 
-                    <p className="mt-2.5 text-sm leading-[1.7] font-light text-[#D4E1D8] sm:mt-3 sm:text-base sm:leading-[1.75]">
-                      {selectedMember.bio}
-                    </p>
-                  </div>
-                </motion.div>
+                    {/* Editorial Profile & Pull Quote */}
+                    <div className="flex flex-col justify-between md:col-span-7 md:py-1">
+                      <div>
+                        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-medium tracking-wide text-[#B7C8BA]">
+                          <span className="tracking-[0.12em] text-[#E6C477] uppercase">
+                            {selectedMember.role}
+                          </span>
+                          <span aria-hidden="true" className="text-[#285640]">
+                            ·
+                          </span>
+                          <span>{selectedMember.focusArea}</span>
+                        </div>
+
+                        <h2 className="mt-2.5 text-2xl font-semibold tracking-tight text-[#F3F0E6] sm:text-3xl lg:text-[2.25rem]">
+                          {selectedMember.name}
+                        </h2>
+
+                        <p className="mt-4 max-w-[48ch] text-sm leading-[1.78] font-light text-[#D4E1D8] sm:text-base sm:leading-[1.8]">
+                          {selectedMember.bio}
+                        </p>
+                      </div>
+
+                      <blockquote className="mt-7 border-t border-[#d4af37]/15 pt-5 sm:mt-8 sm:pt-6">
+                        <p className="font-editorial text-lg leading-[1.45] italic text-[#E6C477] sm:text-xl">
+                          “{selectedMember.quote}”
+                        </p>
+                      </blockquote>
+                    </div>
+                  </motion.article>
+                )}
               </AnimatePresence>
             </div>
           </div>

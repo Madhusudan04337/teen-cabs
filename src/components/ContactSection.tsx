@@ -205,7 +205,7 @@ export function ContactSection() {
       id="contact"
       ref={sectionRef}
       aria-labelledby="contact-heading"
-      className="relative z-10 border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24"
+      className="relative z-10 border-t border-[#d4af37]/12 bg-transparent py-16 sm:py-20 lg:py-24"
     >
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-16">
@@ -223,7 +223,7 @@ export function ContactSection() {
                 Built for families.
               </span>
             </h2>
-            <p className="mt-5 max-w-[44ch] rounded-2xl border border-[#285640] bg-[#0B4933] px-5 py-4 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
+            <p className="glass-emerald mt-5 max-w-[44ch] rounded-2xl px-5 py-4 text-sm leading-[1.65] font-light text-[#D4E1D8] sm:text-[0.9375rem]">
               Questions about teen onboarding, school partnerships, or driver
               safety standards? Reach our Chennai team directly.
             </p>

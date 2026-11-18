@@ -124,12 +124,8 @@ export function ApproachSection() {
       id="our-approach"
       ref={sectionRef}
       aria-labelledby="approach-heading"
-      className="relative z-10 overflow-x-clip bg-[#032A1D] py-12 sm:py-16 lg:py-20"
+      className="relative z-10 overflow-x-clip border-t border-[#d4af37]/12 bg-transparent py-12 sm:py-16 lg:py-20"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(11,73,51,0.34)_0%,transparent_70%)]"
-      />
 
       <div className="relative mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         {/* 1. LEFT-ALIGNED EDITORIAL INTRODUCTION + PERSPECTIVE SWITCHER */}
@@ -262,8 +258,8 @@ export function ApproachSection() {
                     : 'lg:col-span-5'
                 }`}
               >
-                <div className="relative rounded-2xl border-t border-[#E6C477]/35 bg-[#063B27]/42 px-6 py-7 sm:px-8 sm:py-8">
-                  <div className="flex items-center justify-between gap-4 border-b border-[#285640]/85 pb-4">
+                <div className="glass-emerald relative rounded-2xl px-6 py-7 shadow-xl shadow-black/25 sm:px-8 sm:py-8">
+                  <div className="flex items-center justify-between gap-4 border-b border-[#d4af37]/15 pb-4">
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E6C477]/28 bg-[#032A1D] text-[#E6C477]">
                         <Icon className="h-3.5 w-3.5" aria-hidden="true" />

@@ -182,14 +182,10 @@ export function AboutStorySection() {
       id="about-story"
       ref={sectionRef}
       aria-labelledby="about-story-heading"
-      className="relative z-10 overflow-x-clip bg-[#063B27]"
+      className="relative z-10 overflow-x-clip bg-transparent"
     >
       {/* 1. EDITORIAL INTRODUCTION WITH UNBOXED PHOTOGRAPHY */}
       <div className="relative py-14 sm:py-18 lg:py-24">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.09)_0%,transparent_66%)] sm:h-[540px] sm:w-[540px]"
-        />
 
         <div className="relative mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
           <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-10 lg:gap-14">
@@ -259,11 +255,7 @@ export function AboutStorySection() {
       </div>
 
       {/* 2. ENGINEERED FROM THE GROUND UP — OPEN DROPPING JOURNEY FLOW */}
-      <div className="relative border-t border-[#285640] bg-[#032A1D] py-16 sm:py-22 lg:py-28">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_65%_at_72%_50%,rgba(11,73,51,0.52),transparent_72%)]"
-        />
+      <div className="relative border-t border-[#d4af37]/12 bg-[#061a12]/30 py-16 sm:py-22 lg:py-28">
 
         <div className="relative mx-auto grid max-w-[1200px] grid-cols-1 items-start gap-12 px-6 sm:px-8 lg:grid-cols-12 lg:gap-16 lg:px-10">
           {/* Left: Engineering Rationale Narrative */}
@@ -338,11 +330,7 @@ export function AboutStorySection() {
       </div>
 
       {/* 3. MISSION & VISION MANIFESTO (Asymmetric Editorial Spread) */}
-      <div className="relative border-t border-[#285640] bg-[#063B27] py-18 sm:py-24 lg:py-32">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.07)_0%,transparent_70%)] sm:h-[460px] sm:w-[460px]"
-        />
+      <div className="relative border-t border-[#d4af37]/12 bg-transparent py-18 sm:py-24 lg:py-32">
 
         <div className="relative mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-12">

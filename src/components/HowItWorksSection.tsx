@@ -76,7 +76,7 @@ export function HowItWorksSection() {
       id="how-it-works"
       ref={sectionRef}
       aria-labelledby="journey-heading"
-      className="relative z-10 border-t border-[#285640] bg-[#032A1D] py-16 sm:py-20 lg:py-24"
+      className="relative z-10 border-t border-[#d4af37]/12 bg-[#061a12]/25 py-16 sm:py-20 lg:py-24"
     >
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
