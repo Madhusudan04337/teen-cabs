@@ -379,8 +379,8 @@ export function ContactSection() {
           </div>
 
           {/* Right Column: Warm Ivory Inquiry Sheet (#F3F0E6) with High-Contrast Forest Green Ink (#063B27) */}
-          <div data-contact-right className="lg:col-span-7">
-            <div className="rounded-3xl border border-[#D8D9C9] bg-[#F3F0E6] p-6 text-[#063B27] shadow-2xl shadow-black/45 sm:p-8 lg:p-10">
+          <div data-contact-right className="-mx-6 lg:col-span-7 lg:mx-0">
+            <div className="border-y border-[#D8D9C9] bg-[#F3F0E6] px-6 py-6 text-[#063B27] shadow-2xl shadow-black/45 sm:mx-0 sm:rounded-3xl sm:border sm:p-8 lg:p-10">
               <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#D8D9C9] pb-5">
                 <div>
                   <p className="text-xs font-semibold tracking-[0.12em] text-[#547064] uppercase">

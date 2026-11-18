@@ -363,7 +363,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
             onPointerLeave={handlePointerLeave}
           >
             <div ref={stageVisualRef} className="relative">
-              <div className="rounded-3xl border border-[#D8D9C9] bg-[#F3F0E6] p-4 text-[#063B27] shadow-2xl shadow-black/45 sm:p-6">
+              <div className="mx-[2px] rounded-[2px] border border-[#D8D9C9] bg-[#F3F0E6] p-2 text-[#063B27] shadow-2xl shadow-black/45 sm:mx-0 sm:rounded-3xl sm:p-6">
                 {/* Refined Editorial Map Header */}
                 <div className="mb-3.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#D8D9C9] pb-3">
                   <span className="font-editorial text-[1.125rem] leading-tight font-normal italic text-[#063B27] sm:text-[1.25rem]">

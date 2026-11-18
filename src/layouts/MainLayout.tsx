@@ -143,7 +143,8 @@ export function MainLayout() {
 
   // Single Lenis instance synced with GSAP ticker, bypassed when reduced motion is enabled
   useEffect(() => {
-    if (prefersReducedMotion) {
+    const usesCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    if (prefersReducedMotion || usesCoarsePointer || window.innerWidth < 768) {
       lenisRef.current = null;
       setLenisInstance(null);
       const rafId = window.requestAnimationFrame(() => {

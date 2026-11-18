@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { useReducedMotion } from 'motion/react';
-import { Bike, CarFront } from 'lucide-react';
+import { CarFront } from 'lucide-react';
 
 interface Point {
   x: number;
@@ -9,19 +9,22 @@ interface Point {
 }
 
 const HERO_PICKUP: Point = { x: 118, y: 224 };
-const HERO_C1: Point = { x: 196, y: 124 };
-const HERO_C2: Point = { x: 322, y: 108 };
 const HERO_DROPOFF: Point = { x: 438, y: 122 };
-
-const HERO_BIKE_P0: Point = { x: 118, y: 224 };
-const HERO_BIKE_C1: Point = { x: 226, y: 266 };
-const HERO_BIKE_C2: Point = { x: 344, y: 212 };
-const HERO_BIKE_P3: Point = { x: 438, y: 122 };
+const HERO_ROUTE: Point[] = [
+  HERO_PICKUP,
+  { x: 118, y: 196 },
+  { x: 215, y: 196 },
+  HERO_DROPOFF,
+];
 
 const DASHBOARD_P0: Point = { x: 150, y: 208 };
-const DASHBOARD_C1: Point = { x: 225, y: 140 };
-const DASHBOARD_C2: Point = { x: 325, y: 100 };
 const DASHBOARD_P3: Point = { x: 415, y: 120 };
+const DASHBOARD_ROUTE: Point[] = [
+  DASHBOARD_P0,
+  { x: 150, y: 196 },
+  { x: 270, y: 205 },
+  DASHBOARD_P3,
+];
 
 function sampleCubicBezier(t: number, p0: Point, p1: Point, p2: Point, p3: Point): Point {
   const clamped = Math.max(0, Math.min(1, t));
@@ -35,6 +38,34 @@ function sampleCubicBezier(t: number, p0: Point, p1: Point, p2: Point, p3: Point
     x: uuu * p0.x + 3 * uu * clamped * p1.x + 3 * u * tt * p2.x + ttt * p3.x,
     y: uuu * p0.y + 3 * uu * clamped * p1.y + 3 * u * tt * p2.y + ttt * p3.y,
   };
+}
+
+function samplePolyline(t: number, points: Point[]): Point {
+  const clamped = Math.max(0, Math.min(1, t));
+  if (points.length < 2) return points[0];
+
+  const segmentLengths = points.slice(1).map((point, index) => {
+    const start = points[index];
+    return Math.hypot(point.x - start.x, point.y - start.y);
+  });
+  const totalLength = segmentLengths.reduce((sum, length) => sum + length, 0);
+  let remaining = clamped * totalLength;
+
+  for (let index = 0; index < segmentLengths.length; index += 1) {
+    const length = segmentLengths[index];
+    if (remaining <= length) {
+      const ratio = length === 0 ? 0 : remaining / length;
+      const start = points[index];
+      const end = points[index + 1];
+      return {
+        x: start.x + (end.x - start.x) * ratio,
+        y: start.y + (end.y - start.y) * ratio,
+      };
+    }
+    remaining -= length;
+  }
+
+  return points[points.length - 1];
 }
 
 export interface HeroMapProps {
@@ -73,16 +104,13 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const carMarkerRef = useRef<HTMLDivElement>(null);
-  const bikeMarkerRef = useRef<HTMLDivElement>(null);
   const dashboardCarRef = useRef<HTMLDivElement>(null);
   const primaryRouteRef = useRef<SVGPathElement>(null);
-  const bikeRouteRef = useRef<SVGPathElement>(null);
 
   // Mutable animation refs prevent 60fps React re-renders and preserve smooth progress
   const mapBoundsRef = useRef({ width: 560, height: isHero ? 385 : 350 });
   const carTRef = useRef(stageTargetT);
   const targetCarTRef = useRef(stageTargetT);
-  const bikeTRef = useRef(0.42);
   const elapsedRef = useRef(0);
 
   // Synchronize target checkpoint without restarting running rAF loops
@@ -94,9 +122,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
   useEffect(() => {
     if (!isHero || prefersReducedMotion) return;
     const ctx = gsap.context(() => {
-      const paths = [primaryRouteRef.current, bikeRouteRef.current].filter(
-        Boolean
-      ) as SVGPathElement[];
+      const paths = [primaryRouteRef.current].filter(Boolean) as SVGPathElement[];
 
       paths.forEach((path, idx) => {
         const length = path.getTotalLength();
@@ -129,42 +155,24 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     if (!isHero) return;
     const box = mapContainerRef.current;
     const carEl = carMarkerRef.current;
-    const bikeEl = bikeMarkerRef.current;
-    if (!box || !carEl || !bikeEl) return;
+    if (!box || !carEl) return;
 
     const setCarX = gsap.quickSetter(carEl, 'x', 'px');
     const setCarY = gsap.quickSetter(carEl, 'y', 'px');
-    const setBikeX = gsap.quickSetter(bikeEl, 'x', 'px');
-    const setBikeY = gsap.quickSetter(bikeEl, 'y', 'px');
 
-    const applyMarkerTransforms = (carProgress: number, bikeProgress: number) => {
+    const applyMarkerTransforms = (carProgress: number) => {
       const { width, height } = mapBoundsRef.current;
-      const carPt = sampleCubicBezier(
-        carProgress,
-        HERO_PICKUP,
-        HERO_C1,
-        HERO_C2,
-        HERO_DROPOFF
-      );
-      const bikePt = sampleCubicBezier(
-        bikeProgress,
-        HERO_BIKE_P0,
-        HERO_BIKE_C1,
-        HERO_BIKE_C2,
-        HERO_BIKE_P3
-      );
+      const carPt = samplePolyline(carProgress, HERO_ROUTE);
 
       setCarX((carPt.x / 560) * width);
       setCarY((carPt.y / 360) * height);
-      setBikeX((bikePt.x / 560) * width);
-      setBikeY((bikePt.y / 360) * height);
     };
 
     const syncBounds = () => {
       const rect = box.getBoundingClientRect();
       if (rect.width > 0 && rect.height > 0) {
         mapBoundsRef.current = { width: rect.width, height: rect.height };
-        applyMarkerTransforms(carTRef.current, bikeTRef.current);
+        applyMarkerTransforms(carTRef.current);
       }
     };
 
@@ -182,7 +190,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
 
       if (prefersReducedMotion) {
         carTRef.current = stageTargetT;
-        applyMarkerTransforms(carTRef.current, bikeTRef.current);
+        applyMarkerTransforms(carTRef.current);
       } else {
         tweenObj = { t: carTRef.current };
         tween = gsap.to(tweenObj, {
@@ -192,7 +200,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           onUpdate: () => {
             if (!tweenObj) return;
             carTRef.current = tweenObj.t;
-            applyMarkerTransforms(carTRef.current, bikeTRef.current);
+            applyMarkerTransforms(carTRef.current);
           },
         });
       }
@@ -217,13 +225,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
       const desiredCarT = Math.max(0.12, Math.min(0.81, target + wanderOffset));
       carTRef.current += (desiredCarT - carTRef.current) * Math.min(dt * 3.0, 0.16);
 
-      // Advance Bike smoothly along the secondary express corridor
-      bikeTRef.current += dt * 0.075;
-      if (bikeTRef.current > 0.96) {
-        bikeTRef.current = 0.08;
-      }
-
-      applyMarkerTransforms(carTRef.current, bikeTRef.current);
+      applyMarkerTransforms(carTRef.current);
       frameId = window.requestAnimationFrame(tick);
     };
 
@@ -244,13 +246,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
 
     const getDashboardPixelPos = (progress: number) => {
       const rect = box.getBoundingClientRect();
-      const pt = sampleCubicBezier(
-        progress,
-        DASHBOARD_P0,
-        DASHBOARD_C1,
-        DASHBOARD_C2,
-        DASHBOARD_P3
-      );
+      const pt = samplePolyline(progress, DASHBOARD_ROUTE);
       return {
         x: (pt.x / 560) * (rect.width || 560),
         y: (pt.y / 350) * (rect.height || 350),
@@ -297,10 +293,11 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     return (
       <div
         ref={mapContainerRef}
-        className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#D8D9C9] bg-[#E8EEE8]"
+        className="relative mx-[1px] aspect-square w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/10] sm:w-full sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 350"
+          preserveAspectRatio="none"
           className="h-full w-full"
           role="img"
           aria-label="Parent dashboard live street map showing route from pickup point A to destination point B with a mini cab"
@@ -314,7 +311,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           </g>
 
           <path
-            d={`M ${DASHBOARD_P0.x} ${DASHBOARD_P0.y} C ${DASHBOARD_C1.x} ${DASHBOARD_C1.y}, ${DASHBOARD_C2.x} ${DASHBOARD_C2.y}, ${DASHBOARD_P3.x} ${DASHBOARD_P3.y}`}
+            d="M 150 208 L 150 196 L 270 205 L 415 120"
             fill="none"
             stroke={approvalState === 'approved' ? '#063B27' : '#D9B45B'}
             strokeWidth="4.5"
@@ -369,7 +366,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
   }
 
   return (
-    <div className="rounded-3xl border border-[#D8D9C9] bg-[#F3F0E6] p-4 text-[#063B27] shadow-2xl shadow-black/45 sm:p-6">
+    <div className="mx-[2px] rounded-[2px] border border-[#D8D9C9] bg-[#F3F0E6] p-2 text-[#063B27] shadow-2xl shadow-black/45 sm:mx-0 sm:rounded-3xl sm:border sm:p-6">
       {/* Header matching Parent Dashboard card discipline */}
       <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2.5">
@@ -393,10 +390,11 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
       {/* Shared Pale Sage (#E8EEE8) Street Map Surface with Soft Gold & Deep Green Route Geometry */}
       <div
         ref={mapContainerRef}
-        className="relative aspect-[16/11] w-full overflow-hidden rounded-2xl border border-[#D8D9C9] bg-[#E8EEE8]"
+        className="relative mx-[1px] aspect-square w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/11] sm:w-full sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 360"
+          preserveAspectRatio="none"
           className="h-full w-full"
           role="img"
           aria-label="Interactive Teen Cabs route map demonstration showing a car and bike moving smoothly between pickup location Oakridge High and destination Maple Street"
@@ -437,30 +435,10 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
             </text>
           </g>
 
-          {/* Secondary Bike Route Track (GSAP draws base track -> animated gold dash) */}
-          <path
-            ref={bikeRouteRef}
-            d={`M ${HERO_BIKE_P0.x} ${HERO_BIKE_P0.y} C ${HERO_BIKE_C1.x} ${HERO_BIKE_C1.y}, ${HERO_BIKE_C2.x} ${HERO_BIKE_C2.y}, ${HERO_BIKE_P3.x} ${HERO_BIKE_P3.y}`}
-            fill="none"
-            stroke="#547064"
-            strokeOpacity="0.34"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-          <path
-            d={`M ${HERO_BIKE_P0.x} ${HERO_BIKE_P0.y} C ${HERO_BIKE_C1.x} ${HERO_BIKE_C1.y}, ${HERO_BIKE_C2.x} ${HERO_BIKE_C2.y}, ${HERO_BIKE_P3.x} ${HERO_BIKE_P3.y}`}
-            fill="none"
-            stroke="#D9B45B"
-            strokeWidth="3.2"
-            strokeDasharray="6 6"
-            strokeLinecap="round"
-            className="animate-route-dash"
-          />
-
           {/* Primary Cab Route Track (GSAP draws base track -> animated deep forest dash) */}
           <path
             ref={primaryRouteRef}
-            d={`M ${HERO_PICKUP.x} ${HERO_PICKUP.y} C ${HERO_C1.x} ${HERO_C1.y}, ${HERO_C2.x} ${HERO_C2.y}, ${HERO_DROPOFF.x} ${HERO_DROPOFF.y}`}
+            d="M 118 224 L 118 196 L 215 196 L 438 122"
             fill="none"
             stroke="#063B27"
             strokeOpacity="0.18"
@@ -468,7 +446,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
             strokeLinecap="round"
           />
           <path
-            d={`M ${HERO_PICKUP.x} ${HERO_PICKUP.y} C ${HERO_C1.x} ${HERO_C1.y}, ${HERO_C2.x} ${HERO_C2.y}, ${HERO_DROPOFF.x} ${HERO_DROPOFF.y}`}
+            d="M 118 224 L 118 196 L 215 196 L 438 122"
             fill="none"
             stroke="#063B27"
             strokeWidth="4.5"
@@ -553,20 +531,6 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           </div>
         </div>
 
-        {/* Animated Bike Vehicle Marker (Transform-only GPU motion) */}
-        <div
-          ref={bikeMarkerRef}
-          className="pointer-events-none absolute top-0 left-0 z-10 will-change-transform"
-        >
-          <div className="relative flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E6C477] text-[#032A1D] shadow-lg shadow-black/25 ring-2 ring-[#FFFFFF]">
-              <Bike className="h-4 w-4" aria-hidden="true" />
-            </div>
-            <div className="mt-1 hidden rounded-md border border-[#D8D9C9] bg-[#F3F0E6] px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap text-[#063B27] shadow-sm sm:block">
-              Teen Bike · Shuttle
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Subtle Map Legend Row inside the Warm Ivory Frame with high-contrast vehicle chips */}
@@ -577,12 +541,6 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
               <CarFront className="h-3 w-3" aria-hidden="true" />
             </span>
             Verified Cab
-          </span>
-          <span className="inline-flex items-center gap-2 font-medium text-[#063B27]">
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[#E6C477] text-[#032A1D] ring-1 ring-[#063B27]/20">
-              <Bike className="h-3 w-3" aria-hidden="true" />
-            </span>
-            Campus Bike
           </span>
         </div>
         <span className="font-mono text-[11px] font-medium text-[#3B5B4B]">
