@@ -293,11 +293,10 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     return (
       <div
         ref={mapContainerRef}
-        className="relative mx-[1px] aspect-square w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/10] sm:w-full sm:rounded-2xl"
+        className="relative mx-[1px] aspect-[16/10] w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:w-full sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 350"
-          preserveAspectRatio="none"
           className="h-full w-full"
           role="img"
           aria-label="Parent dashboard live street map showing route from pickup point A to destination point B with a mini cab"
@@ -390,14 +389,13 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
       {/* Shared Pale Sage (#E8EEE8) Street Map Surface with Soft Gold & Deep Green Route Geometry */}
       <div
         ref={mapContainerRef}
-        className="relative mx-[1px] aspect-square w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/11] sm:w-full sm:rounded-2xl"
+        className="relative mx-[1px] aspect-[16/10] w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/11] sm:w-full sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 360"
-          preserveAspectRatio="none"
           className="h-full w-full"
           role="img"
-          aria-label="Interactive Teen Cabs route map demonstration showing a car and bike moving smoothly between pickup location Oakridge High and destination Maple Street"
+          aria-label="Interactive Teen Cabs route map demonstration showing a car moving along the route between pickup location Oakridge High and destination Maple Street"
         >
           {/* Quiet secondary neighborhood blocks & roads matching Parent Dashboard */}
           <g stroke="#D8D9C9" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.72">
