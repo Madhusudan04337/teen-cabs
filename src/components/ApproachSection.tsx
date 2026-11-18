@@ -93,14 +93,15 @@ export function ApproachSection() {
           if (blocks.length > 0) {
             gsap.fromTo(
               blocks,
-              { y: offsetY, opacity: 0 },
+              { y: offsetY, opacity: 0, clipPath: 'inset(10% 0 10% 0)' },
               {
                 y: 0,
                 opacity: 1,
+                clipPath: 'inset(0% 0 0% 0)',
                 duration: MOTION_DURATION.reveal,
                 stagger: MOTION_STAGGER.card,
                 ease: MOTION_EASE.editorial,
-                clearProps: 'transform,opacity',
+                clearProps: 'transform,opacity,clip-path',
                 scrollTrigger: {
                   trigger: chapter,
                   start: 'top 85%',
@@ -123,7 +124,7 @@ export function ApproachSection() {
       id="our-approach"
       ref={sectionRef}
       aria-labelledby="approach-heading"
-      className="relative z-10 overflow-x-clip border-t border-[#285640] bg-[#032A1D] py-18 sm:py-24 lg:py-30"
+      className="relative z-10 overflow-x-clip bg-[#032A1D] py-12 sm:py-16 lg:py-20"
     >
       <div
         aria-hidden="true"
@@ -164,7 +165,7 @@ export function ApproachSection() {
             data-approach-intro
             role="group"
             aria-label="Audience perspective filter"
-            className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-2 border-b border-[#285640] sm:gap-x-9"
+            className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-2 sm:mt-7 sm:gap-x-9"
           >
             {PERSPECTIVE_OPTIONS.map((lens) => {
               const active = audienceLens === lens.id;
@@ -199,7 +200,7 @@ export function ApproachSection() {
         </header>
 
         {/* 2. THREE SPACIOUS EDITORIAL CHAPTERS */}
-        <ol className="mt-14 sm:mt-16 lg:mt-20">
+        <ol className="mt-8 sm:mt-10 lg:mt-12">
           {APPROACH_ITEMS.map((item, index) => {
             const Icon =
               APPROACH_ICONS[item.id as keyof typeof APPROACH_ICONS] ?? Link2;
@@ -301,14 +302,8 @@ export function ApproachSection() {
               <li
                 key={item.id}
                 data-approach-chapter
-                className="relative border-t border-[#285640]/80 py-14 sm:py-18 lg:py-24"
+                className="relative py-8 sm:py-10 lg:py-12"
               >
-                <span
-                  aria-hidden="true"
-                  data-chapter-rule
-                  className="pointer-events-none absolute -top-px left-0 h-px w-16 bg-[#E6C477]/65 sm:w-24"
-                />
-
                 {/* DOM order strictly matches left-to-right visual reading order on desktop */}
                 <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:items-center lg:gap-12 xl:gap-16">
                   {isContentFirst ? (

@@ -180,6 +180,49 @@ export function AboutStorySection() {
           );
         });
 
+        gsap.utils.toArray<HTMLElement>('[data-story-pillar]', root).forEach((pillar, idx) => {
+          gsap.fromTo(
+            pillar,
+            { y: offsetY * 0.7, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.65,
+              delay: idx * 0.08,
+              ease: MOTION_EASE.editorial,
+              clearProps: 'transform,opacity',
+              scrollTrigger: {
+                trigger: pillar,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        });
+
+        gsap.utils.toArray<HTMLElement>('[data-manifesto-item]', root).forEach((item, idx) => {
+          gsap.fromTo(
+            item,
+            { y: offsetY, opacity: 0, clipPath: 'inset(12% 0 12% 0)' },
+            {
+              y: 0,
+              opacity: 1,
+              clipPath: 'inset(0% 0 0% 0)',
+              duration: 0.95,
+              delay: idx * 0.12,
+              ease: MOTION_EASE.editorial,
+              clearProps: 'transform,opacity,clip-path',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        });
+
         // Subtle SVG corridor path draw in the Brand Story illustration
         const architecturePaths = gsap.utils.toArray<SVGPathElement>(
           '[data-arch-path]',
@@ -628,7 +671,7 @@ export function AboutStorySection() {
 
             {/* Three quiet architectural pillars echoing the diagram */}
             <dl className="mt-9 grid grid-cols-1 gap-4 border-t border-[#285640] pt-7 sm:grid-cols-3 sm:gap-6">
-              <div>
+              <div data-story-pillar>
                 <dt className="font-mono text-[11px] font-medium text-[#E6C477] tabular-nums">
                   01
                 </dt>
@@ -636,7 +679,7 @@ export function AboutStorySection() {
                   Parent-linked supervision
                 </dd>
               </div>
-              <div>
+              <div data-story-pillar>
                 <dt className="font-mono text-[11px] font-medium text-[#E6C477] tabular-nums">
                   02
                 </dt>
@@ -644,7 +687,7 @@ export function AboutStorySection() {
                   Verified driver identity
                 </dd>
               </div>
-              <div>
+              <div data-story-pillar>
                 <dt className="font-mono text-[11px] font-medium text-[#E6C477] tabular-nums">
                   03
                 </dt>
@@ -668,7 +711,7 @@ export function AboutStorySection() {
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-12">
             {/* Asymmetric Statement 01 — Our Mission */}
             <article
-              data-story-left
+              data-manifesto-item
               aria-labelledby="mission-heading"
               className="lg:col-span-6"
             >
@@ -698,7 +741,7 @@ export function AboutStorySection() {
 
             {/* Asymmetric Statement 02 — Our Vision (diagonally stepped open tonal spread) */}
             <article
-              data-story-right
+              data-manifesto-item
               aria-labelledby="vision-heading"
               className="border-t border-[#D9B45B]/30 pt-10 lg:col-span-5 lg:col-start-8 lg:mt-24 lg:border-t-0 lg:pt-0"
             >
