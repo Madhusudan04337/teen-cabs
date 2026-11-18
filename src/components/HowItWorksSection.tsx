@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { useReducedMotion } from 'motion/react';
 import { Link2, Navigation, ShieldCheck, UserPlus } from 'lucide-react';
 import { JOURNEY_STEPS } from '../data/teenCabsData';
+import { gsap, useGSAP } from '../motion/setup';
 
 const STEP_ICONS = [UserPlus, Link2, Navigation, ShieldCheck] as const;
 
@@ -27,23 +26,22 @@ export function HowItWorksSection() {
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // Progressive dashed route drawing on How It Works
+        // Progressive route drawing with DrawSVGPlugin scrubbed by ScrollTrigger
         if (routePathRef.current) {
-          const length = routePathRef.current.getTotalLength();
-          gsap.set(routePathRef.current, {
-            strokeDasharray: length,
-            strokeDashoffset: length,
-          });
-          gsap.to(routePathRef.current, {
-            strokeDashoffset: 0,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              end: 'center 42%',
-              scrub: 0.3,
-            },
-          });
+          gsap.fromTo(
+            routePathRef.current,
+            { drawSVG: '0%' },
+            {
+              drawSVG: '100%',
+              ease: 'none',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+                end: 'center 42%',
+                scrub: 0.3,
+              },
+            }
+          );
         }
 
         // Smooth reversible node cascade

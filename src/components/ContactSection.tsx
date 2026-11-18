@@ -330,15 +330,30 @@ export function ContactSection() {
                       No. 14, Prabhu Nagar, Neelankarai Link Rd, Murgeshan Nagar,
                       Subbarayan Nagar, Thoraipakkam, Chennai, Tamil Nadu 600097
                     </dd>
-                    <a
-                      href="https://maps.google.com/?q=No.14+Prabhu+Nagar+Neelankarai+Link+Rd+Thoraipakkam+Chennai+600097"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 inline-flex min-h-[44px] items-center gap-1 py-2 text-xs font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline sm:min-h-[36px]"
-                    >
-                      <span>Open in Google Maps</span>
-                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </a>
+                    <div className="mt-3 h-[135px] w-full overflow-hidden rounded-xl border border-[#d4af37]/25 bg-[#032A1D] shadow-inner">
+                      <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3888.3443265010474!2d80.245964!3d12.949805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU2JzU5LjMiTiA4MMKwMTQnNDUuNSJF!5e0!3m2!1sen!2sin!4v1795019924495!5m2!1sen!2sin"
+                        title="Teen Cabs and Forgeit Office Map - Chennai"
+                        className="h-full w-full border-0"
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                      />
+                    </div>
+                    <div className="mt-2.5 flex items-center justify-between gap-3 text-xs">
+                      <a
+                        href="https://www.google.com/maps/dir/?api=1&destination=12.949805,80.245964"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-[36px] items-center gap-1 py-1 font-semibold text-[#E6C477] underline-offset-4 hover:text-[#D9B45B] hover:underline"
+                      >
+                        <span>Get Directions</span>
+                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                      </a>
+                      <span className="font-mono text-[10px] text-[#B7C8BA]">
+                        12°56&apos;59.3&quot;N 80°14&apos;45.5&quot;E
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

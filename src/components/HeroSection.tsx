@@ -1,6 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
   ArrowDown,
@@ -11,9 +9,8 @@ import {
   Play,
   ShieldCheck,
 } from 'lucide-react';
+import { Flip, gsap, SplitText, useGSAP } from '../motion/setup';
 import { RouteMapCanvas } from './RouteMapCanvas';
-
-const HERO_LINE_STAGGER = 0.085;
 
 function attachMagneticButton(el: HTMLElement | null, strength = 0.14): () => void {
   if (!el || !window.matchMedia('(pointer: fine)').matches) {
@@ -54,24 +51,33 @@ type RideStage = (typeof STAGES)[number];
 
 export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const mapRevealRef = useRef<HTMLDivElement>(null);
   const stageVisualRef = useRef<HTMLDivElement>(null);
   const ctaBtnRef = useRef<HTMLButtonElement>(null);
-  const tiltXToRef = useRef<((val: number) => void) | null>(null);
-  const tiltYToRef = useRef<((val: number) => void) | null>(null);
+  const widgetFlipStateRef = useRef<Flip.FlipState | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const [activeCheckpoint, setActiveCheckpoint] = useState<RideStage>('pickup');
   const [perspectiveMode, setPerspectiveMode] = useState<'parent' | 'teen'>('parent');
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
+  const captureWidgetFlip = useCallback(() => {
+    if (prefersReducedMotion || !stageVisualRef.current) return;
+    const targets = stageVisualRef.current.querySelectorAll('[data-flip-id]');
+    if (targets.length > 0) {
+      widgetFlipStateRef.current = Flip.getState(targets);
+    }
+  }, [prefersReducedMotion]);
+
   useEffect(() => {
     if (!isAutoPlaying || prefersReducedMotion) return;
     const interval = window.setInterval(() => {
+      captureWidgetFlip();
       setActiveCheckpoint((prev) => STAGES[(STAGES.indexOf(prev) + 1) % STAGES.length]);
     }, 4500);
     return () => window.clearInterval(interval);
-  }, [isAutoPlaying, prefersReducedMotion]);
+  }, [captureWidgetFlip, isAutoPlaying, prefersReducedMotion]);
 
   useGSAP(
     () => {
@@ -81,23 +87,35 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const isMobile = window.innerWidth < 768;
+        let cancelled = false;
+        let headingSplit: SplitText | null = null;
 
-        // Scene 01: Staggered Editorial Headline reveal with masked lines
-        const headlineEls = gsap.utils.toArray<HTMLElement>('[data-hero-line]', root);
-        if (headlineEls.length > 0) {
-          gsap.fromTo(
-            headlineEls,
-            { yPercent: 110, opacity: 0 },
-            {
-              yPercent: 0,
-              opacity: 1,
-              duration: isMobile ? 0.75 : 0.85,
-              delay: isMobile ? 0.08 : 0.2,
-              stagger: HERO_LINE_STAGGER,
-              ease: 'expo.out',
-              clearProps: 'transform,opacity',
-            }
-          );
+        // Scene 01: Staggered Editorial Headline reveal using SplitText masked lines & words
+        const initSplitHeading = () => {
+          if (cancelled || !headingRef.current) return;
+          headingSplit = SplitText.create(headingRef.current, {
+            type: 'lines,words',
+            mask: 'lines',
+            linesClass: 'pb-[0.06em] -mb-[0.06em]',
+            autoSplit: true,
+            onSplit(self) {
+              return gsap.from(self.words, {
+                yPercent: 115,
+                opacity: 0,
+                duration: isMobile ? 0.72 : 0.85,
+                delay: isMobile ? 0.04 : 0.14,
+                stagger: 0.055,
+                ease: 'expo.out',
+                clearProps: 'transform,opacity',
+              });
+            },
+          });
+        };
+
+        if (document.fonts?.ready) {
+          document.fonts.ready.then(initSplitHeading);
+        } else {
+          initSplitHeading();
         }
 
         const eyebrowEl = root.querySelector<HTMLElement>('[data-hero-eyebrow]');
@@ -177,14 +195,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
         // Desktop Pointer Tilt & Scroll Parallax
         if (stageVisualRef.current && window.matchMedia('(pointer: fine)').matches) {
           gsap.set(stageVisualRef.current, { transformPerspective: 1100 });
-          tiltXToRef.current = gsap.quickTo(stageVisualRef.current, 'rotateX', {
-            duration: 0.5,
-            ease: 'power3.out',
-          });
-          tiltYToRef.current = gsap.quickTo(stageVisualRef.current, 'rotateY', {
-            duration: 0.5,
-            ease: 'power3.out',
-          });
 
           gsap.to(stageVisualRef.current, {
             y: -18,
@@ -199,33 +209,66 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
         }
 
         const detachMagnetic = attachMagneticButton(ctaBtnRef.current, 0.14);
-        return () => detachMagnetic();
+        return () => {
+          cancelled = true;
+          headingSplit?.revert();
+          detachMagnetic();
+        };
       });
 
       return () => {
-        tiltXToRef.current = null;
-        tiltYToRef.current = null;
         mm.revert();
       };
     },
     { scope: sectionRef, dependencies: [prefersReducedMotion] }
   );
 
+  // Flip transitions for Live Route Preview perspective & checkpoint indicators
+  useGSAP(
+    () => {
+      if (prefersReducedMotion || !widgetFlipStateRef.current || !stageVisualRef.current) return;
+      const state = widgetFlipStateRef.current;
+      widgetFlipStateRef.current = null;
+
+      Flip.from(state, {
+        targets: stageVisualRef.current.querySelectorAll('[data-flip-id]'),
+        duration: 0.34,
+        ease: 'power3.out',
+        nested: true,
+      });
+    },
+    {
+      scope: stageVisualRef,
+      dependencies: [perspectiveMode, activeCheckpoint, prefersReducedMotion],
+    }
+  );
+
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (prefersReducedMotion || !tiltXToRef.current || !tiltYToRef.current) return;
+    if (prefersReducedMotion || !stageVisualRef.current) return;
     if (!window.matchMedia('(pointer: fine)').matches) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     const xRatio = (e.clientX - rect.left) / rect.width - 0.5;
     const yRatio = (e.clientY - rect.top) / rect.height - 0.5;
 
-    tiltYToRef.current(xRatio * 6);
-    tiltXToRef.current(-yRatio * 4.5);
+    gsap.to(stageVisualRef.current, {
+      rotateY: xRatio * 6,
+      rotateX: -yRatio * 4.5,
+      duration: 0.5,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
   };
 
   const handlePointerLeave = () => {
-    tiltXToRef.current?.(0);
-    tiltYToRef.current?.(0);
+    if (!stageVisualRef.current) return;
+    gsap.to(stageVisualRef.current, {
+      rotateX: 0,
+      rotateY: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+      overwrite: 'auto',
+    });
   };
 
   const routeProgress = {
@@ -265,26 +308,14 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
             <h1
               id="hero-heading"
-              className="text-balance text-[clamp(1.875rem,5.2vw,4.25rem)] leading-[1.08] sm:leading-[1.04] font-semibold tracking-[-0.025em] text-[#E8EEE8]"
+              ref={headingRef}
+              className="text-balance text-[clamp(1.875rem,5.2vw,4.25rem)] leading-[1.12] sm:leading-[1.08] font-semibold tracking-[-0.025em] text-[#E8EEE8]"
             >
-              <span className="block overflow-hidden pr-2 pb-1">
-                <span data-hero-line className="block">
-                  Safe rides.
-                </span>
+              <span className="block pb-1">Safe rides.</span>
+              <span className="font-editorial block pb-1.5 font-normal italic text-[#E6C477]">
+                Smarter teens.
               </span>
-              <span className="block overflow-hidden pr-2 pb-1.5">
-                <span
-                  data-hero-line
-                  className="font-editorial block font-normal italic text-[#E6C477]"
-                >
-                  Smarter teens.
-                </span>
-              </span>
-              <span className="block overflow-hidden pr-2 pb-1">
-                <span data-hero-line className="block">
-                  Peaceful parents.
-                </span>
-              </span>
+              <span className="block pb-1">Peaceful parents.</span>
             </h1>
 
             <div
@@ -378,7 +409,11 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                           <button
                             key={mode.id}
                             type="button"
-                            onClick={() => setPerspectiveMode(mode.id)}
+                            onClick={() => {
+                              if (perspectiveMode === mode.id) return;
+                              captureWidgetFlip();
+                              setPerspectiveMode(mode.id);
+                            }}
                             aria-pressed={active}
                             className={`relative min-h-[36px] cursor-pointer py-1.5 text-[11px] font-semibold transition-colors sm:min-h-[38px] sm:text-xs ${
                               active ? 'text-[#063B27]' : 'text-[#547064] hover:text-[#063B27]'
@@ -386,9 +421,8 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                           >
                             {mode.label}
                             {active && (
-                              <motion.span
-                                layoutId="hero-perspective-line"
-                                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                              <span
+                                data-flip-id="hero-perspective-line"
                                 className="absolute right-0 bottom-0 left-0 h-[2px] rounded-full bg-[#E6C477]"
                               />
                             )}
@@ -487,7 +521,10 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                             key={stage.id}
                             type="button"
                             onClick={() => {
-                              setActiveCheckpoint(stage.id);
+                              if (activeCheckpoint !== stage.id) {
+                                captureWidgetFlip();
+                                setActiveCheckpoint(stage.id);
+                              }
                               setIsAutoPlaying(false);
                             }}
                             aria-pressed={active}
@@ -499,9 +536,8 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                           >
                             {stage.label}
                             {active && (
-                              <motion.span
-                                layoutId="hero-stage-underline"
-                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                              <span
+                                data-flip-id="hero-stage-line"
                                 className="absolute right-0 bottom-0 left-0 h-[2px] rounded-full bg-[#E6C477]"
                               />
                             )}

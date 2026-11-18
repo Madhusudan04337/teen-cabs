@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { gsap, useGSAP } from '../motion/setup';
+import { gsap, Observer, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
   MOTION_DURATION,
@@ -93,6 +93,7 @@ function PortraitAsset({
 export function TeamSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const spotlightWrapRef = useRef<HTMLDivElement>(null);
   const { prefersReducedMotion, scrollTo } = useLenis();
 
   const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
@@ -216,6 +217,92 @@ export function TeamSection() {
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
   const isAllView = activeCategory === 'all';
+
+  // Touch & pointer swipe with Observer + InertiaPlugin snap-back on member spotlights
+  useGSAP(
+    () => {
+      if (prefersReducedMotion || isAllView || filteredMembers.length <= 1) return;
+      const target = spotlightWrapRef.current;
+      if (!target) return;
+
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        let dragOffset = 0;
+
+        const observer = Observer.create({
+          target,
+          type: 'touch,pointer',
+          lockAxis: true,
+          tolerance: 10,
+          onDrag(self) {
+            if (self.axis !== 'x') return;
+            dragOffset = Math.max(-72, Math.min(72, dragOffset + self.deltaX));
+            gsap.set(target, {
+              x: dragOffset,
+              rotation: dragOffset * 0.025,
+            });
+          },
+          onDragEnd(self) {
+            const velocity = self.velocityX;
+            const current = dragOffset;
+            dragOffset = 0;
+
+            if ((current < -42 || velocity < -480) && canGoNext) {
+              gsap.to(target, {
+                x: 0,
+                rotation: 0,
+                duration: 0.22,
+                ease: 'power2.out',
+                clearProps: 'transform',
+              });
+              handleNext();
+              return;
+            }
+
+            if ((current > 42 || velocity > 480) && canGoPrev) {
+              gsap.to(target, {
+                x: 0,
+                rotation: 0,
+                duration: 0.22,
+                ease: 'power2.out',
+                clearProps: 'transform',
+              });
+              handlePrev();
+              return;
+            }
+
+            gsap.to(target, {
+              x: 0,
+              rotation: 0,
+              duration: 0.32,
+              ease: 'power2.out',
+              clearProps: 'transform',
+            });
+          },
+        });
+
+        return () => {
+          observer.kill();
+          gsap.set(target, { clearProps: 'transform' });
+        };
+      });
+
+      return () => mm.revert();
+    },
+    {
+      scope: spotlightWrapRef,
+      dependencies: [
+        activeCategory,
+        canGoNext,
+        canGoPrev,
+        filteredMembers.length,
+        handleNext,
+        handlePrev,
+        isAllView,
+        prefersReducedMotion,
+      ],
+    }
+  );
 
   return (
     <section
@@ -393,7 +480,7 @@ export function TeamSection() {
             </div>
 
             {/* VIEW SWITCH: All Members Grid vs Single Member Spotlight */}
-            <div aria-live="polite" className="relative">
+            <div ref={spotlightWrapRef} aria-live="polite" className="relative">
               <AnimatePresence mode="wait" initial={false}>
                 {isAllView ? (
                   <motion.div

@@ -1,7 +1,8 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { CheckCircle2, X } from 'lucide-react';
 import { useLenis } from '../motion/LenisContext';
+import { Flip, gsap, useGSAP } from '../motion/setup';
 
 interface WaitlistModalProps {
   isOpen: boolean;
@@ -21,6 +22,38 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
   const errorId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const flipStateRef = useRef<Flip.FlipState | null>(null);
+
+  const captureModalFlip = useCallback(() => {
+    if (prefersReducedMotion || !dialogRef.current) return;
+    const targets = dialogRef.current.querySelectorAll('[data-flip-id]');
+    if (targets.length > 0) {
+      flipStateRef.current = Flip.getState(targets);
+    }
+  }, [prefersReducedMotion]);
+
+  useGSAP(
+    () => {
+      if (!isOpen || prefersReducedMotion || !flipStateRef.current || !dialogRef.current) return;
+      const state = flipStateRef.current;
+      flipStateRef.current = null;
+
+      Flip.from(state, {
+        targets: dialogRef.current.querySelectorAll('[data-flip-id]'),
+        duration: 0.36,
+        ease: 'power3.out',
+        fade: true,
+        nested: true,
+        onEnter: (elements) =>
+          gsap.fromTo(
+            elements,
+            { opacity: 0, y: 8 },
+            { opacity: 1, y: 0, duration: 0.28, ease: 'power2.out' }
+          ),
+      });
+    },
+    { scope: dialogRef, dependencies: [isOpen, role, submitted, prefersReducedMotion] }
+  );
 
   useEffect(() => {
     if (!isOpen) return;
@@ -94,10 +127,12 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
     }
 
     setError('');
+    captureModalFlip();
     setSubmitted(true);
   };
 
   const handleResetAndClose = () => {
+    flipStateRef.current = null;
     setSubmitted(false);
     setName('');
     setEmail('');
@@ -121,6 +156,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
         >
           <motion.div
             ref={dialogRef}
+            data-flip-id="waitlist-dialog"
             tabIndex={-1}
             role="dialog"
             aria-modal="true"
@@ -155,7 +191,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
         </div>
 
         {submitted ? (
-          <div role="status" className="mt-6 space-y-4">
+          <div data-flip-id="waitlist-panel" role="status" className="mt-6 space-y-4">
             <div className="flex items-start gap-3 rounded-2xl border border-[#285640] bg-[#032A1D] p-4">
               <CheckCircle2
                 className="mt-0.5 h-5 w-5 shrink-0 text-[#E6C477]"
@@ -181,35 +217,62 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-5">
+          <form
+            data-flip-id="waitlist-panel"
+            onSubmit={handleSubmit}
+            noValidate
+            className="mt-6 space-y-5"
+          >
             <fieldset>
               <legend className="mb-2 text-xs font-semibold text-[#D4E1D8]">
                 I am signing up as a
               </legend>
-              <div className="grid grid-cols-2 gap-2 rounded-2xl border border-[#285640] bg-[#032A1D] p-1">
+              <div className="relative grid grid-cols-2 gap-2 rounded-2xl border border-[#285640] bg-[#032A1D] p-1">
                 <button
                   type="button"
-                  onClick={() => setRole('parent')}
+                  onClick={() => {
+                    if (role === 'parent') return;
+                    captureModalFlip();
+                    setRole('parent');
+                  }}
                   aria-pressed={role === 'parent'}
-                  className={`min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`relative min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'parent'
-                      ? 'bg-[#0B4933] text-[#E6C477]'
+                      ? 'text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
                   }`}
                 >
-                  Parent / Guardian
+                  {role === 'parent' && (
+                    <span
+                      data-flip-id="waitlist-role-pill"
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-xl bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
+                    />
+                  )}
+                  <span className="relative z-10">Parent / Guardian</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRole('teen')}
+                  onClick={() => {
+                    if (role === 'teen') return;
+                    captureModalFlip();
+                    setRole('teen');
+                  }}
                   aria-pressed={role === 'teen'}
-                  className={`min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`relative min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'teen'
-                      ? 'bg-[#0B4933] text-[#E6C477]'
+                      ? 'text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
                   }`}
                 >
-                  Teen (13–18)
+                  {role === 'teen' && (
+                    <span
+                      data-flip-id="waitlist-role-pill"
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-xl bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
+                    />
+                  )}
+                  <span className="relative z-10">Teen (13–18)</span>
                 </button>
               </div>
             </fieldset>

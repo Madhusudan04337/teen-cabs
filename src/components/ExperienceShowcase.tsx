@@ -112,6 +112,28 @@ export function ExperienceShowcase() {
         const offsetX = isDesktop ? MOTION_DISTANCE.desktopX : MOTION_DISTANCE.mobileX;
         const offsetY = isDesktop ? MOTION_DISTANCE.desktopY : MOTION_DISTANCE.mobileY;
 
+        const heroEls = gsap.utils.toArray<HTMLElement>('[data-features-hero]', root);
+        if (heroEls.length > 0) {
+          gsap.fromTo(
+            heroEls,
+            { y: offsetY * 0.75, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: MOTION_DURATION.reveal,
+              stagger: 0.08,
+              ease: MOTION_EASE.editorial,
+              clearProps: 'transform,opacity',
+              scrollTrigger: {
+                trigger: root,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
+
         const panelElements = gsap.utils.toArray<HTMLElement>('[data-story-panel]', root);
         panelElements.forEach((panel) => {
           const copyLayer = panel.querySelector<HTMLElement>('[data-panel-copy]');
@@ -197,7 +219,7 @@ export function ExperienceShowcase() {
       {/* Editorial Narrative Opener */}
       <div className="border-b border-[#d4af37]/15 bg-[#061a12]/35 py-14 sm:py-18 lg:py-20">
         <div className="mx-auto flex max-w-[1200px] flex-col justify-between gap-6 px-6 sm:px-8 lg:flex-row lg:items-end lg:px-10">
-          <div className="max-w-[38rem]">
+          <div data-features-hero className="max-w-[38rem]">
             <p className="text-xs font-medium tracking-wide text-[#D4E1D8] sm:text-sm">
               The Teen Cabs experience
             </p>
@@ -212,7 +234,10 @@ export function ExperienceShowcase() {
             </h1>
           </div>
 
-          <p className="max-w-[42ch] text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base">
+          <p
+            data-features-hero
+            className="max-w-[42ch] text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base"
+          >
             Multi-stage driver vetting, live parent visibility, and calm cabin
             personalisation — designed together so every school commute feels
             predictable and effortless.

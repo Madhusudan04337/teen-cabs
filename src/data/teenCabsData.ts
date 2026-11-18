@@ -6,6 +6,7 @@ import tharunPortrait from '../assets/team/tharun-v.jpeg';
 import kaavyaPortrait from '../../assets/Kaavya.jpeg';
 import sudarshanPortrait from '../../assets/Sudarshan.jpeg';
 import vedaanthPortrait from '../../assets/Vedaanth.jpeg';
+import tejasreePortrait from '../../assets/tejasree.png';
 
 export interface NeedItem {
   id: string;
@@ -264,28 +265,28 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'True independence for teens begins when safety is engineered into the foundation, not bolted on later.',
   },
   {
-    id: 'tharun',
-    initials: 'TV',
-    name: 'Tharun V',
-    role: 'Chief Technology Officer',
-    group: 'leadership',
-    portraitSrc: tharunPortrait,
-    bio: 'Oversees technical architecture ensuring every product is scalable and performant.',
-    focusArea: 'Scalable Architecture & Telemetry',
-    quote:
-      'Behind every calm parent notification is rock-solid real-time engineering.',
-  },
-  {
     id: 'karthik',
     initials: 'S',
     name: 'Karthik S',
     role: 'Chief Marketing Officer',
-    group: 'core',
+    group: 'leadership',
     portraitSrc: karthikPortrait,
     bio: 'Drives marketing strategy, brand growth, and audience engagement.',
     focusArea: 'Brand Growth & Community Trust',
     quote:
       'We listen closely to both parents and teens so our platform earns trust across two generations.',
+  },
+  {
+    id: 'tharun',
+    initials: 'TV',
+    name: 'Tharun V',
+    role: 'Chief Technology Officer',
+    group: 'core',
+    portraitSrc: tharunPortrait,
+    bio: 'Oversees technical architecture ensuring every product is scalable and performant.',
+    focusArea: 'Scalable Architecture & Telemetry',
+    quote:
+      'Behind every calm parent notification is rock-solid real-time engineering.',
   },
   {
     id: 'manobala',
@@ -300,16 +301,16 @@ export const TEAM_MEMBERS: TeamMember[] = [
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
   },
   {
-    id: 'siva',
-    initials: 'SM',
-    name: 'Siva Sankara Moorthi R',
-    role: 'PRO',
-    group: 'core',
-    portraitSrc: undefined,
-    bio: 'Fosters public relations, strategic outreach, and community alignment across educational and civic partnerships.',
-    focusArea: 'Public Relations & Strategic Outreach',
+    id: 'tejasree',
+    initials: 'TM',
+    name: 'Tejasree M',
+    role: 'Product Team',
+    group: 'product',
+    portraitSrc: tejasreePortrait,
+    bio: 'Contributes to product development, user experience design, and feature refinement.',
+    focusArea: 'Product Experience & Feature Craft',
     quote:
-      'Meaningful mobility begins with transparent public trust and authentic community connection.',
+      'Thoughtful design creates effortless journeys for both parents and teens.',
   },
   {
     id: 'kaavya',

@@ -1,9 +1,8 @@
 import { memo, useEffect, useState, useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import { BIGGER_PICTURE_STATS, NEED_ITEMS } from '../data/teenCabsData';
+import { gsap, useGSAP } from '../motion/setup';
 
 const SmoothPercentageStat = memo(function SmoothPercentageStat({
   target,

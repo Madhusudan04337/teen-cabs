@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from 'react';
-import gsap from 'gsap';
 import { useReducedMotion } from 'motion/react';
 import { CarFront } from 'lucide-react';
+import { gsap, useGSAP } from '../motion/setup';
 
 interface Point {
   x: number;
@@ -106,6 +106,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
   const carMarkerRef = useRef<HTMLDivElement>(null);
   const dashboardCarRef = useRef<HTMLDivElement>(null);
   const primaryRouteRef = useRef<SVGPathElement>(null);
+  const dashboardRouteRef = useRef<SVGPathElement>(null);
 
   // Mutable animation refs prevent 60fps React re-renders and preserve smooth progress
   const mapBoundsRef = useRef({ width: 560, height: isHero ? 385 : 350 });
@@ -118,37 +119,59 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     targetCarTRef.current = stageTargetT;
   }, [stageTargetT]);
 
-  // Smooth GSAP solid route-line draw and staggered destination pin entrance
-  useEffect(() => {
-    if (!isHero || prefersReducedMotion) return;
-    const ctx = gsap.context(() => {
-      const paths = [primaryRouteRef.current].filter(Boolean) as SVGPathElement[];
+  // Smooth GSAP DrawSVGPlugin route-line draw and staggered pin entrance wrapped in useGSAP
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-      paths.forEach((path, idx) => {
-        const length = path.getTotalLength();
-        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          duration: 1.25,
-          delay: 0.25 + idx * 0.18,
-          ease: 'power3.out',
-        });
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (isHero) {
+          if (primaryRouteRef.current) {
+            gsap.fromTo(
+              primaryRouteRef.current,
+              { drawSVG: '0%' },
+              {
+                drawSVG: '100%',
+                duration: 1.25,
+                delay: 0.25,
+                ease: 'power3.out',
+              }
+            );
+          }
+
+          gsap.from('[data-hero-pin]', {
+            scale: 0.65,
+            opacity: 0,
+            duration: 0.55,
+            delay: 0.35,
+            stagger: 0.14,
+            ease: 'back.out(1.6)',
+            transformOrigin: 'center center',
+            clearProps: 'transform,opacity',
+          });
+        } else if (dashboardRouteRef.current) {
+          gsap.fromTo(
+            dashboardRouteRef.current,
+            { drawSVG: '0%' },
+            {
+              drawSVG: '100%',
+              duration: 1.15,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: mapContainerRef.current,
+                start: 'top 86%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
       });
 
-      gsap.from('[data-hero-pin]', {
-        scale: 0.65,
-        opacity: 0,
-        duration: 0.55,
-        delay: 0.35,
-        stagger: 0.14,
-        ease: 'back.out(1.6)',
-        transformOrigin: 'center center',
-        clearProps: 'transform,opacity',
-      });
-    }, mapContainerRef);
-
-    return () => ctx.revert();
-  }, [isHero, prefersReducedMotion]);
+      return () => mm.revert();
+    },
+    { scope: mapContainerRef, dependencies: [isHero, prefersReducedMotion] }
+  );
 
   // Track responsive map pixel box and position Hero markers purely via GPU transforms
   useEffect(() => {
@@ -308,6 +331,16 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
             <path d="M275 -20 L250 370" />
             <path d="M445 -20 L405 370" />
           </g>
+
+          <path
+            ref={dashboardRouteRef}
+            d="M 150 208 L 150 196 L 270 205 L 415 120"
+            fill="none"
+            stroke="#063B27"
+            strokeOpacity="0.16"
+            strokeWidth="7"
+            strokeLinecap="round"
+          />
 
           <path
             d="M 150 208 L 150 196 L 270 205 L 415 120"

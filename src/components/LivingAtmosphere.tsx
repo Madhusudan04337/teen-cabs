@@ -63,19 +63,14 @@ export function LivingAtmosphere() {
       const orbFieldEl = orbFieldRef.current;
 
       if (finePointer && glowEl && orbFieldEl) {
-        const xToGlow = gsap.quickTo(glowEl, 'x', { duration: 0.85, ease: 'power3.out' });
-        const yToGlow = gsap.quickTo(glowEl, 'y', { duration: 0.85, ease: 'power3.out' });
-        const xToOrbs = gsap.quickTo(orbFieldEl, 'x', { duration: 1.4, ease: 'power2.out' });
-        const yToOrbs = gsap.quickTo(orbFieldEl, 'y', { duration: 1.4, ease: 'power2.out' });
-
         const handleMove = (e: PointerEvent) => {
-          xToGlow(e.clientX - 240);
-          yToGlow(e.clientY - 240);
-
+          const xVal = e.clientX - 240;
+          const yVal = e.clientY - 240;
           const xNorm = (e.clientX / window.innerWidth - 0.5) * 2;
           const yNorm = (e.clientY / window.innerHeight - 0.5) * 2;
-          xToOrbs(-xNorm * 26);
-          yToOrbs(-yNorm * 22);
+
+          gsap.to(glowEl, { x: xVal, y: yVal, duration: 0.85, ease: 'power3.out', overwrite: 'auto' });
+          gsap.to(orbFieldEl, { x: -xNorm * 26, y: -yNorm * 22, duration: 1.4, ease: 'power2.out', overwrite: 'auto' });
         };
 
         window.addEventListener('pointermove', handleMove, { passive: true });

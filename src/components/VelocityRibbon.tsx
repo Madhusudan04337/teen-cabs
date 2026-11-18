@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import { useReducedMotion } from 'motion/react';
+import { gsap, Observer, useGSAP } from '../motion/setup';
 
 const TICKER_ITEMS = [
   'SAFE RIDES',
@@ -59,10 +61,90 @@ function TickerTrack({
 }
 
 export function VelocityRibbon() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion || !trackRef.current || !sectionRef.current) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const trackEl = trackRef.current;
+        if (!trackEl) return;
+
+        const baseLoop = gsap.to(trackEl, {
+          xPercent: -50,
+          duration: 48,
+          ease: 'none',
+          repeat: -1,
+        });
+
+        const speedState = { scale: 1 };
+        let settleTween: gsap.core.Tween | null = null;
+
+        const settleScale = (duration = 0.8) => {
+          settleTween?.kill();
+          settleTween = gsap.to(speedState, {
+            scale: 1,
+            duration,
+            ease: 'power2.out',
+            onUpdate: () => {
+              baseLoop.timeScale(speedState.scale);
+            },
+          });
+        };
+
+        const scrollObserver = Observer.create({
+          target: window,
+          type: 'wheel,scroll,touch',
+          onChangeY(self) {
+            const impulse = Math.min(2.4, Math.abs(self.velocityY) * 0.0014);
+            const nextScale = Math.max(0.75, Math.min(3.4, 1 + impulse));
+            settleTween?.kill();
+            speedState.scale = nextScale;
+            baseLoop.timeScale(nextScale);
+          },
+          onStop() {
+            settleScale(0.85);
+          },
+          onStopDelay: 0.14,
+        });
+
+        const dragObserver = Observer.create({
+          target: sectionRef.current,
+          type: 'pointer,touch',
+          lockAxis: true,
+          tolerance: 8,
+          onDrag(self) {
+            settleTween?.kill();
+            const dragBoost = Math.max(0.45, Math.min(3.6, 1 - self.deltaX * 0.08));
+            speedState.scale = dragBoost;
+            baseLoop.timeScale(dragBoost);
+          },
+          onDragEnd() {
+            settleScale(0.85);
+          },
+        });
+
+        return () => {
+          scrollObserver.kill();
+          dragObserver.kill();
+          settleTween?.kill();
+          baseLoop.kill();
+        };
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef, dependencies: [prefersReducedMotion] }
+  );
 
   return (
     <section
+      ref={sectionRef}
       aria-label="Teen Cabs brand principles"
       className="group relative z-10 overflow-hidden border-y border-[#285640] bg-[#063B27] py-4 sm:py-5"
     >
@@ -81,15 +163,15 @@ export function VelocityRibbon() {
       )}
 
       <div className="space-y-3">
-        {/* Single Seamless Horizontal Ticker */}
+        {/* Single Seamless Horizontal Ticker driven by GSAP Observer + InertiaPlugin */}
         {prefersReducedMotion ? (
           <div className="flex w-full items-center justify-center">
             <TickerTrack reducedMotion />
           </div>
         ) : (
           <div
-            className="flex w-max items-center animate-marquee-glide will-change-transform"
-            style={{ animationDuration: '58s' }}
+            ref={trackRef}
+            className="flex w-max items-center select-none will-change-transform"
           >
             <TickerTrack />
             <TickerTrack hidden />
