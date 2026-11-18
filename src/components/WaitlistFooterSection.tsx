@@ -128,30 +128,29 @@ export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProp
 
 export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
   return (
-    <footer className="relative z-10 border-t border-[#285640]/50 bg-[#061a12] py-8 sm:py-12 lg:py-16">
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-6 lg:px-12">
+    <footer className="relative z-10 border-t border-[#285640]/50 bg-[#061a12] py-5 sm:py-8 lg:py-10">
+      <div className="mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
         {/* TOP ROW: RESPONSIVE BALANCED GRID (2 COLS ON MOBILE, 12 ON DESKTOP) */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-7 sm:gap-8 lg:grid-cols-12 lg:gap-8">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-5 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-12 lg:gap-8">
           {/* Column 1: Brand & Subtitle */}
           <div className="col-span-2 lg:col-span-4">
-            <Link to="/" className="group inline-flex items-center gap-2.5">
+            <Link to="/" className="group inline-flex items-center gap-2">
               <BrandLogoMark
                 size={26}
                 className="shrink-0 transition-transform duration-200 group-hover:scale-105"
               />
               <div>
-                <p className="text-lg font-bold tracking-tight text-[#E8EEE8] sm:text-xl">
+                <p className="text-[17px] font-bold tracking-tight text-[#E8EEE8] sm:text-xl">
                   Teen Cabs
                 </p>
-                <p className="font-mono text-[9px] font-medium tracking-[0.2em] text-[#B7C8BA] uppercase">
+                <p className="mt-0.5 font-mono text-[8px] font-medium tracking-[0.14em] text-[#B7C8BA] uppercase sm:text-[9px]">
                   A Forgeit Groups Company
                 </p>
               </div>
             </Link>
 
-            <p className="mt-3 max-w-[34ch] text-xs leading-[1.65] font-light text-[#D4E1D8] sm:text-sm">
-              A safe, supervised ride platform for teens. Built by
-              Forgeit — Built Strong. Built Online.
+            <p className="mt-2 max-w-[32ch] text-[11px] leading-[1.55] text-[#D4E1D8] sm:mt-3 sm:text-sm">
+              Safe, supervised rides for teens.
             </p>
           </div>
 
@@ -243,19 +242,16 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
             <p className="text-[11px] font-semibold tracking-[0.16em] text-[#E6C477] uppercase sm:text-xs">
               Get in Touch
             </p>
-            <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs sm:mt-3.5 sm:block sm:space-y-2 sm:text-sm">
+            <div className="mt-2.5 flex flex-col items-start gap-1.5 text-xs sm:mt-3.5 sm:gap-2 sm:text-sm">
               <a
                 href="tel:+918610336533"
-                className="font-mono text-[#D4E1D8] transition-colors hover:text-[#E6C477]"
+                className="whitespace-nowrap font-mono text-[#D4E1D8] transition-colors hover:text-[#E6C477]"
               >
                 +91 86103 36533
               </a>
-              <span aria-hidden="true" className="text-[#285640] sm:hidden">
-                ·
-              </span>
               <a
                 href="mailto:info@forgeit.co.in"
-                className="text-[#D4E1D8] transition-colors hover:text-[#E6C477]"
+                className="whitespace-nowrap text-[#D4E1D8] transition-colors hover:text-[#E6C477]"
               >
                 info@forgeit.co.in
               </a>
@@ -291,26 +287,74 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
           </div>
         </div>
 
-        {/* HAIRLINE DIVIDER */}
-        <div className="mt-8 border-t border-[#285640]/60 sm:mt-12 lg:mt-14" />
-
-        {/* BOTTOM ROW: COPYRIGHT & FORGEIT EXTERNAL LINK */}
-        <div className="mt-4 flex flex-col gap-2.5 text-xs text-[#B7C8BA] sm:mt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <p className="text-[11px] sm:text-xs leading-normal">
-            © 2026 Teen Cabs — A Forgeit Product. Designed by{' '}
-            <span className="font-semibold text-[#E6C477]">Madhusudan</span> ·
-            All rights reserved.
+        {/* FINAL BAR: COPYRIGHT, ATTRIBUTION & SOCIAL LINKS */}
+        <div className="mt-6 flex flex-col gap-4 border-t border-[#285640]/60 pt-4 text-[#B7C8BA] sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-4 lg:mt-10">
+          <p className="text-[11px] leading-normal sm:text-xs">
+            © 2026 Forgeit. All rights reserved.{' '}
+            <span className="mx-1 text-[#E6C477]/60" aria-hidden="true">
+              |
+            </span>
+            <span>
+              Designed by{' '}
+              <a
+                href="https://mdk-portfolio.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#E6C477] transition-colors hover:text-[#D9B45B] hover:underline"
+              >
+                Madhusudan
+              </a>
+              <span className="mx-1 text-[#E6C477]/60" aria-hidden="true">
+                |
+              </span>
+              <a
+                href="https://forgeit.co.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#E6C477] transition-colors hover:text-[#D9B45B] hover:underline"
+              >
+                Forgeit Groups
+              </a>
+            </span>
           </p>
 
-          <a
-            href="https://forgeit.co.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-medium text-[#D4E1D8] transition-colors hover:text-[#E6C477]"
-          >
-            <span>forgeit.co.in</span>
-            <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
-          </a>
+          <div className="flex items-center gap-2.5">
+            <a
+              href="https://www.linkedin.com/company/forgeit-digital"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Forgeit Digital on LinkedIn"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#285640] bg-[#061a12] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M6.94 8.5H3.56V19.5H6.94V8.5ZM5.25 3.5C4.14 3.5 3.25 4.39 3.25 5.5C3.25 6.6 4.14 7.5 5.25 7.5C6.35 7.5 7.25 6.6 7.25 5.5C7.25 4.39 6.35 3.5 5.25 3.5ZM20.44 13.02C20.44 9.88 18.76 8.22 16.16 8.22C14.38 8.22 13.48 9.2 13.02 9.93V8.5H9.65C9.7 9.48 9.65 19.5 9.65 19.5H13.02V13.36C13.02 13.02 13.05 12.69 13.15 12.45C13.42 11.78 14.03 11.09 15.07 11.09C16.41 11.09 17.06 12.11 17.06 13.6V19.5H20.44V13.02Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/forgeitgroups"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Forgeit Groups on Instagram"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#285640] bg-[#061a12] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current" strokeWidth="2" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" className="fill-current stroke-none" />
+              </svg>
+            </a>
+            <a
+              href="https://x.com/forgeit_in"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Forgeit on X"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#285640] bg-[#061a12] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M18.244 2.25H21.552L14.325 10.51L22.827 21.75H16.17L10.956 14.933L4.99 21.75H1.68L9.41 12.915L1.254 2.25H8.08L12.793 8.481L18.244 2.25ZM17.083 19.77H18.916L7.084 4.126H5.117L17.083 19.77Z" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </footer>

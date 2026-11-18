@@ -286,7 +286,7 @@ export function Navbar({ onOpenWaitlist }: NavbarProps) {
       </a>
 
       <header className="sticky top-0 z-50 border-b border-[#d4af37]/15 bg-[#061a12]/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-5 sm:h-[4.25rem] sm:px-8 lg:gap-8 lg:px-10">
+        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-6 sm:h-[4.25rem] sm:px-8 lg:gap-8 lg:px-10">
           {/* Zone 1: Official Twin-Chevron Brand Wordmark */}
           <Link
             to="/"
