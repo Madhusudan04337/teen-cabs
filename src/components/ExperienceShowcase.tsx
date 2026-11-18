@@ -388,7 +388,7 @@ export function ExperienceShowcase() {
               data-panel-visual
               className="order-2 flex justify-center lg:order-1 lg:col-span-7 lg:justify-start"
             >
-              <div className="w-full max-w-[580px] rounded-3xl bg-[#F3F0E6] p-6 text-[#063B27] shadow-2xl shadow-black/35 sm:p-7">
+              <div className="w-full max-w-[580px] rounded-2xl bg-[#F3F0E6] p-4 text-[#063B27] shadow-2xl shadow-black/35 sm:rounded-3xl sm:p-7">
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <p className="text-sm font-bold text-[#063B27]">
                     Parent dashboard

@@ -293,7 +293,7 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
     return (
       <div
         ref={mapContainerRef}
-        className="relative mx-[1px] aspect-[16/10] w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:w-full sm:rounded-2xl"
+        className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-[#D8D9C9] bg-[#E8EEE8] sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 350"
@@ -356,8 +356,8 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           ref={dashboardCarRef}
           className="pointer-events-none absolute top-0 left-0 will-change-transform"
         >
-          <div className="flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl bg-[#063B27] text-[#E6C477] shadow-xl shadow-black/30 ring-2 ring-[#FFFFFF]">
-            <CarFront className="h-5 w-5" aria-hidden="true" />
+          <div className="flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg bg-[#063B27] text-[#E6C477] shadow-xl shadow-black/30 ring-2 ring-[#FFFFFF] sm:h-11 sm:w-11 sm:rounded-xl">
+            <CarFront className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -365,19 +365,21 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
   }
 
   return (
-    <div className="mx-[2px] rounded-[2px] border border-[#D8D9C9] bg-[#F3F0E6] p-2 text-[#063B27] shadow-2xl shadow-black/45 sm:mx-0 sm:rounded-3xl sm:border sm:p-6">
-      {/* Header matching Parent Dashboard card discipline */}
-      <div className="mb-3.5 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2.5">
+    <div className="text-[#063B27]">
+      {/* Sub-header status bar */}
+      <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 px-0.5 sm:mb-3">
+        <div className="flex items-center gap-2">
           <p className="text-xs font-bold tracking-wide text-[#063B27] sm:text-sm">
             {perspectiveMode === 'parent' ? 'Parent route monitor' : 'Teen ride corridor'}
           </p>
-          <span className="text-xs text-[#547064]" aria-hidden="true">
+          <span className="hidden text-xs text-[#547064] sm:inline" aria-hidden="true">
             ·
           </span>
-          <span className="text-xs font-medium text-[#547064]">Sample preview</span>
+          <span className="hidden text-xs font-medium text-[#547064] sm:inline">
+            Sample preview
+          </span>
         </div>
-        <span className="font-mono text-[11px] font-semibold tracking-wide text-[#063B27]">
+        <span className="rounded-full bg-[#E8EEE8] px-2.5 py-0.5 font-mono text-[10px] font-semibold tracking-wide text-[#063B27] sm:bg-transparent sm:px-0 sm:py-0 sm:text-[11px]">
           {activeStage === 'pickup'
             ? 'Gate pickup'
             : activeStage === 'enroute'
@@ -386,10 +388,10 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
         </span>
       </div>
 
-      {/* Shared Pale Sage (#E8EEE8) Street Map Surface with Soft Gold & Deep Green Route Geometry */}
+      {/* Shared Pale Sage (#E8EEE8) Street Map Surface matching 560x360 viewBox aspect */}
       <div
         ref={mapContainerRef}
-        className="relative mx-[1px] aspect-[16/10] w-[calc(100%-2px)] overflow-hidden rounded-[2px] border border-[#D8D9C9] bg-[#E8EEE8] sm:mx-0 sm:aspect-[16/11] sm:w-full sm:rounded-2xl"
+        className="relative aspect-[560/360] w-full overflow-hidden rounded-xl border border-[#D8D9C9] bg-[#E8EEE8] sm:rounded-2xl"
       >
         <svg
           viewBox="0 0 560 360"
@@ -419,11 +421,11 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           {/* Legible map street labels */}
           <g
             fill="#3B5B4B"
-            fontSize="11"
+            fontSize="10.5"
             fontWeight="700"
             fontFamily="Outfit, sans-serif"
             letterSpacing="0.06em"
-            opacity="0.92"
+            opacity="0.88"
           >
             <text x="164" y="88" transform="rotate(-8 164 88)">
               PARKVIEW CORRIDOR
@@ -486,29 +488,33 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
           </g>
         </svg>
 
-        {/* Floating Pickup Label — kept well clear of bottom/left edges on 360px+ viewports */}
+        {/* Floating Pickup Label — compact and safely inside mobile viewport */}
         <div
           style={{
             left: `${(HERO_PICKUP.x / 560) * 100}%`,
             top: `${(HERO_PICKUP.y / 360) * 100}%`,
           }}
-          className="pointer-events-none absolute -translate-x-1/4 translate-y-4 rounded-lg border border-[#D8D9C9] bg-[#F3F0E6]/95 px-2 py-0.5 shadow-sm backdrop-blur-xs sm:translate-y-5 sm:px-2.5 sm:py-1"
+          className="pointer-events-none absolute -translate-x-[22%] translate-y-3 rounded-lg border border-[#D8D9C9] bg-[#F3F0E6]/95 px-2 py-0.5 shadow-sm backdrop-blur-xs sm:-translate-x-1/4 sm:translate-y-5 sm:px-2.5 sm:py-1"
         >
-          <p className="text-[9px] font-semibold text-[#3B5B4B] sm:text-[10px]">Pickup</p>
+          <p className="text-[8px] font-semibold uppercase tracking-wide text-[#3B5B4B] sm:text-[10px] sm:normal-case sm:tracking-normal">
+            Pickup
+          </p>
           <p className="whitespace-nowrap text-[10px] font-bold text-[#063B27] sm:text-[11px]">
             Oakridge High
           </p>
         </div>
 
-        {/* Floating Destination Label — kept safely inside top/right bounds & clear of arrival cab */}
+        {/* Floating Destination Label — compact and safely inside top/right bounds */}
         <div
           style={{
             left: `${(HERO_DROPOFF.x / 560) * 100}%`,
             top: `${(HERO_DROPOFF.y / 360) * 100}%`,
           }}
-          className="pointer-events-none absolute -translate-x-[62%] -translate-y-12 rounded-lg border border-[#D8D9C9] bg-[#F3F0E6]/95 px-2 py-0.5 shadow-sm backdrop-blur-xs sm:-translate-y-14 sm:px-2.5 sm:py-1"
+          className="pointer-events-none absolute -translate-x-[68%] -translate-y-11 rounded-lg border border-[#D8D9C9] bg-[#F3F0E6]/95 px-2 py-0.5 shadow-sm backdrop-blur-xs sm:-translate-x-[62%] sm:-translate-y-14 sm:px-2.5 sm:py-1"
         >
-          <p className="text-[9px] font-semibold text-[#3B5B4B] sm:text-[10px]">Destination</p>
+          <p className="text-[8px] font-semibold uppercase tracking-wide text-[#3B5B4B] sm:text-[10px] sm:normal-case sm:tracking-normal">
+            Destination
+          </p>
           <p className="whitespace-nowrap text-[10px] font-bold text-[#063B27] sm:text-[11px]">
             Maple Street
           </p>
@@ -523,25 +529,24 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
             <div className="mb-1.5 hidden rounded-md border border-[#285640]/20 bg-[#063B27] px-2 py-0.5 text-[10px] font-semibold whitespace-nowrap text-[#E6C477] shadow-md sm:block">
               Cab · Arjun K.
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#063B27] text-[#E6C477] shadow-xl shadow-black/30 ring-2 ring-[#FFFFFF] sm:h-11 sm:w-11">
-              <CarFront className="h-5 w-5" aria-hidden="true" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#063B27] text-[#E6C477] shadow-lg shadow-black/30 ring-2 ring-[#FFFFFF] sm:h-11 sm:w-11 sm:rounded-xl sm:shadow-xl">
+              <CarFront className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Subtle Map Legend Row inside the Warm Ivory Frame with high-contrast vehicle chips */}
-      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#D8D9C9] pt-3 text-xs text-[#3B5B4B]">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="inline-flex items-center gap-2 font-medium text-[#063B27]">
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[#063B27] text-[#E6C477]">
-              <CarFront className="h-3 w-3" aria-hidden="true" />
+      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#D8D9C9] pt-2.5 text-[11px] text-[#3B5B4B] sm:mt-3.5 sm:pt-3 sm:text-xs">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 font-medium text-[#063B27] sm:gap-2">
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded bg-[#063B27] text-[#E6C477] sm:h-5 sm:w-5 sm:rounded-md">
+              <CarFront className="h-2.5 w-2.5 sm:h-3 sm:w-3" aria-hidden="true" />
             </span>
             Verified Cab
           </span>
         </div>
-        <span className="font-mono text-[11px] font-medium text-[#3B5B4B]">
+        <span className="font-mono text-[10px] font-medium text-[#3B5B4B] sm:text-[11px]">
           2.4 km corridor · Route A → B
         </span>
       </div>

@@ -114,7 +114,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
           animate={{ opacity: 1 }}
           exit={prefersReducedMotion ? undefined : { opacity: 0 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#032A1D]/80 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto bg-[#032A1D]/80 p-4 backdrop-blur-sm"
           onClick={(e) => {
             if (e.target === e.currentTarget) handleResetAndClose();
           }}

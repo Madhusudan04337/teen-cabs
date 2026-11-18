@@ -363,18 +363,18 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
             onPointerLeave={handlePointerLeave}
           >
             <div ref={stageVisualRef} className="relative">
-              <div className="mx-[2px] rounded-[2px] border border-[#D8D9C9] bg-[#F3F0E6] p-2 text-[#063B27] shadow-2xl shadow-black/45 sm:mx-0 sm:rounded-3xl sm:p-6">
+              <div className="rounded-2xl border border-[#D8D9C9] bg-[#F3F0E6] p-3.5 text-[#063B27] shadow-2xl shadow-black/45 sm:rounded-3xl sm:p-6">
                 {/* Refined Editorial Map Header */}
-                <div className="mb-3.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[#D8D9C9] pb-3">
-                  <span className="font-editorial text-[1.125rem] leading-tight font-normal italic text-[#063B27] sm:text-[1.25rem]">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-[#D8D9C9] pb-2.5 sm:mb-3.5 sm:pb-3">
+                  <span className="font-editorial text-[1.0625rem] leading-tight font-normal italic text-[#063B27] sm:text-[1.25rem]">
                     Live Route Preview
                   </span>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:gap-x-4">
                     <div
                       role="group"
                       aria-label="Switch app perspective"
-                      className="relative inline-flex items-center gap-3"
+                      className="relative inline-flex items-center gap-2.5 sm:gap-3"
                     >
                       {(
                         [
@@ -389,7 +389,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                             type="button"
                             onClick={() => setPerspectiveMode(mode.id)}
                             aria-pressed={active}
-                            className={`relative min-h-[38px] cursor-pointer py-1.5 text-xs font-semibold transition-colors ${
+                            className={`relative min-h-[36px] cursor-pointer py-1.5 text-[11px] font-semibold transition-colors sm:min-h-[38px] sm:text-xs ${
                               active ? 'text-[#063B27]' : 'text-[#547064] hover:text-[#063B27]'
                             }`}
                           >
@@ -414,7 +414,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                           ? 'Pause live vehicle preview'
                           : 'Play live vehicle preview'
                       }
-                      className="inline-flex min-h-[36px] cursor-pointer items-center gap-1 rounded-full border border-[#D8D9C9] bg-[#FFFFFF] px-3 py-1.5 text-[11px] font-mono tracking-wider text-[#063B27] uppercase transition-colors hover:border-[#D9B45B]"
+                      className="inline-flex min-h-[34px] cursor-pointer items-center gap-1 rounded-full border border-[#D8D9C9] bg-[#FFFFFF] px-2.5 py-1 text-[10px] font-mono tracking-wider text-[#063B27] uppercase transition-colors hover:border-[#D9B45B] sm:min-h-[36px] sm:px-3 sm:py-1.5 sm:text-[11px]"
                     >
                       {isAutoPlaying ? (
                         <>

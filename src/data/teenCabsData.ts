@@ -278,7 +278,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'karthik',
     initials: 'S',
-    name: 'Karthik',
+    name: 'Karthik S',
     role: 'Chief Marketing Officer',
     group: 'core',
     portraitSrc: karthikPortrait,
