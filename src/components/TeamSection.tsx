@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { gsap, Observer, useGSAP } from '../motion/setup';
+import { gsap, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
   MOTION_DURATION,
@@ -23,7 +23,6 @@ const TEAM_CATEGORIES: ReadonlyArray<{
   id: TeamCategoryId;
   label: string;
 }> = [
-  { id: 'all', label: 'All' },
   { id: 'founder', label: 'Founder' },
   { id: 'leadership', label: 'Leadership' },
   { id: 'core', label: 'Core Team' },
@@ -96,8 +95,9 @@ export function TeamSection() {
   const spotlightWrapRef = useRef<HTMLDivElement>(null);
   const { prefersReducedMotion, scrollTo } = useLenis();
 
-  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
+  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('founder');
   const [activeIndex, setActiveIndex] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<TeamCategoryId, number> = {
@@ -163,6 +163,7 @@ export function TeamSection() {
   const handleCategoryChange = useCallback((nextCategory: TeamCategoryId) => {
     setActiveCategory(nextCategory);
     setActiveIndex(0);
+    setSlideDirection(1);
   }, []);
 
   const handleInspectFromAll = useCallback(
@@ -193,13 +194,53 @@ export function TeamSection() {
 
   const handlePrev = useCallback(() => {
     if (!canGoPrev) return;
+    setSlideDirection(-1);
     setActiveIndex((prev) => Math.max(0, prev - 1));
   }, [canGoPrev]);
 
   const handleNext = useCallback(() => {
     if (!canGoNext) return;
+    setSlideDirection(1);
     setActiveIndex((prev) => Math.min(filteredMembers.length - 1, prev + 1));
   }, [canGoNext, filteredMembers.length]);
+
+  useEffect(() => {
+    const target = spotlightWrapRef.current;
+    if (
+      !target ||
+      prefersReducedMotion ||
+      activeCategory === 'all' ||
+      filteredMembers.length <= 1
+    ) {
+      return;
+    }
+
+    let hovered = false;
+    const intervalId = window.setInterval(() => {
+      if ((window.innerWidth >= 1024 && hovered) || document.hidden) return;
+
+      setSlideDirection(1);
+      setActiveIndex((previousIndex) =>
+        previousIndex >= filteredMembers.length - 1 ? 0 : previousIndex + 1
+      );
+    }, 3500);
+
+    const onMouseEnter = () => {
+      hovered = true;
+    };
+    const onMouseLeave = () => {
+      hovered = false;
+    };
+
+    target.addEventListener('mouseenter', onMouseEnter);
+    target.addEventListener('mouseleave', onMouseLeave);
+
+    return () => {
+      window.clearInterval(intervalId);
+      target.removeEventListener('mouseenter', onMouseEnter);
+      target.removeEventListener('mouseleave', onMouseLeave);
+    };
+  }, [activeCategory, filteredMembers.length, prefersReducedMotion]);
 
   const handleSpotlightKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
@@ -217,92 +258,6 @@ export function TeamSection() {
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
   const isAllView = activeCategory === 'all';
-
-  // Touch & pointer swipe with Observer + InertiaPlugin snap-back on member spotlights
-  useGSAP(
-    () => {
-      if (prefersReducedMotion || isAllView || filteredMembers.length <= 1) return;
-      const target = spotlightWrapRef.current;
-      if (!target) return;
-
-      const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        let dragOffset = 0;
-
-        const observer = Observer.create({
-          target,
-          type: 'touch,pointer',
-          lockAxis: true,
-          tolerance: 10,
-          onDrag(self) {
-            if (self.axis !== 'x') return;
-            dragOffset = Math.max(-72, Math.min(72, dragOffset + self.deltaX));
-            gsap.set(target, {
-              x: dragOffset,
-              rotation: dragOffset * 0.025,
-            });
-          },
-          onDragEnd(self) {
-            const velocity = self.velocityX;
-            const current = dragOffset;
-            dragOffset = 0;
-
-            if ((current < -42 || velocity < -480) && canGoNext) {
-              gsap.to(target, {
-                x: 0,
-                rotation: 0,
-                duration: 0.22,
-                ease: 'power2.out',
-                clearProps: 'transform',
-              });
-              handleNext();
-              return;
-            }
-
-            if ((current > 42 || velocity > 480) && canGoPrev) {
-              gsap.to(target, {
-                x: 0,
-                rotation: 0,
-                duration: 0.22,
-                ease: 'power2.out',
-                clearProps: 'transform',
-              });
-              handlePrev();
-              return;
-            }
-
-            gsap.to(target, {
-              x: 0,
-              rotation: 0,
-              duration: 0.32,
-              ease: 'power2.out',
-              clearProps: 'transform',
-            });
-          },
-        });
-
-        return () => {
-          observer.kill();
-          gsap.set(target, { clearProps: 'transform' });
-        };
-      });
-
-      return () => mm.revert();
-    },
-    {
-      scope: spotlightWrapRef,
-      dependencies: [
-        activeCategory,
-        canGoNext,
-        canGoPrev,
-        filteredMembers.length,
-        handleNext,
-        handlePrev,
-        isAllView,
-        prefersReducedMotion,
-      ],
-    }
-  );
 
   return (
     <section
@@ -480,7 +435,11 @@ export function TeamSection() {
             </div>
 
             {/* VIEW SWITCH: All Members Grid vs Single Member Spotlight */}
-            <div ref={spotlightWrapRef} aria-live="polite" className="relative">
+            <div
+              ref={spotlightWrapRef}
+              aria-live="polite"
+              className="relative z-10 lg:static"
+            >
               <AnimatePresence mode="wait" initial={false}>
                 {isAllView ? (
                   <motion.div
@@ -527,27 +486,35 @@ export function TeamSection() {
                 ) : (
                   <motion.article
                     key={selectedMember.id}
-                    initial={prefersReducedMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : { opacity: 0, x: slideDirection * 64 }
+                    }
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: 0, x: slideDirection * -64 }
+                    }
                     transition={{
                       duration: prefersReducedMotion ? 0 : 0.11,
                       ease: 'easeOut',
                     }}
-                    className="glass-emerald grid grid-cols-1 items-stretch gap-6 rounded-3xl p-5 shadow-2xl shadow-black/35 sm:p-7 md:grid-cols-12 md:gap-8 lg:gap-10 lg:p-8"
+                    className="glass-emerald grid grid-cols-[minmax(9rem,46%)_1fr] items-center gap-3 rounded-2xl p-3 shadow-xl shadow-black/30 sm:grid-cols-[minmax(12rem,48%)_1fr] sm:gap-5 sm:p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-7 lg:gap-10 lg:p-8"
                   >
                     {/* Featured Single Portrait */}
                     <div className="md:col-span-5">
-                      <div className="mx-auto aspect-[4/5] w-full max-w-[300px] overflow-hidden rounded-2xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-xl shadow-black/30 md:mx-0 md:max-w-none">
+                      <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-lg shadow-black/25 sm:max-w-[260px] md:mx-0 md:max-w-none md:rounded-2xl md:shadow-xl">
                         <PortraitAsset member={selectedMember} eager />
                       </div>
                     </div>
 
                     {/* Editorial Profile & Pull Quote */}
-                    <div className="flex flex-col justify-between md:col-span-7 md:py-1">
+                    <div className="min-w-0 md:col-span-7 md:flex md:flex-col md:justify-between md:py-1">
                       <div>
-                        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-medium tracking-wide text-[#B7C8BA]">
-                          <span className="tracking-[0.12em] text-[#E6C477] uppercase">
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] leading-tight font-medium tracking-wide text-[#B7C8BA] sm:text-[10px]">
+                          <span className="tracking-[0.08em] text-[#E6C477] uppercase">
                             {selectedMember.role}
                           </span>
                           <span aria-hidden="true" className="text-[#285640]">
@@ -556,16 +523,16 @@ export function TeamSection() {
                           <span>{selectedMember.focusArea}</span>
                         </div>
 
-                        <h2 className="mt-2.5 text-2xl font-semibold tracking-tight text-[#F3F0E6] sm:text-3xl lg:text-[2.25rem]">
+                        <h2 className="mt-1.5 text-lg leading-tight font-semibold tracking-tight text-[#F3F0E6] sm:text-2xl md:mt-2.5 md:text-3xl lg:text-[2.25rem]">
                           {selectedMember.name}
                         </h2>
 
-                        <p className="mt-4 max-w-[48ch] text-sm leading-[1.78] font-light text-[#D4E1D8] sm:text-base sm:leading-[1.8]">
+                        <p className="mt-2 line-clamp-4 max-w-[48ch] text-[11px] leading-[1.45] font-light text-[#D4E1D8] sm:line-clamp-none sm:text-sm sm:leading-[1.65] md:mt-4 md:text-base md:leading-[1.8]">
                           {selectedMember.bio}
                         </p>
                       </div>
 
-                      <blockquote className="mt-7 border-t border-[#d4af37]/15 pt-5 sm:mt-8 sm:pt-6">
+                      <blockquote className="hidden border-t border-[#d4af37]/15 pt-5 md:mt-7 md:block lg:mt-8 lg:pt-6">
                         <p className="font-editorial text-lg leading-[1.45] italic text-[#E6C477] sm:text-xl">
                           “{selectedMember.quote}”
                         </p>

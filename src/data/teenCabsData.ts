@@ -6,7 +6,7 @@ import tharunPortrait from '../assets/team/tharun-v.jpeg';
 import kaavyaPortrait from '../../assets/Kaavya.jpeg';
 import sudarshanPortrait from '../../assets/Sudarshan.jpeg';
 import vedaanthPortrait from '../../assets/Vedaanth.jpeg';
-import tejasreePortrait from '../../assets/tejasree.png';
+import tejasreePortrait from '../../assets/tejasree.jpeg';
 
 export interface NeedItem {
   id: string;
@@ -247,7 +247,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Founder & CEO',
     group: 'founder',
     portraitSrc: manishPortrait,
-    bio: 'Visionary behind Forgeit, Manish drives the company’s overall strategy, business development, and digital innovation. He leads the mission to help businesses build powerful digital foundations.',
+    bio: 'Leads Forgeit and Teen Cabs with a focus on useful, trustworthy technology. Shapes the company vision, growth strategy, partnerships, and product decisions around parent confidence and teen independence.',
     focusArea: 'Overall Strategy & Mobility Vision',
     quote:
       'Every parent deserves calm visibility, and every teen deserves a ride built around their world.',
@@ -259,7 +259,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Innovation Officer',
     group: 'leadership',
     portraitSrc: sriramPortrait,
-    bio: 'Imagines the future, sets bold directions, and ensures the company stays ahead through innovation and strategic foresight.',
+    bio: 'Identifies emerging mobility opportunities and converts long-term ideas into practical product direction. Connects user needs, business priorities, and new technologies with changing family expectations.',
     focusArea: 'Future Mobility & Strategic Foresight',
     quote:
       'True independence for teens begins when safety is engineered into the foundation, not bolted on later.',
@@ -271,7 +271,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Marketing Officer',
     group: 'leadership',
     portraitSrc: karthikPortrait,
-    bio: 'Drives marketing strategy, brand growth, and audience engagement.',
+    bio: 'Builds the Teen Cabs brand through thoughtful campaigns, community engagement, and clear communication. Establishes lasting trust with parents, teens, schools, and local mobility partners.',
     focusArea: 'Brand Growth & Community Trust',
     quote:
       'We listen closely to both parents and teens so our platform earns trust across two generations.',
@@ -283,7 +283,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Technology Officer',
     group: 'core',
     portraitSrc: tharunPortrait,
-    bio: 'Oversees technical architecture ensuring every product is scalable and performant.',
+    bio: 'Leads platform architecture, reliability, and real-time systems. Focuses on secure ride telemetry, scalable infrastructure, and the accurate live updates families depend on.',
     focusArea: 'Scalable Architecture & Telemetry',
     quote:
       'Behind every calm parent notification is rock-solid real-time engineering.',
@@ -295,7 +295,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Designing Officer',
     group: 'core',
     portraitSrc: manobalaPortrait,
-    bio: 'Leads UI/UX design strategy crafting visual experiences that are beautiful and purposeful.',
+    bio: 'Directs product design and visual systems across the Teen Cabs experience. Combines accessibility, clarity, and purposeful interactions so families can make confident decisions quickly.',
     focusArea: 'Visual Systems & Product Craft',
     quote:
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
@@ -307,7 +307,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: tejasreePortrait,
-    bio: 'Contributes to product development, user experience design, and feature refinement.',
+    bio: 'Shapes the end-to-end product experience across planning, interaction design, and feature refinement. Turns family feedback into simple journeys that feel clear, comfortable, and easy to use.',
     focusArea: 'Product Experience & Feature Craft',
     quote:
       'Thoughtful design creates effortless journeys for both parents and teens.',
@@ -319,7 +319,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: kaavyaPortrait,
-    bio: 'Contributes to product development and user experience.',
+    bio: 'Supports product research and experience refinement for Teen Cabs. Focuses on rider needs, usability gaps, and turning feedback into polished, practical improvements.',
     focusArea: 'Product Development & User Experience',
     quote: 'Every thoughtful detail should make the journey feel simpler.',
   },
@@ -330,7 +330,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: sudarshanPortrait,
-    bio: 'Works on building and refining core features.',
+    bio: 'Works across core product features, testing, and delivery. Translates product requirements into reliable experiences and refines everyday interactions across devices.',
     focusArea: 'Core Product Features',
     quote: 'The best features make safe journeys feel effortless.',
   },
@@ -341,7 +341,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: vedaanthPortrait,
-    bio: 'Supports development and product innovation.',
+    bio: 'Contributes to product development and new feature experiments. Explores practical improvements to booking, safety information, and rider interactions.',
     focusArea: 'Development & Product Innovation',
     quote: 'Innovation matters most when it improves everyday confidence.',
   },
