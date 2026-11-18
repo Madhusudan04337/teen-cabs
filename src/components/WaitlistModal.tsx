@@ -165,7 +165,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={prefersReducedMotion ? undefined : { opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-md rounded-3xl border border-[#285640] bg-[#0B4933] p-6 shadow-2xl focus:outline-none sm:p-8"
+            className="max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl border border-[#285640] bg-[#063B27] p-5 text-[#E8EEE8] shadow-2xl focus:outline-none sm:p-7"
           >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -184,7 +184,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             type="button"
             onClick={handleResetAndClose}
             aria-label="Close early access dialog"
-            className="inline-flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-full border border-[#285640] bg-[#032A1D] text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
+            className="inline-flex min-h-[40px] min-w-[40px] cursor-pointer items-center justify-center rounded-lg border border-[#285640] bg-[#032A1D] text-[#D4E1D8] transition-colors hover:border-[#D9B45B] hover:text-[#E6C477]"
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -211,7 +211,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             <button
               type="button"
               onClick={handleResetAndClose}
-              className="min-h-[44px] w-full cursor-pointer rounded-full bg-[#E6C477] px-4 py-2.5 text-sm font-semibold text-[#032A1D] transition-colors hover:bg-[#D9B45B]"
+              className="min-h-[44px] w-full cursor-pointer rounded-lg bg-[#E6C477] px-4 py-2.5 text-sm font-semibold text-[#032A1D] transition-colors hover:bg-[#D9B45B]"
             >
               Done
             </button>
@@ -236,7 +236,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     setRole('parent');
                   }}
                   aria-pressed={role === 'parent'}
-                  className={`relative min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`relative min-h-[42px] cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'parent'
                       ? 'text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
@@ -246,7 +246,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     <span
                       data-flip-id="waitlist-role-pill"
                       aria-hidden="true"
-                      className="absolute inset-0 rounded-xl bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
+                      className="absolute inset-0 rounded-lg bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
                     />
                   )}
                   <span className="relative z-10">Parent / Guardian</span>
@@ -259,7 +259,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     setRole('teen');
                   }}
                   aria-pressed={role === 'teen'}
-                  className={`relative min-h-[44px] cursor-pointer rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
+                  className={`relative min-h-[42px] cursor-pointer rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${
                     role === 'teen'
                       ? 'text-[#E6C477]'
                       : 'text-[#B7C8BA] hover:text-[#E8EEE8]'
@@ -269,7 +269,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     <span
                       data-flip-id="waitlist-role-pill"
                       aria-hidden="true"
-                      className="absolute inset-0 rounded-xl bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
+                      className="absolute inset-0 rounded-lg bg-[#0B4933] shadow-sm ring-1 ring-[#E6C477]/20"
                     />
                   )}
                   <span className="relative z-10">Teen (13–18)</span>
@@ -294,7 +294,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                 aria-invalid={Boolean(error && !name.trim())}
                 aria-describedby={error ? errorId : undefined}
                 placeholder="e.g. Priya Sharma"
-                className="min-h-[44px] w-full rounded-xl border border-[#285640] bg-[#032A1D] px-3.5 py-2.5 text-sm text-[#E8EEE8] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                className="min-h-[44px] w-full rounded-lg border border-[#285640] bg-[#032A1D] px-3.5 py-2.5 text-sm text-[#E8EEE8] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
               />
             </div>
 
@@ -314,7 +314,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? errorId : undefined}
                 placeholder="you@example.com"
-                className="min-h-[44px] w-full rounded-xl border border-[#285640] bg-[#032A1D] px-3.5 py-2.5 text-sm text-[#E8EEE8] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                className="min-h-[44px] w-full rounded-lg border border-[#285640] bg-[#032A1D] px-3.5 py-2.5 text-sm text-[#E8EEE8] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
               />
             </div>
 
@@ -322,7 +322,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
               <p
                 id={errorId}
                 role="alert"
-                className="rounded-xl border border-[#D9B45B]/60 bg-[#032A1D] px-3 py-2 text-xs font-medium text-[#E6C477]"
+                className="rounded-lg border border-[#D9B45B]/60 bg-[#032A1D] px-3 py-2 text-xs font-medium text-[#E6C477]"
               >
                 {error}
               </p>
@@ -330,7 +330,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
             <button
               type="submit"
-              className="min-h-[46px] w-full cursor-pointer rounded-full bg-[#E6C477] px-5 py-3 text-sm font-semibold text-[#032A1D] transition-colors hover:bg-[#D9B45B]"
+              className="min-h-[46px] w-full cursor-pointer rounded-lg bg-[#E6C477] px-5 py-3 text-sm font-semibold text-[#032A1D] transition-colors hover:bg-[#D9B45B]"
             >
               Reserve beta access
             </button>

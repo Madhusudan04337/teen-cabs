@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { BrandLogoMark } from './BrandLogoMark';
 
@@ -127,6 +127,8 @@ export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProp
 }
 
 export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
+  const { pathname } = useLocation();
+
   return (
     <footer className="relative z-10 border-t border-[#285640]/50 bg-[#061a12] py-5 sm:py-8 lg:py-10">
       <div className="mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
@@ -237,7 +239,7 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
             </ul>
           </div>
 
-          {/* Column 4: GET IN TOUCH + INTEGRATED MAP */}
+          {/* Column 4: GET IN TOUCH */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-4">
             <p className="text-[11px] font-semibold tracking-[0.16em] text-[#E6C477] uppercase sm:text-xs">
               Get in Touch
@@ -257,33 +259,34 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
               </a>
             </div>
 
-            {/* Small Integrated Google Maps Frame */}
-            <div className="mt-3 overflow-hidden rounded-xl border border-[#d4af37]/25 bg-[#032A1D] shadow-md max-w-sm sm:max-w-none">
-              <div className="relative h-[95px] sm:h-[105px] w-full">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3888.3443265010474!2d80.245964!3d12.949805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU2JzU5LjMiTiA4MMKwMTQnNDUuNSJF!5e0!3m2!1sen!2sin!4v1795019924495!5m2!1sen!2sin"
-                  title="Teen Cabs Headquarters Map - Thoraipakkam, Chennai"
-                  className="h-full w-full border-0"
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
+            {pathname !== '/contact' && (
+              <div className="mt-3 max-w-sm overflow-hidden rounded-xl border border-[#d4af37]/25 bg-[#032A1D] shadow-md sm:max-w-none">
+                <div className="relative h-[95px] w-full sm:h-[105px]">
+                  <iframe
+                    src="https://www.google.com/maps?q=12.949805%2C80.245964&z=15&output=embed"
+                    title="Teen Cabs Headquarters Map - Thoraipakkam, Chennai"
+                    className="h-full w-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-2 border-t border-[#285640]/60 bg-[#061a12]/95 px-2.5 py-1 text-[10px]">
+                  <span className="truncate font-light text-[#B7C8BA]">
+                    Thoraipakkam, Chennai
+                  </span>
+                  <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=12.949805,80.245964"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex shrink-0 items-center gap-0.5 font-medium text-[#E6C477] transition-colors hover:text-[#D9B45B] hover:underline"
+                  >
+                    <span>Directions</span>
+                    <ArrowUpRight className="h-2.5 w-2.5" aria-hidden="true" />
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center justify-between gap-2 border-t border-[#285640]/60 bg-[#061a12]/95 px-2.5 py-1 text-[10px]">
-                <span className="truncate font-light text-[#B7C8BA]">
-                  Thoraipakkam, Chennai
-                </span>
-                <a
-                  href="https://www.google.com/maps/dir/?api=1&destination=12.949805,80.245964"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex shrink-0 items-center gap-0.5 font-medium text-[#E6C477] transition-colors hover:text-[#D9B45B] hover:underline"
-                >
-                  <span>Directions</span>
-                  <ArrowUpRight className="h-2.5 w-2.5" aria-hidden="true" />
-                </a>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 

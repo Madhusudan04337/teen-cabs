@@ -23,7 +23,8 @@ const TEAM_CATEGORIES: ReadonlyArray<{
   id: TeamCategoryId;
   label: string;
 }> = [
-  { id: 'founder', label: 'Founder' },
+  { id: 'all', label: 'All Team' },
+  { id: 'founder', label: 'Founders' },
   { id: 'leadership', label: 'Leadership' },
   { id: 'core', label: 'Core Team' },
   { id: 'product', label: 'Product Team' },
@@ -95,9 +96,10 @@ export function TeamSection() {
   const spotlightWrapRef = useRef<HTMLDivElement>(null);
   const { prefersReducedMotion, scrollTo } = useLenis();
 
-  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('founder');
+  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
+  const [isSpotlight, setIsSpotlight] = useState(false);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<TeamCategoryId, number> = {
@@ -164,6 +166,7 @@ export function TeamSection() {
     setActiveCategory(nextCategory);
     setActiveIndex(0);
     setSlideDirection(1);
+    setIsSpotlight(false);
   }, []);
 
   const handleInspectFromAll = useCallback(
@@ -175,6 +178,7 @@ export function TeamSection() {
       );
       setActiveCategory(member.group);
       setActiveIndex(indexInGroup);
+      setIsSpotlight(true);
 
       if (window.innerWidth < 1024 && contentRef.current) {
         const rect = contentRef.current.getBoundingClientRect();
@@ -204,44 +208,6 @@ export function TeamSection() {
     setActiveIndex((prev) => Math.min(filteredMembers.length - 1, prev + 1));
   }, [canGoNext, filteredMembers.length]);
 
-  useEffect(() => {
-    const target = spotlightWrapRef.current;
-    if (
-      !target ||
-      prefersReducedMotion ||
-      activeCategory === 'all' ||
-      filteredMembers.length <= 1
-    ) {
-      return;
-    }
-
-    let hovered = false;
-    const intervalId = window.setInterval(() => {
-      if ((window.innerWidth >= 1024 && hovered) || document.hidden) return;
-
-      setSlideDirection(1);
-      setActiveIndex((previousIndex) =>
-        previousIndex >= filteredMembers.length - 1 ? 0 : previousIndex + 1
-      );
-    }, 3500);
-
-    const onMouseEnter = () => {
-      hovered = true;
-    };
-    const onMouseLeave = () => {
-      hovered = false;
-    };
-
-    target.addEventListener('mouseenter', onMouseEnter);
-    target.addEventListener('mouseleave', onMouseLeave);
-
-    return () => {
-      window.clearInterval(intervalId);
-      target.removeEventListener('mouseenter', onMouseEnter);
-      target.removeEventListener('mouseleave', onMouseLeave);
-    };
-  }, [activeCategory, filteredMembers.length, prefersReducedMotion]);
-
   const handleSpotlightKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       if (activeCategory === 'all') return;
@@ -257,6 +223,7 @@ export function TeamSection() {
   );
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
+  const isDirectoryView = !isSpotlight;
   const isAllView = activeCategory === 'all';
 
   return (
@@ -264,7 +231,7 @@ export function TeamSection() {
       id="team"
       ref={sectionRef}
       aria-labelledby="team-heading"
-      className="relative z-10 overflow-x-clip bg-transparent py-12 sm:py-16 lg:py-24"
+      className="relative z-10 min-h-[calc(100vh-5rem)] overflow-x-clip bg-transparent py-12 text-[#063B27] sm:py-16 lg:py-24"
     >
 
       <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
@@ -273,7 +240,7 @@ export function TeamSection() {
           <aside className="lg:sticky lg:top-28 lg:col-span-4">
             <p
               data-team-intro
-              className="text-xs font-medium tracking-wide text-[#B7C8BA] sm:text-sm"
+              className="text-xs font-medium tracking-wide text-[#547064] sm:text-sm"
             >
               Our leadership
             </p>
@@ -281,17 +248,17 @@ export function TeamSection() {
             <h1
               id="team-heading"
               data-team-intro
-              className="mt-3 text-balance text-3xl leading-[1.08] font-semibold tracking-[-0.025em] text-[#E8EEE8] sm:text-4xl lg:text-[2.75rem]"
+              className="mt-3 text-balance text-3xl leading-[1.08] font-semibold tracking-[-0.025em] text-[#063B27] sm:text-4xl lg:text-[2.75rem]"
             >
               The People Behind{' '}
-              <span className="font-editorial block font-normal italic text-[#E6C477]">
+              <span className="font-editorial block font-normal italic text-[#8A6720]">
                 Teen Cabs
               </span>
             </h1>
 
             <p
               data-team-intro
-              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-light text-[#D4E1D8] sm:text-[0.9375rem]"
+              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-light text-[#365647] sm:text-[0.9375rem]"
             >
               Forgeit and Teen Cabs are built by a multidisciplinary team of
               strategists, engineers, designers, and outreach leads united by a
@@ -303,7 +270,7 @@ export function TeamSection() {
             <nav
               data-team-intro
               aria-label="Filter team members by category"
-              className="mt-8 hidden border-t border-[#285640] lg:block"
+              className="mt-8 hidden border-t border-[#C8C1AA] lg:block"
             >
               {TEAM_CATEGORIES.map((category) => {
                 const isActive = activeCategory === category.id;
@@ -316,8 +283,8 @@ export function TeamSection() {
                     onClick={() => handleCategoryChange(category.id)}
                     className={`group flex min-h-[46px] w-full cursor-pointer items-center justify-between border-b py-3 text-left transition-colors duration-200 ${
                       isActive
-                        ? 'border-[#E6C477]/80 text-[#E6C477]'
-                        : 'border-[#285640]/80 text-[#D4E1D8] hover:border-[#D9B45B]/50 hover:text-[#E8EEE8]'
+                        ? 'border-[#8A6720]/60 text-[#063B27]'
+                        : 'border-[#C8C1AA] text-[#365647] hover:border-[#D9B45B]/70 hover:text-[#063B27]'
                     }`}
                   >
                     <span className="flex items-center gap-3 text-sm font-medium tracking-wide whitespace-nowrap">
@@ -325,8 +292,8 @@ export function TeamSection() {
                         aria-hidden="true"
                         className={`h-px transition-all duration-200 ${
                           isActive
-                            ? 'w-5 bg-[#E6C477]'
-                            : 'w-2.5 bg-[#285640] group-hover:w-4 group-hover:bg-[#D9B45B]/60'
+                            ? 'w-5 bg-[#8A6720]'
+                            : 'w-2.5 bg-[#B4A989] group-hover:w-4 group-hover:bg-[#D9B45B]/60'
                         }`}
                       />
                       <span>{category.label}</span>
@@ -334,8 +301,8 @@ export function TeamSection() {
                     <span
                       className={`font-mono text-xs tabular-nums transition-colors duration-200 ${
                         isActive
-                          ? 'text-[#E6C477]'
-                          : 'text-[#B7C8BA]/75 group-hover:text-[#D4E1D8]'
+                          ? 'text-[#8A6720]'
+                          : 'text-[#547064] group-hover:text-[#063B27]'
                       }`}
                     >
                       {formatIndex(count)}
@@ -361,8 +328,8 @@ export function TeamSection() {
                     onClick={() => handleCategoryChange(category.id)}
                     className={`inline-flex min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-colors duration-150 ${
                       isActive
-                        ? 'glass-emerald border-[#d4af37]/45 text-[#E6C477]'
-                        : 'glass-emerald text-[#D4E1D8] hover:border-[#d4af37]/30'
+                        ? 'border-[#D9B45B]/60 bg-[#063B27] text-[#F3F0E6]'
+                        : 'border-[#C8C1AA] bg-[#FFFDF7] text-[#365647] hover:border-[#D9B45B]/70'
                     }`}
                   >
                     <span>{category.label}</span>
@@ -383,41 +350,41 @@ export function TeamSection() {
             className="min-w-0 focus:outline-none lg:col-span-8"
           >
             {/* Top Status & Arrow Navigation Header */}
-            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#285640]/80 pb-3.5 sm:mb-8 sm:pb-4">
+            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#C8C1AA] pb-3.5 sm:mb-8 sm:pb-4">
               <div className="flex items-center gap-2.5 font-mono text-xs tabular-nums">
-                <span className="tracking-[0.12em] text-[#E6C477] uppercase">
+                <span className="tracking-[0.12em] text-[#8A6720] uppercase">
                   {activeCategoryLabel}
                 </span>
-                <span aria-hidden="true" className="text-[#285640]">
+                <span aria-hidden="true" className="text-[#B4A989]">
                   /
                 </span>
-                {isAllView ? (
-                  <span className="text-[#B7C8BA]">
+                {isDirectoryView ? (
+                  <span className="text-[#547064]">
                     {formatIndex(filteredMembers.length)} Members
                   </span>
                 ) : (
                   <>
-                    <span className="text-[#E8EEE8]">
+                    <span className="text-[#063B27]">
                       {formatIndex(safeActiveIndex + 1)}
                     </span>
-                    <span aria-hidden="true" className="text-[#B7C8BA]/60">
+                    <span aria-hidden="true" className="text-[#547064]/60">
                       of
                     </span>
-                    <span className="text-[#B7C8BA]">
+                    <span className="text-[#547064]">
                       {formatIndex(filteredMembers.length)}
                     </span>
                   </>
                 )}
               </div>
 
-              {!isAllView && filteredMembers.length > 1 && (
+              {isSpotlight && filteredMembers.length > 1 && (
                 <div className="flex items-center gap-2.5">
                   <button
                     type="button"
                     onClick={handlePrev}
                     disabled={!canGoPrev}
                     aria-label="Previous team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-150 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#B4A989] text-[#063B27] transition-colors duration-150 hover:border-[#063B27] hover:text-[#063B27] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
                   >
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -426,7 +393,7 @@ export function TeamSection() {
                     onClick={handleNext}
                     disabled={!canGoNext}
                     aria-label="Next team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#285640] text-[#E8EEE8] transition-colors duration-150 hover:border-[#E6C477] hover:text-[#E6C477] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#B4A989] text-[#063B27] transition-colors duration-150 hover:border-[#063B27] hover:text-[#063B27] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
                   >
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -441,7 +408,7 @@ export function TeamSection() {
               className="relative z-10 lg:static"
             >
               <AnimatePresence mode="wait" initial={false}>
-                {isAllView ? (
+                {isDirectoryView ? (
                   <motion.div
                     key="all-grid"
                     initial={prefersReducedMotion ? false : { opacity: 0 }}
@@ -451,37 +418,66 @@ export function TeamSection() {
                       duration: prefersReducedMotion ? 0 : 0.12,
                       ease: 'easeOut',
                     }}
-                    className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-5"
+                    className="space-y-10 sm:space-y-12"
                   >
-                    {filteredMembers.map((member, index) => (
-                      <button
-                        key={member.id}
-                        type="button"
-                        onClick={() => handleInspectFromAll(member)}
-                        aria-label={`View profile for ${member.name}, ${member.role}`}
-                        className="group glass-emerald glass-emerald-hover relative aspect-[4/5] w-full cursor-pointer overflow-hidden rounded-2xl text-left shadow-lg shadow-black/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E6C477]"
-                      >
-                        <PortraitAsset
-                          member={member}
-                          eager={index < 6}
-                          compact
-                        />
+                    {(isAllView
+                      ? TEAM_CATEGORIES.filter(
+                          (category) =>
+                            category.id !== 'all' && categoryCounts[category.id] > 0
+                        )
+                      : TEAM_CATEGORIES.filter(
+                          (category) => category.id === activeCategory
+                        )
+                    ).map((category) => {
+                      const members = TEAM_MEMBERS.filter(
+                        (member) => member.group === category.id
+                      );
 
-                        <div
-                          aria-hidden="true"
-                          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#061a12]/92 via-[#061a12]/48 to-transparent"
-                        />
+                      return (
+                        <section key={category.id} aria-labelledby={`${category.id}-team-heading`}>
+                          <div className="mb-4 flex items-center gap-3 border-b border-[#C8C1AA] pb-3">
+                            <h2
+                              id={`${category.id}-team-heading`}
+                              className="font-editorial text-2xl font-normal italic text-[#063B27] sm:text-3xl"
+                            >
+                              {category.label}
+                            </h2>
+                            <span className="font-mono text-xs text-[#547064] tabular-nums">
+                              {formatIndex(members.length)}
+                            </span>
+                          </div>
 
-                        <div className="absolute inset-x-3.5 bottom-3 sm:inset-x-4 sm:bottom-3.5">
-                          <p className="truncate text-[10px] font-semibold tracking-[0.12em] text-[#E6C477] uppercase sm:text-[11px]">
-                            {member.role}
-                          </p>
-                          <h2 className="mt-0.5 truncate text-sm font-semibold tracking-tight text-[#F3F0E6] sm:text-base">
-                            {member.name}
-                          </h2>
-                        </div>
-                      </button>
-                    ))}
+                          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-5">
+                            {members.map((member, index) => (
+                              <button
+                                key={member.id}
+                                type="button"
+                                onClick={() => handleInspectFromAll(member)}
+                                aria-label={`View profile for ${member.name}, ${member.role}`}
+                                className="group flex min-w-0 flex-col rounded-2xl border border-[#AAB69D] bg-[#C5CCB8] p-2.5 text-left shadow-lg shadow-[#063B27]/10 transition-colors hover:border-[#D9B45B] hover:bg-[#BBC5AE] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] sm:p-3"
+                              >
+                                <div className="mx-auto aspect-[4/5] w-[86%] max-w-[220px] overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 sm:w-full">
+                                  <PortraitAsset
+                                    member={member}
+                                    eager={index < 6}
+                                    compact
+                                  />
+                                </div>
+
+                                <div className="w-full px-1 pt-3 pb-1">
+                                  <p className="text-[9px] font-semibold tracking-[0.12em] text-[#8A6720] uppercase sm:text-[10px]">
+                                    {member.role}
+                                  </p>
+                                  <h3 className="mt-1 truncate text-sm font-semibold tracking-tight text-[#063B27] sm:text-base">
+                                    {member.name}
+                                  </h3>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </section>
+                      );
+                    })}
                   </motion.div>
                 ) : (
                   <motion.article
@@ -501,11 +497,11 @@ export function TeamSection() {
                       duration: prefersReducedMotion ? 0 : 0.11,
                       ease: 'easeOut',
                     }}
-                    className="glass-emerald grid grid-cols-[minmax(9rem,46%)_1fr] items-center gap-3 rounded-2xl p-3 shadow-xl shadow-black/30 sm:grid-cols-[minmax(12rem,48%)_1fr] sm:gap-5 sm:p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-7 lg:gap-10 lg:p-8"
+                    className="grid grid-cols-1 gap-5 rounded-2xl border border-[#AAB69D] bg-[#C5CCB8] p-4 shadow-xl shadow-[#063B27]/10 sm:p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-7 lg:gap-10 lg:p-8"
                   >
                     {/* Featured Single Portrait */}
                     <div className="md:col-span-5">
-                      <div className="aspect-[4/5] w-full overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-lg shadow-black/25 sm:max-w-[260px] md:mx-0 md:max-w-none md:rounded-2xl md:shadow-xl">
+                      <div className="mx-auto aspect-[4/5] w-[82%] max-w-[280px] overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-lg shadow-black/25 sm:w-[72%] sm:max-w-[300px] md:w-full md:max-w-none md:rounded-2xl md:shadow-xl">
                         <PortraitAsset member={selectedMember} eager />
                       </div>
                     </div>
@@ -513,27 +509,27 @@ export function TeamSection() {
                     {/* Editorial Profile & Pull Quote */}
                     <div className="min-w-0 md:col-span-7 md:flex md:flex-col md:justify-between md:py-1">
                       <div>
-                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] leading-tight font-medium tracking-wide text-[#B7C8BA] sm:text-[10px]">
-                          <span className="tracking-[0.08em] text-[#E6C477] uppercase">
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] leading-tight font-medium tracking-wide text-[#547064] sm:text-[10px]">
+                          <span className="tracking-[0.08em] text-[#8A6720] uppercase">
                             {selectedMember.role}
                           </span>
-                          <span aria-hidden="true" className="text-[#285640]">
+                          <span aria-hidden="true" className="text-[#B4A989]">
                             ·
                           </span>
                           <span>{selectedMember.focusArea}</span>
                         </div>
 
-                        <h2 className="mt-1.5 text-lg leading-tight font-semibold tracking-tight text-[#F3F0E6] sm:text-2xl md:mt-2.5 md:text-3xl lg:text-[2.25rem]">
+                        <h2 className="mt-1.5 text-base leading-tight font-semibold tracking-tight text-[#063B27] sm:text-xl md:mt-2.5 md:text-2xl lg:text-[2rem]">
                           {selectedMember.name}
                         </h2>
 
-                        <p className="mt-2 line-clamp-4 max-w-[48ch] text-[11px] leading-[1.45] font-light text-[#D4E1D8] sm:line-clamp-none sm:text-sm sm:leading-[1.65] md:mt-4 md:text-base md:leading-[1.8]">
+                        <p className="mt-3 max-w-[48ch] text-[13px] leading-[1.65] font-light text-[#365647] sm:text-sm md:mt-4 md:text-base md:leading-[1.8]">
                           {selectedMember.bio}
                         </p>
                       </div>
 
-                      <blockquote className="hidden border-t border-[#d4af37]/15 pt-5 md:mt-7 md:block lg:mt-8 lg:pt-6">
-                        <p className="font-editorial text-lg leading-[1.45] italic text-[#E6C477] sm:text-xl">
+                      <blockquote className="mt-5 border-t border-[#d4af37]/15 pt-5 md:mt-7 lg:mt-8 lg:pt-6">
+                        <p className="font-editorial text-[17px] leading-[1.5] italic text-[#8A6720] sm:text-lg">
                           “{selectedMember.quote}”
                         </p>
                       </blockquote>

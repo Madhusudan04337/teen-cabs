@@ -22,6 +22,7 @@ const INQUIRY_TOPICS = [
 ] as const;
 
 type InquiryTopic = (typeof INQUIRY_TOPICS)[number];
+type ContactErrorField = 'name' | 'email' | 'message' | null;
 
 // TODO: Configure verified Teen Cabs / Forgeit social profile URLs before linking externally.
 const SOCIAL_PROFILES: ReadonlyArray<{
@@ -73,6 +74,7 @@ export function ContactSection() {
   const [organization, setOrganization] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [errorField, setErrorField] = useState<ContactErrorField>(null);
   const [submitted, setSubmitted] = useState(false);
 
   useGSAP(
@@ -174,19 +176,23 @@ export function ContactSection() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!fullName.trim()) {
+      setErrorField('name');
       setError('Please enter your full name.');
       return;
     }
     if (!emailPattern.test(trimmedEmail)) {
+      setErrorField('email');
       setError('Please enter a valid email address.');
       return;
     }
     if (message.trim().length < 8) {
+      setErrorField('message');
       setError('Please share a brief note about your question or inquiry.');
       return;
     }
 
     setError('');
+    setErrorField(null);
     setSubmitted(true);
   };
 
@@ -198,6 +204,7 @@ export function ContactSection() {
     setOrganization('');
     setMessage('');
     setError('');
+    setErrorField(null);
   };
 
   return (
@@ -332,7 +339,7 @@ export function ContactSection() {
                     </dd>
                     <div className="mt-3 h-[135px] w-full overflow-hidden rounded-xl border border-[#d4af37]/25 bg-[#032A1D] shadow-inner">
                       <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3888.3443265010474!2d80.245964!3d12.949805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTLCsDU2JzU5LjMiTiA4MMKwMTQnNDUuNSJF!5e0!3m2!1sen!2sin!4v1795019924495!5m2!1sen!2sin"
+                        src="https://www.google.com/maps?q=12.949805,80.245964&z=15&output=embed"
                         title="Teen Cabs and Forgeit Office Map - Chennai"
                         className="h-full w-full border-0"
                         allowFullScreen
@@ -488,10 +495,27 @@ export function ContactSection() {
                           type="text"
                           autoComplete="name"
                           value={fullName}
-                          onChange={(e) => setFullName(e.target.value)}
+                          onChange={(e) => {
+                            setFullName(e.target.value);
+                            if (errorField === 'name') {
+                              setError('');
+                              setErrorField(null);
+                            }
+                          }}
+                          aria-invalid={errorField === 'name'}
+                          aria-describedby={errorField === 'name' ? 'contact-name-error' : undefined}
                           placeholder="e.g. Anand Sundaram"
-                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                          className={`min-h-[46px] w-full rounded-xl border bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
+                            errorField === 'name'
+                              ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
+                              : 'border-[#D8D9C9] focus:border-[#D9B45B] focus:ring-[#D9B45B]/35'
+                          }`}
                         />
+                        {errorField === 'name' && (
+                          <p id="contact-name-error" role="alert" className="mt-1.5 text-xs font-medium text-[#C0392B]">
+                            {error}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -506,10 +530,27 @@ export function ContactSection() {
                           type="email"
                           autoComplete="email"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (errorField === 'email') {
+                              setError('');
+                              setErrorField(null);
+                            }
+                          }}
+                          aria-invalid={errorField === 'email'}
+                          aria-describedby={errorField === 'email' ? 'contact-email-error' : undefined}
                           placeholder="you@example.com"
-                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                          className={`min-h-[46px] w-full rounded-xl border bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
+                            errorField === 'email'
+                              ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
+                              : 'border-[#D8D9C9] focus:border-[#D9B45B] focus:ring-[#D9B45B]/35'
+                          }`}
                         />
+                        {errorField === 'email' && (
+                          <p id="contact-email-error" role="alert" className="mt-1.5 text-xs font-medium text-[#C0392B]">
+                            {error}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -560,20 +601,28 @@ export function ContactSection() {
                         id="contact-message"
                         rows={4}
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={(e) => {
+                          setMessage(e.target.value);
+                          if (errorField === 'message') {
+                            setError('');
+                            setErrorField(null);
+                          }
+                        }}
+                        aria-invalid={errorField === 'message'}
+                        aria-describedby={errorField === 'message' ? 'contact-message-error' : undefined}
                         placeholder="Share your questions, school commute needs, or partnership details..."
-                        className="w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-3 text-sm leading-relaxed text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                        className={`w-full rounded-xl border bg-[#FFFFFF] px-4 py-3 text-sm leading-relaxed text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
+                          errorField === 'message'
+                            ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
+                            : 'border-[#D8D9C9] focus:border-[#D9B45B] focus:ring-[#D9B45B]/35'
+                        }`}
                       />
+                      {errorField === 'message' && (
+                        <p id="contact-message-error" role="alert" className="mt-1.5 text-xs font-medium text-[#C0392B]">
+                          {error}
+                        </p>
+                      )}
                     </div>
-
-                    {error && (
-                      <p
-                        role="alert"
-                        className="rounded-xl border border-[#D9B45B] bg-[#FFFFFF] px-3.5 py-2.5 text-xs font-semibold text-[#063B27]"
-                      >
-                        {error}
-                      </p>
-                    )}
 
                     <div className="pt-1">
                       <button

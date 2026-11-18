@@ -1,6 +1,7 @@
 import { useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useLocation } from 'react-router-dom';
 
 interface DustParticle {
   top: string;
@@ -36,6 +37,8 @@ export function LivingAtmosphere() {
   const glowRef = useRef<HTMLDivElement>(null);
   const orbFieldRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
+  const isTeamPage = pathname === '/team';
 
   useGSAP(() => {
     const mm = gsap.matchMedia();
@@ -97,7 +100,9 @@ export function LivingAtmosphere() {
       {/* Fixed Ambient Emerald & Warm Gold Backdrop Layer */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#061a12]"
+        className={`pointer-events-none fixed inset-0 z-0 overflow-hidden ${
+          isTeamPage ? 'bg-[#F3EBDD]' : 'bg-[#061a12]'
+        }`}
       >
         {/* Cursor-Shifted Blurred Light Orbs */}
         <div
@@ -105,16 +110,32 @@ export function LivingAtmosphere() {
           className="absolute -inset-12 transform-gpu will-change-transform"
         >
           {/* Orb 1: Deep Emerald (#0f4c36) drifting top-left */}
-          <div className="animate-orb-one absolute -top-24 -left-16 h-[360px] w-[360px] rounded-full bg-[#0f4c36]/75 blur-[64px] will-change-transform sm:h-[520px] sm:w-[520px] sm:blur-[76px]" />
+          <div
+            className={`animate-orb-one absolute -top-24 -left-16 h-[360px] w-[360px] rounded-full blur-[64px] will-change-transform sm:h-[520px] sm:w-[520px] sm:blur-[76px] ${
+              isTeamPage ? 'bg-[#063B27]/20' : 'bg-[#0f4c36]/75'
+            }`}
+          />
 
           {/* Orb 2: Warm Yellowish-Gold (#d4af37) at subtle low opacity drifting top/mid-right */}
-          <div className="animate-orb-two absolute top-[18%] -right-20 h-[300px] w-[300px] rounded-full bg-[#d4af37]/[0.13] blur-[68px] will-change-transform sm:h-[460px] sm:w-[460px] sm:blur-[80px]" />
+          <div
+            className={`animate-orb-two absolute top-[18%] -right-20 h-[300px] w-[300px] rounded-full blur-[68px] will-change-transform sm:h-[460px] sm:w-[460px] sm:blur-[80px] ${
+              isTeamPage ? 'bg-[#d4af37]/[0.18]' : 'bg-[#d4af37]/[0.13]'
+            }`}
+          />
 
           {/* Orb 3: Deep Emerald (#0f4c36) + subtle warm-gold core drifting lower-left */}
-          <div className="animate-orb-three absolute -bottom-24 left-[22%] h-[340px] w-[340px] rounded-full bg-[#0f4c36]/65 blur-[68px] will-change-transform sm:h-[500px] sm:w-[500px] sm:blur-[80px]" />
+          <div
+            className={`animate-orb-three absolute -bottom-24 left-[22%] h-[340px] w-[340px] rounded-full blur-[68px] will-change-transform sm:h-[500px] sm:w-[500px] sm:blur-[80px] ${
+              isTeamPage ? 'bg-[#063B27]/15' : 'bg-[#0f4c36]/65'
+            }`}
+          />
 
           {/* Orb 4: Soft Low-Opacity Gold Accent drifting lower-center/right behind glass panels */}
-          <div className="animate-orb-one hidden absolute bottom-[12%] right-[24%] h-[320px] w-[320px] rounded-full bg-[#d4af37]/[0.09] blur-[76px] will-change-transform md:block" />
+          <div
+            className={`animate-orb-one hidden absolute bottom-[12%] right-[24%] h-[320px] w-[320px] rounded-full blur-[76px] will-change-transform md:block ${
+              isTeamPage ? 'bg-[#d4af37]/[0.14]' : 'bg-[#d4af37]/[0.09]'
+            }`}
+          />
         </div>
 
         {/* Subtle Floating Golden Micro-Dust Particles */}
@@ -136,7 +157,9 @@ export function LivingAtmosphere() {
             <span
               key={idx}
               style={particleStyle}
-              className={`animate-dust-float absolute rounded-full bg-[#d4af37] shadow-[0_0_8px_rgba(212,175,55,0.45)] will-change-transform ${
+              className={`animate-dust-float absolute rounded-full shadow-[0_0_8px_rgba(212,175,55,0.45)] will-change-transform ${
+                isTeamPage ? 'bg-[#8A6720]' : 'bg-[#d4af37]'
+              } ${
                 particle.desktopOnly ? 'hidden md:block' : ''
               }`}
             />
@@ -146,7 +169,9 @@ export function LivingAtmosphere() {
         {/* Cursor-Following Soft Golden Glow (Desktop fine pointer only) */}
         <div
           ref={glowRef}
-          className="fixed top-0 left-0 hidden h-[480px] w-[480px] transform-gpu rounded-full bg-[#d4af37]/[0.08] blur-[72px] will-change-transform md:block"
+          className={`fixed top-0 left-0 hidden h-[480px] w-[480px] transform-gpu rounded-full blur-[72px] will-change-transform md:block ${
+            isTeamPage ? 'bg-[#d4af37]/[0.12]' : 'bg-[#d4af37]/[0.08]'
+          }`}
         />
       </div>
     </>

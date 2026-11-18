@@ -342,7 +342,12 @@ export function MainLayout() {
 
   return (
     <LenisContext.Provider value={lenisContextValue}>
-      <div id="top" className="site-canvas relative min-h-screen text-[#E8EEE8]">
+      <div
+        id="top"
+        className={`site-canvas relative min-h-screen ${
+          pathname === '/team' ? 'team-canvas text-[#063B27]' : 'text-[#E8EEE8]'
+        }`}
+      >
         <LogoIntro />
         <LivingAtmosphere />
         <Navbar onOpenWaitlist={handleOpenWaitlist} />
