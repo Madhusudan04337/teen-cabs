@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { useReducedMotion } from 'motion/react';
 import {
   ArrowDown,
   ArrowUpRight,
-  MapPin,
   Navigation,
   Pause,
   Play,
@@ -298,7 +297,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
       <div className="mx-auto max-w-[1200px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
           {/* SCENE 01 — EDITORIAL HEADLINE & SCENE 03 — NEXT STEP */}
-          <div className="flex flex-col justify-center space-y-6 sm:space-y-4 lg:order-1 lg:col-span-6">
+          <div className="flex flex-col justify-center space-y-5 sm:space-y-4 lg:order-1 lg:col-span-6">
             <p
               data-hero-eyebrow
               className="text-xs font-medium tracking-wide text-[#D4E1D8] sm:text-sm"
@@ -309,7 +308,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
             <h1
               id="hero-heading"
               ref={headingRef}
-              className="text-balance text-[clamp(1.875rem,5.2vw,4.25rem)] leading-[1.12] sm:leading-[1.08] font-semibold tracking-[-0.025em] text-[#E8EEE8]"
+              className="text-balance text-[2.125rem] leading-[1.08] font-semibold tracking-[-0.03em] text-[#E8EEE8] sm:text-[clamp(2.75rem,5.2vw,4.25rem)]"
             >
               <span className="block pb-1">Safe rides.</span>
               <span className="font-editorial block pb-1.5 font-normal italic text-[#E6C477]">
@@ -320,16 +319,16 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
             <div
               data-hero-copy
-              className="pt-2 sm:pt-1 w-full min-w-0"
+              className="w-full min-w-0 pt-1 sm:pt-1"
             >
-              <p className="font-editorial text-[1rem] leading-snug italic text-[#E6C477] break-words sm:text-lg">
+              <p className="max-w-[30ch] font-editorial text-[1.0625rem] leading-[1.35] italic text-[#E6C477] sm:text-lg">
                 Live route telemetry shared calmly with parents.
               </p>
             </div>
 
             <p
               data-hero-copy
-              className="max-w-[46ch] text-[0.9375rem] leading-[1.6] font-normal text-[#D4E1D8] sm:text-lg"
+              className="max-w-[38ch] text-[0.9375rem] leading-[1.65] text-[#D4E1D8] sm:max-w-[46ch] sm:text-lg"
             >
               Teen Cabs is a supervised mobility platform built exclusively for
               teens — uniting vetted drivers and live route visibility with an
@@ -338,13 +337,13 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
             <div
               data-hero-cta
-              className="pt-2 sm:pt-1 flex flex-wrap items-center gap-3.5 sm:gap-5"
+              className="flex flex-col items-stretch gap-2 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5"
             >
               <button
                 ref={ctaBtnRef}
                 type="button"
                 onClick={onOpenWaitlist}
-                className="group/cta inline-flex min-h-[46px] shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-full bg-[#E6C477] px-6.5 py-3 text-sm font-semibold text-[#032A1D] shadow-lg shadow-black/25 transition-colors duration-150 hover:bg-[#D9B45B]"
+                className="group/cta inline-flex min-h-[46px] w-full cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#E6C477] px-6 py-3 text-sm font-semibold text-[#032A1D] shadow-lg shadow-black/25 transition-colors duration-150 hover:bg-[#D9B45B] sm:w-auto sm:shrink-0"
               >
                 <span>Get early access</span>
                 <ArrowUpRight
@@ -355,7 +354,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
 
               <a
                 href="#the-need"
-                className="inline-flex min-h-[46px] shrink-0 items-center gap-2 whitespace-nowrap px-3 py-3 text-sm font-medium text-[#E8EEE8] underline-offset-8 transition-colors duration-150 hover:text-[#E6C477] hover:underline"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 whitespace-nowrap px-2 py-2 text-sm font-medium text-[#E8EEE8] underline-offset-8 transition-colors duration-150 hover:text-[#E6C477] hover:underline sm:min-h-[46px] sm:shrink-0 sm:justify-start sm:px-3 sm:py-3"
               >
                 <span>Discover Teen Cabs</span>
                 <ArrowDown className="h-4 w-4 text-[#E6C477]" aria-hidden="true" />
@@ -463,36 +462,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                   isAutoPlaying={isAutoPlaying}
                 />
 
-                <div aria-live="polite" className="mt-3 px-1">
-                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
-                    <div className="flex items-start gap-2.5 sm:items-center">
-                      <span
-                        className="relative mt-0.5 flex h-3.5 w-3.5 shrink-0 items-center justify-center sm:mt-0"
-                        aria-hidden="true"
-                      >
-                        <span className="animate-radar-ripple absolute inline-flex h-full w-full rounded-full bg-[#E6C477]" />
-                        <MapPin className="relative h-3.5 w-3.5 text-[#063B27]" />
-                      </span>
-                      <AnimatePresence mode="wait">
-                        <motion.span
-                          key={`${activeCheckpoint}-${perspectiveMode}`}
-                          initial={prefersReducedMotion ? false : { opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={prefersReducedMotion ? undefined : { opacity: 0, y: -5 }}
-                          transition={{ duration: 0.22, ease: 'easeOut' }}
-                          className="text-xs font-medium text-[#063B27] sm:text-sm"
-                        >
-                          {perspectiveMode === 'parent'
-                            ? routeProgress.parentStatus
-                            : routeProgress.teenStatus}
-                        </motion.span>
-                      </AnimatePresence>
-                    </div>
-                    <span className="pl-6 font-mono text-xs tabular-nums text-[#547064] sm:pl-0">
-                      {routeProgress.eta}
-                    </span>
-                  </div>
-
+                <div aria-live="polite" className="mt-2 px-1">
                   <div
                     aria-hidden="true"
                     className="mt-3 h-[2px] w-full overflow-hidden rounded-full bg-[#D8D9C9]"
@@ -506,7 +476,7 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                   <div
                     role="group"
                     aria-label="Select live trip stage"
-                    className="mt-3 flex flex-wrap items-center justify-between gap-4"
+                    className="mt-2 flex items-center"
                   >
                     <div className="flex items-center gap-5">
                       {(
@@ -545,9 +515,6 @@ export function HeroSection({ onOpenWaitlist }: HeroSectionProps) {
                         );
                       })}
                     </div>
-                    <span className="text-xs text-[#547064]">
-                      {routeProgress.location}
-                    </span>
                   </div>
                 </div>
               </div>

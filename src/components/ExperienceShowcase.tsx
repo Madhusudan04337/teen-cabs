@@ -279,27 +279,27 @@ export function ExperienceShowcase() {
               </p>
 
               {/* Open Safeguards Summary List */}
-              <div className="mt-8 space-y-6">
+              <div className="mt-7 space-y-0">
                 {secondarySafetyProtocols.map((protocol) => {
                   const meta = SAFETY_METRICS[protocol.id];
                   const Icon = meta.Icon;
                   return (
-                    <div key={protocol.id}>
-                      <div className="flex items-center justify-between gap-4">
-                        <div className="flex items-center gap-2.5">
+                    <div key={protocol.id} className="border-t border-[#285640]/60 py-4 first:border-t-0 first:pt-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2.5">
                           <Icon
                             className="h-4 w-4 shrink-0 text-[#E6C477]"
                             aria-hidden="true"
                           />
-                          <h3 className="text-base font-semibold text-[#E8EEE8]">
+                          <h3 className="text-[15px] leading-snug font-semibold text-[#E8EEE8] sm:text-base">
                             {protocol.heading}
                           </h3>
                         </div>
-                        <span className="font-mono text-xs font-medium text-[#E6C477] tabular-nums">
+                        <span className="shrink-0 rounded-full border border-[#285640]/70 bg-[#0B4933]/35 px-2.5 py-1 text-right font-mono text-[10px] leading-tight font-semibold text-[#E6C477] tabular-nums sm:text-xs">
                           {meta.metric}
                         </span>
                       </div>
-                      <p className="mt-1.5 text-sm leading-[1.65] font-light text-[#D4E1D8]">
+                      <p className="mt-2 text-[13px] leading-[1.55] text-[#D4E1D8] sm:text-sm sm:leading-[1.65]">
                         {protocol.summary}
                       </p>
                     </div>
@@ -552,15 +552,14 @@ export function ExperienceShowcase() {
                 </span>
               </h2>
 
-              <p className="mt-4 max-w-[44ch] text-sm leading-[1.7] font-light text-[#D4E1D8] sm:text-base">
-                Personalised cabin music presets and calm sensory profiles teens
-                genuinely enjoy.
+              <p className="mt-3 max-w-[44ch] text-sm leading-[1.65] text-[#D4E1D8] sm:text-base">
+                Choose a cabin mood that feels right.
               </p>
 
               {/* Open Borderless Preset Selector Rows */}
               <div
                 aria-label="Available teen cabin audio preferences"
-                className="mt-8 space-y-2"
+                className="mt-5 divide-y divide-[#285640]/50"
               >
                 {VIBE_PRESETS.map((preset) => {
                   const selected = preset.id === activeVibeId;
@@ -570,21 +569,20 @@ export function ExperienceShowcase() {
                       type="button"
                       onClick={() => setActiveVibeId(preset.id)}
                       aria-pressed={selected}
-                      className={`group flex w-full cursor-pointer items-center justify-between gap-4 rounded-2xl border px-4 py-3.5 text-left transition-colors duration-200 ${
+                      className={`group flex w-full cursor-pointer items-center justify-between gap-4 py-3 text-left transition-colors duration-200 ${
                         selected
-                          ? 'glass-emerald border-[#d4af37]/30'
-                          : 'border-transparent hover:bg-[#0b2d20]/30'
+                          ? 'text-[#E6C477]'
+                          : 'text-[#D4E1D8] hover:text-[#E6C477]'
                       }`}
                     >
                       <div className="min-w-0">
-                        <p className="text-xs font-medium text-[#E6C477]">
+                        <p className="text-[10px] font-medium tracking-wide text-[#B7C8BA] uppercase">
                           {preset.label}
                         </p>
-                        <p className="mt-0.5 font-editorial text-lg italic text-[#F3F0E6]">
+                        <p className={`mt-0.5 font-editorial text-lg leading-tight italic ${
+                          selected ? 'text-[#E6C477]' : 'text-[#F3F0E6]'
+                        }`}>
                           {preset.trackTitle}
-                        </p>
-                        <p className="mt-1 text-xs leading-relaxed font-light text-[#D4E1D8]">
-                          {preset.cabinSetting}
                         </p>
                       </div>
 
@@ -619,10 +617,10 @@ export function ExperienceShowcase() {
                   className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10]"
                 />
 
-                <div className="border-t border-[#d4af37]/15 p-6 sm:p-7">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="border-t border-[#d4af37]/15 p-4 sm:p-7">
+                  <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 text-xs font-medium text-[#D4E1D8]">
+                      <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#D4E1D8] sm:text-xs">
                         <span className="font-mono text-[#E6C477]">Cabin preview</span>
                         <span aria-hidden="true">·</span>
                         <span>{activeVibe.label}</span>
@@ -635,27 +633,27 @@ export function ExperienceShowcase() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
                           transition={{ duration: 0.2 }}
-                          className="mt-2"
+                          className="mt-1.5"
                         >
-                          <p className="font-editorial text-xl italic text-[#E8EEE8] sm:text-2xl">
+                          <p className="max-w-[22ch] font-editorial text-lg leading-[1.2] italic text-[#E8EEE8] sm:max-w-none sm:text-2xl">
                             {activeVibe.trackTitle}
                           </p>
-                          <p className="mt-1 text-xs font-light text-[#D4E1D8] sm:text-sm">
+                          <p className="mt-1 max-w-[26ch] text-[10px] leading-[1.45] font-light text-[#D4E1D8] sm:max-w-none sm:text-sm">
                             {activeVibe.cabinSetting}
                           </p>
                         </motion.div>
                       </AnimatePresence>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex shrink-0 flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
                       <div
                         aria-hidden="true"
-                        className="flex h-9 items-end gap-1.5"
+                        className="flex h-8 items-end gap-1 sm:h-9 sm:gap-1.5"
                       >
                         {activeVibe.bars.map((height, idx) => (
                           <span
                             key={idx}
-                            className={`w-1.5 rounded-full bg-[#E6C477] transition-all duration-200 ${
+                            className={`w-1 rounded-full bg-[#E6C477] transition-all duration-200 sm:w-1.5 ${
                               isAudioAnimating && activeVibe.id !== 'quiet'
                                 ? 'animate-wave-bar'
                                 : ''
@@ -677,7 +675,7 @@ export function ExperienceShowcase() {
                             ? 'Pause cabin equalizer'
                             : 'Play cabin equalizer'
                         }
-                        className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full border border-[#285640] bg-[#063B27] px-4 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#E6C477]/60 hover:text-[#E6C477] sm:min-h-[40px]"
+                        className="inline-flex h-9 shrink-0 cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-full border border-[#285640] bg-[#063B27] px-2.5 text-[10px] font-medium text-[#D4E1D8] transition-colors hover:border-[#E6C477]/60 hover:text-[#E6C477] sm:h-10 sm:px-4 sm:text-xs"
                       >
                         {isAudioAnimating ? (
                           <>

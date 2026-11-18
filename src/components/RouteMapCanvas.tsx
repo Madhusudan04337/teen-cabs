@@ -399,28 +399,6 @@ function RouteMapCanvasInner(props: RouteMapCanvasProps) {
 
   return (
     <div className="text-[#063B27]">
-      {/* Sub-header status bar */}
-      <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 px-0.5 sm:mb-3">
-        <div className="flex items-center gap-2">
-          <p className="text-xs font-bold tracking-wide text-[#063B27] sm:text-sm">
-            {perspectiveMode === 'parent' ? 'Parent route monitor' : 'Teen ride corridor'}
-          </p>
-          <span className="hidden text-xs text-[#547064] sm:inline" aria-hidden="true">
-            ·
-          </span>
-          <span className="hidden text-xs font-medium text-[#547064] sm:inline">
-            Sample preview
-          </span>
-        </div>
-        <span className="rounded-full bg-[#E8EEE8] px-2.5 py-0.5 font-mono text-[10px] font-semibold tracking-wide text-[#063B27] sm:bg-transparent sm:px-0 sm:py-0 sm:text-[11px]">
-          {activeStage === 'pickup'
-            ? 'Gate pickup'
-            : activeStage === 'enroute'
-              ? 'Safe corridor'
-              : 'Verified drop-off'}
-        </span>
-      </div>
-
       {/* Shared Pale Sage (#E8EEE8) Street Map Surface matching 560x360 viewBox aspect */}
       <div
         ref={mapContainerRef}
