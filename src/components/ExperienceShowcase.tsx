@@ -5,7 +5,6 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
-  Disc3,
   MapPin,
   Pause,
   PhoneCall,
@@ -16,6 +15,8 @@ import {
   UserCheck,
   X,
 } from 'lucide-react';
+import verifiedDriverImg from '../assets/images/features_verified_driver_clean_1794994233919.jpg';
+import calmCabinImg from '../assets/images/features_calm_cabin_1794994192851.jpg';
 import { SAFETY_PROTOCOLS, VIBE_PRESETS } from '../data/teenCabsData';
 import { useLenis } from '../motion/LenisContext';
 import { gsap, useGSAP } from '../motion/setup';
@@ -286,54 +287,37 @@ export function ExperienceShowcase() {
               </div>
             </div>
 
-            {/* Right Visual Stage: Minimalist Glassmorphism Verification Card */}
+            {/* Right Visual Stage: Verified Driver Photography & Verification Summary */}
             <div data-panel-visual className="lg:col-span-7">
-              <div className="rounded-3xl bg-[#032A1D]/50 p-8 shadow-2xl shadow-black/30 ring-1 ring-[#E8EEE8]/10 backdrop-blur-md sm:p-10">
-                <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-8">
-                  {/* Side A: Trust Shield & Driver Badge */}
-                  <div className="flex flex-col items-center text-center md:col-span-5">
-                    <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-[radial-gradient(circle,#0B4933_0%,rgba(3,42,29,0)_72%)]">
-                      <span
-                        aria-hidden="true"
-                        className="animate-living-breath absolute inset-3 rounded-full border border-[#E6C477]/35"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className="animate-radar-ripple absolute inset-7 rounded-full border border-[#E6C477]/40"
-                      />
-                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-[#E6C477] text-[#032A1D] shadow-xl shadow-black/30">
-                        <UserCheck className="h-9 w-9" aria-hidden="true" />
-                      </div>
-                    </div>
-
-                    <p className="mt-4 font-mono text-xs font-semibold tracking-[0.1em] text-[#E6C477] tabular-nums">
-                      {SAFETY_METRICS.verified.metric}
-                    </p>
-                    <p className="mt-1.5 text-lg font-semibold text-[#E8EEE8]">
-                      {SAFETY_METRICS.verified.badgeTitle}
-                    </p>
-                    <p className="mt-1 max-w-[24ch] text-xs leading-relaxed font-light text-[#D4E1D8]">
-                      {SAFETY_METRICS.verified.badgeSubtitle}
-                    </p>
+              <div className="overflow-hidden rounded-3xl border border-[#285640] bg-[#032A1D] shadow-2xl shadow-black/35">
+                <div className="grid grid-cols-1 md:grid-cols-12">
+                  {/* Side A: Authentic Uniformed Chauffeur Portrait */}
+                  <div className="relative md:col-span-6">
+                    <img
+                      src={verifiedDriverImg}
+                      alt="Uniformed verified driver holding open the rear passenger door of a clean silver sedan on a sunlit Chennai residential street"
+                      loading="lazy"
+                      className="aspect-[4/3] h-full w-full object-cover object-top md:aspect-auto"
+                    />
                   </div>
 
-                  {/* Side B: Spacious Borderless Verification Details */}
-                  <div className="flex flex-col justify-between md:col-span-7">
+                  {/* Side B: Clean Solid Verification Checklist */}
+                  <div className="flex flex-col justify-between p-6 sm:p-8 md:col-span-6">
                     <div>
                       <div className="flex items-baseline justify-between gap-3">
                         <p className="text-base font-semibold text-[#F3F0E6]">
                           {primaryDriverProtocol.heading}
                         </p>
                         <span className="font-mono text-xs font-medium text-[#E6C477]">
-                          Verified drivers
+                          {SAFETY_METRICS.verified.metric}
                         </span>
                       </div>
 
-                      <ul className="mt-6 space-y-4">
+                      <ul className="mt-5 space-y-3.5">
                         {primaryDriverProtocol.checkpoints.map((point) => (
                           <li
                             key={point}
-                            className="flex items-start gap-3 text-sm leading-relaxed text-[#E8EEE8]"
+                            className="flex items-start gap-2.5 text-sm leading-relaxed text-[#E8EEE8]"
                           >
                             <CheckCircle2
                               className="mt-0.5 h-4 w-4 shrink-0 text-[#E6C477]"
@@ -345,12 +329,12 @@ export function ExperienceShowcase() {
                       </ul>
                     </div>
 
-                    <div className="mt-8 grid grid-cols-2 gap-6 pt-2">
+                    <div className="mt-7 grid grid-cols-2 gap-4 border-t border-[#285640] pt-5">
                       <div>
                         <p className="text-xs font-medium text-[#B7C8BA]">
                           SOS support
                         </p>
-                        <p className="mt-1 font-mono text-sm font-semibold text-[#F3F0E6] tabular-nums">
+                        <p className="mt-1 font-mono text-xs font-semibold text-[#F3F0E6] tabular-nums sm:text-sm">
                           {SAFETY_METRICS.sos.metric}
                         </p>
                       </div>
@@ -358,7 +342,7 @@ export function ExperienceShowcase() {
                         <p className="text-xs font-medium text-[#B7C8BA]">
                           Live GPS
                         </p>
-                        <p className="mt-1 font-mono text-sm font-semibold text-[#F3F0E6] tabular-nums">
+                        <p className="mt-1 font-mono text-xs font-semibold text-[#F3F0E6] tabular-nums sm:text-sm">
                           {SAFETY_METRICS.gps.metric}
                         </p>
                       </div>
@@ -612,100 +596,94 @@ export function ExperienceShowcase() {
               </div>
             </div>
 
-            {/* Right Visual Mockup: Minimalist Glassmorphism Cabin Audio Preview */}
+            {/* Right Visual Stage: Editorial Cabin Photography & Audio Preference Bar */}
             <div data-panel-visual className="lg:col-span-7">
-              <div className="rounded-3xl bg-[#032A1D]/45 p-7 shadow-2xl shadow-black/25 ring-1 ring-[#E8EEE8]/10 backdrop-blur-md sm:p-10">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 text-xs font-medium text-[#D4E1D8]">
-                    <span className="font-mono text-[#E6C477]">Cabin preview</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{activeVibe.label}</span>
-                  </div>
+              <div className="overflow-hidden rounded-3xl border border-[#285640] bg-[#032A1D] shadow-2xl shadow-black/35">
+                <img
+                  src={calmCabinImg}
+                  alt="Teenager seated comfortably in a clean cab backseat wearing headphones and looking out at sunlit trees"
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10]"
+                />
 
-                  <button
-                    type="button"
-                    onClick={() => setIsAudioAnimating((prev) => !prev)}
-                    aria-label={
-                      isAudioAnimating
-                        ? 'Pause cabin equalizer'
-                        : 'Play cabin equalizer'
-                    }
-                    className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full bg-[#032A1D]/70 px-4 py-2 text-xs font-medium text-[#D4E1D8] ring-1 ring-[#E8EEE8]/15 transition-colors hover:text-[#E6C477] hover:ring-[#E6C477]/45 sm:min-h-[40px]"
-                  >
-                    {isAudioAnimating ? (
-                      <>
-                        <Pause
-                          className="h-3.5 w-3.5 text-[#E6C477]"
-                          aria-hidden="true"
-                        />
-                        <span>Playing</span>
-                      </>
-                    ) : (
-                      <>
-                        <Play
-                          className="h-3.5 w-3.5 text-[#E6C477]"
-                          aria-hidden="true"
-                        />
-                        <span>Paused</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+                <div className="border-t border-[#285640] p-6 sm:p-7">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 text-xs font-medium text-[#D4E1D8]">
+                        <span className="font-mono text-[#E6C477]">Cabin preview</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{activeVibe.label}</span>
+                      </div>
 
-                <div className="mt-7 flex flex-wrap items-center gap-7">
-                  <div className="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-[radial-gradient(circle,#0B4933_0%,#032A1D_72%)] shadow-xl shadow-black/40">
-                    <span
-                      aria-hidden="true"
-                      className="animate-living-breath absolute inset-2 rounded-full border border-[#D9B45B]/45"
-                    />
-                    <Disc3
-                      className={`h-11 w-11 text-[#E6C477] ${
-                        isAudioAnimating && activeVibe.id !== 'quiet'
-                          ? 'animate-spin'
-                          : ''
-                      }`}
-                      style={{ animationDuration: '7s' }}
-                      aria-hidden="true"
-                    />
-                  </div>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={activeVibe.id}
+                          initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
+                          transition={{ duration: 0.2 }}
+                          className="mt-2"
+                        >
+                          <p className="font-editorial text-xl italic text-[#E8EEE8] sm:text-2xl">
+                            {activeVibe.trackTitle}
+                          </p>
+                          <p className="mt-1 text-xs font-light text-[#D4E1D8] sm:text-sm">
+                            {activeVibe.cabinSetting}
+                          </p>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
 
-                  <div className="min-w-0 flex-1">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={activeVibe.id}
-                        initial={prefersReducedMotion ? false : { opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
-                        transition={{ duration: 0.2 }}
+                    <div className="flex items-center gap-4">
+                      <div
+                        aria-hidden="true"
+                        className="flex h-9 items-end gap-1.5"
                       >
-                        <p className="font-editorial text-2xl italic text-[#E8EEE8] sm:text-[1.75rem]">
-                          {activeVibe.trackTitle}
-                        </p>
-                        <p className="mt-1.5 text-sm font-light text-[#D4E1D8]">
-                          {activeVibe.cabinSetting}
-                        </p>
-                      </motion.div>
-                    </AnimatePresence>
+                        {activeVibe.bars.map((height, idx) => (
+                          <span
+                            key={idx}
+                            className={`w-1.5 rounded-full bg-[#E6C477] transition-all duration-200 ${
+                              isAudioAnimating && activeVibe.id !== 'quiet'
+                                ? 'animate-wave-bar'
+                                : ''
+                            }`}
+                            style={{
+                              height: `${height}%`,
+                              opacity: 0.45 + (idx % 3) * 0.22,
+                              animationDelay: `${idx * 110}ms`,
+                            }}
+                          />
+                        ))}
+                      </div>
 
-                    <div
-                      aria-hidden="true"
-                      className="mt-6 flex h-10 items-end gap-1.5"
-                    >
-                      {activeVibe.bars.map((height, idx) => (
-                        <span
-                          key={idx}
-                          className={`w-2 rounded-full bg-[#E6C477] transition-all duration-200 ${
-                            isAudioAnimating && activeVibe.id !== 'quiet'
-                              ? 'animate-wave-bar'
-                              : ''
-                          }`}
-                          style={{
-                            height: `${height}%`,
-                            opacity: 0.45 + (idx % 3) * 0.22,
-                            animationDelay: `${idx * 110}ms`,
-                          }}
-                        />
-                      ))}
+                      <button
+                        type="button"
+                        onClick={() => setIsAudioAnimating((prev) => !prev)}
+                        aria-label={
+                          isAudioAnimating
+                            ? 'Pause cabin equalizer'
+                            : 'Play cabin equalizer'
+                        }
+                        className="inline-flex min-h-[44px] shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full border border-[#285640] bg-[#063B27] px-4 py-2 text-xs font-medium text-[#D4E1D8] transition-colors hover:border-[#E6C477]/60 hover:text-[#E6C477] sm:min-h-[40px]"
+                      >
+                        {isAudioAnimating ? (
+                          <>
+                            <Pause
+                              className="h-3.5 w-3.5 text-[#E6C477]"
+                              aria-hidden="true"
+                            />
+                            <span>Playing</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play
+                              className="h-3.5 w-3.5 text-[#E6C477]"
+                              aria-hidden="true"
+                            />
+                            <span>Paused</span>
+                          </>
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>

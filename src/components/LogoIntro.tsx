@@ -37,7 +37,15 @@ export function LogoIntro() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       markIntroSeenInSession();
       setDismissed(true);
+      return;
     }
+
+    const failsafeTimer = window.setTimeout(() => {
+      markIntroSeenInSession();
+      setDismissed(true);
+    }, 2600);
+
+    return () => window.clearTimeout(failsafeTimer);
   }, [dismissed]);
 
   useGSAP(

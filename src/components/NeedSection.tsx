@@ -1,9 +1,87 @@
-import { useState, useRef } from 'react';
+import { memo, useEffect, useState, useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import { BIGGER_PICTURE_STATS, NEED_ITEMS } from '../data/teenCabsData';
+
+const SmoothPercentageStat = memo(function SmoothPercentageStat({
+  target,
+  prefersReducedMotion,
+}: {
+  target: number;
+  prefersReducedMotion: boolean | null;
+}) {
+  const wrapRef = useRef<HTMLSpanElement>(null);
+  const hasCountedRef = useRef(false);
+  const [value, setValue] = useState<number>(() => (prefersReducedMotion ? target : 0));
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      hasCountedRef.current = true;
+      setValue(target);
+    }
+  }, [prefersReducedMotion, target]);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const el = wrapRef.current;
+        if (!el) return;
+
+        if (hasCountedRef.current) {
+          setValue(target);
+          return;
+        }
+
+        const counter = { val: 0 };
+        gsap.to(counter, {
+          val: target,
+          duration: 0.85,
+          ease: 'sine.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 90%',
+            toggleActions: 'play none none none',
+            once: true,
+            onEnter: () => {
+              hasCountedRef.current = true;
+            },
+          },
+          onUpdate: () => {
+            setValue(Math.round(counter.val));
+          },
+          onComplete: () => {
+            hasCountedRef.current = true;
+            setValue(target);
+          },
+        });
+      });
+
+      return () => {
+        if (hasCountedRef.current) setValue(target);
+        mm.revert();
+      };
+    },
+    { scope: wrapRef, dependencies: [prefersReducedMotion, target] }
+  );
+
+  return (
+    <span
+      ref={wrapRef}
+      className="font-editorial relative inline-block shrink-0 pr-1 text-6xl leading-none font-normal italic tabular-nums text-[#E6C477] sm:text-7xl lg:text-[5.5rem]"
+    >
+      <span aria-hidden="true" className="invisible select-none">
+        00%
+      </span>
+      <span className="absolute inset-y-0 left-0 flex items-center whitespace-nowrap">
+        {value}%
+      </span>
+    </span>
+  );
+});
 
 interface NeedSectionProps {
   compact?: boolean;
@@ -11,7 +89,6 @@ interface NeedSectionProps {
 
 export function NeedSection({ compact = false }: NeedSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const heroMetricRef = useRef<HTMLSpanElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const [activeItem, setActiveItem] = useState<string>(NEED_ITEMS[0].id);
 
@@ -62,7 +139,7 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         const isDesktop = window.innerWidth >= 768;
-        const offset = isDesktop ? 28 : 14;
+        const offset = isDesktop ? 24 : 14;
 
         gsap.utils.toArray<HTMLElement>('[data-need-reveal]').forEach((el) => {
           gsap.fromTo(
@@ -71,39 +148,18 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
             {
               y: 0,
               opacity: 1,
-              duration: 0.75,
+              duration: 0.7,
               ease: 'expo.out',
               clearProps: 'transform,opacity',
               scrollTrigger: {
                 trigger: el,
-                start: 'top 88%',
+                start: 'top 92%',
                 toggleActions: 'play none none none',
                 once: true,
               },
             }
           );
         });
-
-        // 73% stat counter
-        if (heroMetricRef.current) {
-          const counter = { val: 0 };
-          gsap.to(counter, {
-            val: 73,
-            duration: 1.25,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: heroMetricRef.current,
-              start: 'top 86%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-            onUpdate: () => {
-              if (heroMetricRef.current) {
-                heroMetricRef.current.textContent = `${Math.round(counter.val)}%`;
-              }
-            },
-          });
-        }
       });
 
       return () => mm.revert();
@@ -232,12 +288,10 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
             {/* 73% Hero Callout Card */}
             <div className="relative overflow-hidden rounded-2xl border border-[rgba(230,196,119,0.28)] bg-gradient-to-b from-[#0B4933] to-[#032A1D] p-6 shadow-xl shadow-black/25 sm:p-7">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-                <span
-                  ref={heroMetricRef}
-                  className="font-editorial text-6xl leading-none font-normal italic tabular-nums text-[#E6C477] sm:text-7xl lg:text-[5.5rem]"
-                >
-                  73%
-                </span>
+                <SmoothPercentageStat
+                  target={73}
+                  prefersReducedMotion={prefersReducedMotion}
+                />
                 <div className="min-w-0">
                   <h3 className="font-editorial text-xl leading-[1.3] font-normal italic text-[#F3F0E6] sm:text-2xl">
                     “of parents worry about teen transport safety every day”
