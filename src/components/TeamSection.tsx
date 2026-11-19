@@ -56,7 +56,7 @@ function PortraitAsset({
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         referrerPolicy="no-referrer"
-        className="h-full w-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+        className="h-full w-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.05]"
       />
     );
   }
@@ -70,12 +70,12 @@ function PortraitAsset({
       <div
         aria-hidden="true"
         className={`flex items-center justify-center rounded-full border border-[#E6C477]/35 bg-[#032A1D]/55 ${
-          compact ? 'h-16 w-16 -translate-y-4 sm:h-20 sm:w-20' : 'h-24 w-24'
+          compact ? 'h-20 w-20 sm:h-24 sm:w-24' : 'h-28 w-28'
         }`}
       >
         <span
           className={`font-editorial font-normal italic text-[#E6C477] ${
-            compact ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+            compact ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
           }`}
         >
           {member.initials}
@@ -226,6 +226,19 @@ export function TeamSection() {
   const isDirectoryView = !isSpotlight;
   const isAllView = activeCategory === 'all';
 
+  // Truly randomized & asymmetric background shape positions and sizes for each member
+  const accentVariations = useMemo(
+    () => [
+      { c1: 'top-1 -left-4 h-20 w-20 bg-[#063B27]/30', c2: 'bottom-0 right-2 h-16 w-16 bg-[#E6C477]/45' },
+      { c1: '-top-3 right-0 h-22 w-22 bg-[#84A98C]/35', c2: 'bottom-2 -left-3 h-14 w-14 bg-[#063B27]/25' },
+      { c1: 'top-2 -left-3 h-18 w-18 bg-[#E6C477]/40', c2: '-bottom-3 right-1 h-20 w-20 bg-[#063B27]/30' },
+      { c1: '-top-2 -left-2 h-24 w-24 bg-[#063B27]/25', c2: 'bottom-1 right-0 h-16 w-16 bg-[#84A98C]/40' },
+      { c1: 'top-0 right-2 h-20 w-20 bg-[#E6C477]/40', c2: '-bottom-2 -left-3 h-22 w-22 bg-[#063B27]/30' },
+      { c1: '-top-4 left-2 h-16 w-16 bg-[#84A98C]/40', c2: 'bottom-2 -right-3 h-20 w-20 bg-[#063B27]/30' },
+    ],
+    []
+  );
+
   return (
     <section
       id="team"
@@ -233,6 +246,11 @@ export function TeamSection() {
       aria-labelledby="team-heading"
       className="relative z-10 min-h-[calc(100vh-5rem)] overflow-x-clip bg-transparent py-12 text-[#063B27] sm:py-16 lg:py-24"
     >
+      {/* Large soft organic backdrop shape matching reference slide */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute top-12 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-gradient-to-bl from-[#E5E0D4]/85 via-[#EAE5D9]/50 to-transparent blur-3xl sm:h-[700px] sm:w-[700px] lg:right-[-5%] lg:top-[-2%]"
+      />
 
       <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
@@ -240,7 +258,7 @@ export function TeamSection() {
           <aside className="lg:sticky lg:top-28 lg:col-span-4">
             <p
               data-team-intro
-              className="text-xs font-medium tracking-wide text-[#547064] sm:text-sm"
+              className="text-xs font-semibold tracking-wide text-[#365647] sm:text-sm"
             >
               Our leadership
             </p>
@@ -248,17 +266,17 @@ export function TeamSection() {
             <h1
               id="team-heading"
               data-team-intro
-              className="mt-3 text-balance text-3xl leading-[1.08] font-semibold tracking-[-0.025em] text-[#063B27] sm:text-4xl lg:text-[2.75rem]"
+              className="mt-3 text-balance text-3xl leading-[1.08] font-bold tracking-[-0.025em] text-[#061a12] sm:text-4xl lg:text-[2.75rem]"
             >
               The People Behind{' '}
-              <span className="font-editorial block font-normal italic text-[#8A6720]">
+              <span className="font-editorial block font-normal italic text-[#6B4F14]">
                 Teen Cabs
               </span>
             </h1>
 
             <p
               data-team-intro
-              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-light text-[#365647] sm:text-[0.9375rem]"
+              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-normal text-[#061a12] sm:text-[0.9375rem]"
             >
               Forgeit and Teen Cabs are built by a multidisciplinary team of
               strategists, engineers, designers, and outreach leads united by a
@@ -270,7 +288,7 @@ export function TeamSection() {
             <nav
               data-team-intro
               aria-label="Filter team members by category"
-              className="mt-8 hidden border-t border-[#C8C1AA] lg:block"
+              className="mt-8 hidden border-t border-[#A8A08A] lg:block"
             >
               {TEAM_CATEGORIES.map((category) => {
                 const isActive = activeCategory === category.id;
@@ -283,17 +301,17 @@ export function TeamSection() {
                     onClick={() => handleCategoryChange(category.id)}
                     className={`group flex min-h-[46px] w-full cursor-pointer items-center justify-between border-b py-3 text-left transition-colors duration-200 ${
                       isActive
-                        ? 'border-[#8A6720]/60 text-[#063B27]'
-                        : 'border-[#C8C1AA] text-[#365647] hover:border-[#D9B45B]/70 hover:text-[#063B27]'
+                        ? 'border-[#8A6720] bg-[#E6C477]/25 px-3 rounded-lg text-[#061a12] font-bold'
+                        : 'border-[#A8A08A] text-[#061a12] hover:border-[#8A6720] hover:text-[#061a12]'
                     }`}
                   >
-                    <span className="flex items-center gap-3 text-sm font-medium tracking-wide whitespace-nowrap">
+                    <span className="flex items-center gap-3 text-sm font-semibold tracking-wide whitespace-nowrap">
                       <span
                         aria-hidden="true"
                         className={`h-px transition-all duration-200 ${
                           isActive
                             ? 'w-5 bg-[#8A6720]'
-                            : 'w-2.5 bg-[#B4A989] group-hover:w-4 group-hover:bg-[#D9B45B]/60'
+                            : 'w-2.5 bg-[#695F46] group-hover:w-4 group-hover:bg-[#8A6720]'
                         }`}
                       />
                       <span>{category.label}</span>
@@ -301,8 +319,8 @@ export function TeamSection() {
                     <span
                       className={`font-mono text-xs tabular-nums transition-colors duration-200 ${
                         isActive
-                          ? 'text-[#8A6720]'
-                          : 'text-[#547064] group-hover:text-[#063B27]'
+                          ? 'text-[#6B4F14] font-bold'
+                          : 'text-[#365647] group-hover:text-[#061a12]'
                       }`}
                     >
                       {formatIndex(count)}
@@ -326,14 +344,14 @@ export function TeamSection() {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => handleCategoryChange(category.id)}
-                    className={`inline-flex min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-colors duration-150 ${
+                    className={`inline-flex min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-150 ${
                       isActive
-                        ? 'border-[#D9B45B]/60 bg-[#063B27] text-[#F3F0E6]'
-                        : 'border-[#C8C1AA] bg-[#FFFDF7] text-[#365647] hover:border-[#D9B45B]/70'
+                        ? 'border-[#8A6720] bg-[#063B27] text-[#FFFDF7]'
+                        : 'border-[#A8A08A] bg-[#FFFDF7] text-[#061a12] hover:border-[#8A6720]'
                     }`}
                   >
                     <span>{category.label}</span>
-                    <span className="font-mono text-[10px] opacity-75 tabular-nums">
+                    <span className="font-mono text-[10px] opacity-90 tabular-nums">
                       {formatIndex(categoryCounts[category.id])}
                     </span>
                   </button>
@@ -350,27 +368,27 @@ export function TeamSection() {
             className="min-w-0 focus:outline-none lg:col-span-8"
           >
             {/* Top Status & Arrow Navigation Header */}
-            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#C8C1AA] pb-3.5 sm:mb-8 sm:pb-4">
-              <div className="flex items-center gap-2.5 font-mono text-xs tabular-nums">
-                <span className="tracking-[0.12em] text-[#8A6720] uppercase">
+            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#A8A08A] pb-3.5 sm:mb-8 sm:pb-4">
+              <div className="flex items-center gap-2.5 font-mono text-xs font-semibold tabular-nums">
+                <span className="tracking-[0.12em] text-[#6B4F14] uppercase">
                   {activeCategoryLabel}
                 </span>
-                <span aria-hidden="true" className="text-[#B4A989]">
+                <span aria-hidden="true" className="text-[#695F46]">
                   /
                 </span>
                 {isDirectoryView ? (
-                  <span className="text-[#547064]">
+                  <span className="text-[#061a12]">
                     {formatIndex(filteredMembers.length)} Members
                   </span>
                 ) : (
                   <>
-                    <span className="text-[#063B27]">
+                    <span className="text-[#061a12]">
                       {formatIndex(safeActiveIndex + 1)}
                     </span>
-                    <span aria-hidden="true" className="text-[#547064]/60">
+                    <span aria-hidden="true" className="text-[#695F46]">
                       of
                     </span>
-                    <span className="text-[#547064]">
+                    <span className="text-[#061a12]">
                       {formatIndex(filteredMembers.length)}
                     </span>
                   </>
@@ -384,7 +402,7 @@ export function TeamSection() {
                     onClick={handlePrev}
                     disabled={!canGoPrev}
                     aria-label="Previous team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#B4A989] text-[#063B27] transition-colors duration-150 hover:border-[#063B27] hover:text-[#063B27] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
                   >
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -393,7 +411,7 @@ export function TeamSection() {
                     onClick={handleNext}
                     disabled={!canGoNext}
                     aria-label="Next team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#B4A989] text-[#063B27] transition-colors duration-150 hover:border-[#063B27] hover:text-[#063B27] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
                   >
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -435,107 +453,156 @@ export function TeamSection() {
 
                       return (
                         <section key={category.id} aria-labelledby={`${category.id}-team-heading`}>
-                          <div className="mb-4 flex items-center gap-3 border-b border-[#C8C1AA] pb-3">
+                          <div className="mb-4 flex items-center gap-3 border-b border-[#A8A08A] pb-3">
                             <h2
                               id={`${category.id}-team-heading`}
-                              className="font-editorial text-2xl font-normal italic text-[#063B27] sm:text-3xl"
+                              className="font-editorial text-2xl font-bold italic text-[#061a12] sm:text-3xl"
                             >
                               {category.label}
                             </h2>
-                            <span className="font-mono text-xs text-[#547064] tabular-nums">
+                            <span className="font-mono text-xs font-semibold text-[#365647] tabular-nums">
                               {formatIndex(members.length)}
                             </span>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-5">
-                            {members.map((member, index) => (
-                              <button
-                                key={member.id}
-                                type="button"
-                                onClick={() => handleInspectFromAll(member)}
-                                aria-label={`View profile for ${member.name}, ${member.role}`}
-                                className="group flex min-w-0 flex-col rounded-2xl border border-[#AAB69D] bg-[#C5CCB8] p-2.5 text-left shadow-lg shadow-[#063B27]/10 transition-colors hover:border-[#D9B45B] hover:bg-[#BBC5AE] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] sm:p-3"
-                              >
-                                <div className="mx-auto aspect-[4/5] w-[86%] max-w-[220px] overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 sm:w-full">
-                                  <PortraitAsset
-                                    member={member}
-                                    eager={index < 6}
-                                    compact
-                                  />
-                                </div>
+                          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7">
+                            {members.map((member, index) => {
+                              const isFounder = member.group === 'founder';
+                              const accent = accentVariations[index % accentVariations.length];
 
-                                <div className="w-full px-1 pt-3 pb-1">
-                                  <p className="text-[9px] font-semibold tracking-[0.12em] text-[#8A6720] uppercase sm:text-[10px]">
-                                    {member.role}
-                                  </p>
-                                  <h3 className="mt-1 truncate text-sm font-semibold tracking-tight text-[#063B27] sm:text-base">
-                                    {member.name}
-                                  </h3>
-                                </div>
-                              </button>
-                            ))}
+                              return (
+                                <button
+                                  key={member.id}
+                                  type="button"
+                                  onClick={() => handleInspectFromAll(member)}
+                                  aria-label={`View profile for ${member.name}, ${member.role}`}
+                                  className="group relative flex min-w-0 items-center gap-6 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#EAE5D9]/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] sm:p-5"
+                                >
+                                  {/* Circular Portrait with Randomized & Asymmetric Background Shapes */}
+                                  <div className="relative shrink-0">
+                                    {/* Background Accent Shape 1 */}
+                                    <div
+                                      aria-hidden="true"
+                                      className={`absolute rounded-full transition-transform duration-300 group-hover:scale-110 ${accent.c1}`}
+                                    />
+                                    {/* Background Accent Shape 2 */}
+                                    <div
+                                      aria-hidden="true"
+                                      className={`absolute rounded-full transition-transform duration-300 group-hover:scale-110 ${accent.c2}`}
+                                    />
+
+                                    {/* Main Clean Circular Portrait Avatar */}
+                                    <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-white bg-[#061a12] shadow-xl sm:h-32 sm:w-32">
+                                      <PortraitAsset
+                                        member={member}
+                                        eager={index < 6}
+                                        compact
+                                      />
+                                    </div>
+                                  </div>
+
+                                  {/* Card Text Content: High Contrast Name, Designation & Bio */}
+                                  <div className="min-w-0 flex-1 py-1">
+                                    <div className="flex items-center gap-2">
+                                      <p className="text-[11px] font-bold tracking-[0.14em] text-[#6B4F14] uppercase sm:text-xs">
+                                        {member.role}
+                                      </p>
+                                      {isFounder && (
+                                        <span className="inline-flex items-center rounded-full bg-[#063B27] px-2 py-0.5 text-[9px] font-bold text-[#E6C477]">
+                                          Founder
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <h3 className="mt-1 truncate text-lg font-bold tracking-tight text-[#061a12] sm:text-xl">
+                                      {member.name}
+                                    </h3>
+
+                                    <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed font-normal text-[#061a12] sm:text-sm">
+                                      {member.bio}
+                                    </p>
+                                  </div>
+                                </button>
+                              );
+                            })}
                           </div>
                         </section>
                       );
                     })}
                   </motion.div>
-                ) : (
-                  <motion.article
-                    key={selectedMember.id}
-                    initial={
-                      prefersReducedMotion
-                        ? false
-                        : { opacity: 0, x: slideDirection * 64 }
-                    }
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={
-                      prefersReducedMotion
-                        ? undefined
-                        : { opacity: 0, x: slideDirection * -64 }
-                    }
-                    transition={{
-                      duration: prefersReducedMotion ? 0 : 0.11,
-                      ease: 'easeOut',
-                    }}
-                    className="grid grid-cols-1 gap-5 rounded-2xl border border-[#AAB69D] bg-[#C5CCB8] p-4 shadow-xl shadow-[#063B27]/10 sm:p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-7 lg:gap-10 lg:p-8"
-                  >
-                    {/* Featured Single Portrait */}
-                    <div className="md:col-span-5">
-                      <div className="mx-auto aspect-[4/5] w-[82%] max-w-[280px] overflow-hidden rounded-xl border border-[#d4af37]/20 bg-[#061a12]/60 shadow-lg shadow-black/25 sm:w-[72%] sm:max-w-[300px] md:w-full md:max-w-none md:rounded-2xl md:shadow-xl">
-                        <PortraitAsset member={selectedMember} eager />
+                ) : (() => {
+                  const isFounderSpotlight = selectedMember.group === 'founder';
+                  return (
+                    <motion.article
+                      key={selectedMember.id}
+                      initial={
+                        prefersReducedMotion
+                          ? false
+                          : { opacity: 0, x: slideDirection * 64 }
+                      }
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={
+                        prefersReducedMotion
+                          ? undefined
+                          : { opacity: 0, x: slideDirection * -64 }
+                      }
+                      transition={{
+                        duration: prefersReducedMotion ? 0 : 0.11,
+                        ease: 'easeOut',
+                      }}
+                      className="grid grid-cols-1 gap-6 rounded-2xl p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-8 lg:gap-10 lg:p-10"
+                    >
+                      {/* Featured Single Portrait with Natural Asymmetric Shapes */}
+                      <div className="md:col-span-5 flex items-center justify-center">
+                        <div className="relative aspect-square w-52 sm:w-60 md:w-full md:max-w-[280px]">
+                          {/* Background Accent Shape 1 */}
+                          <div
+                            aria-hidden="true"
+                            className="absolute -top-6 -left-4 h-36 w-36 rounded-full bg-[#063B27]/25 sm:h-44 sm:w-44"
+                          />
+                          {/* Background Accent Shape 2 */}
+                          <div
+                            aria-hidden="true"
+                            className="absolute -bottom-4 -right-6 h-32 w-32 rounded-full bg-[#E6C477]/50 sm:h-40 sm:w-40"
+                          />
+                          {/* Main Circular Portrait */}
+                          <div className="relative h-full w-full overflow-hidden rounded-full border-4 border-white bg-[#061a12] shadow-2xl">
+                            <PortraitAsset member={selectedMember} eager />
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Editorial Profile & Pull Quote */}
-                    <div className="min-w-0 md:col-span-7 md:flex md:flex-col md:justify-between md:py-1">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[9px] leading-tight font-medium tracking-wide text-[#547064] sm:text-[10px]">
-                          <span className="tracking-[0.08em] text-[#8A6720] uppercase">
-                            {selectedMember.role}
-                          </span>
-                          <span aria-hidden="true" className="text-[#B4A989]">
-                            ·
-                          </span>
-                          <span>{selectedMember.focusArea}</span>
+                      {/* Editorial Profile & Pull Quote */}
+                      <div className="min-w-0 md:col-span-7 md:flex md:flex-col md:justify-between md:py-2">
+                        <div>
+                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-tight font-bold tracking-wide">
+                            <span className="tracking-[0.08em] text-[#6B4F14] uppercase">
+                              {selectedMember.role}
+                            </span>
+                            <span aria-hidden="true" className="text-[#695F46]">
+                              ·
+                            </span>
+                            <span className="text-[#365647] font-semibold">{selectedMember.focusArea}</span>
+                          </div>
+
+                          <h2 className="mt-2 text-2xl leading-tight font-bold tracking-tight text-[#061a12] sm:text-3xl md:text-4xl">
+                            {selectedMember.name}
+                          </h2>
+
+                          <p className="mt-4 max-w-[48ch] text-sm leading-[1.75] font-normal text-[#061a12] sm:text-base">
+                            {selectedMember.bio}
+                          </p>
                         </div>
 
-                        <h2 className="mt-1.5 text-base leading-tight font-semibold tracking-tight text-[#063B27] sm:text-xl md:mt-2.5 md:text-2xl lg:text-[2rem]">
-                          {selectedMember.name}
-                        </h2>
-
-                        <p className="mt-3 max-w-[48ch] text-[13px] leading-[1.65] font-light text-[#365647] sm:text-sm md:mt-4 md:text-base md:leading-[1.8]">
-                          {selectedMember.bio}
-                        </p>
+                        <blockquote className="mt-6 border-t border-[#A8A08A] pt-5 lg:mt-8 lg:pt-6">
+                          <p className="font-editorial text-lg leading-[1.5] italic font-semibold text-[#6B4F14] sm:text-xl">
+                            “{selectedMember.quote}”
+                          </p>
+                        </blockquote>
                       </div>
-
-                      <blockquote className="mt-5 border-t border-[#d4af37]/15 pt-5 md:mt-7 lg:mt-8 lg:pt-6">
-                        <p className="font-editorial text-[17px] leading-[1.5] italic text-[#8A6720] sm:text-lg">
-                          “{selectedMember.quote}”
-                        </p>
-                      </blockquote>
-                    </div>
-                  </motion.article>
-                )}
+                    </motion.article>
+                  );
+                })()}
               </AnimatePresence>
             </div>
           </div>
