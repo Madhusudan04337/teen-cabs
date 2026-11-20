@@ -67,7 +67,8 @@
     .animate-orb-three,
     .animate-dust-float,
     .animate-spin,
-    .animate-pulse {
+    .animate-pulse,
+    .tc-dot {
       animation: none !important;
     }
 
@@ -329,6 +330,31 @@
 
 .animate-route-dash {
   animation: routeDashFlow 2.4s linear infinite;
+}
+
+@keyframes tcDotPulse {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.75);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.tc-dot {
+  animation: tcDotPulse 1.2s ease-in-out infinite;
+}
+
+.tc-dot:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.tc-dot:nth-child(3) {
+  animation-delay: 320ms;
 }
 
 /* Suppress Netlify injected drawer, feedback widget, or badge if present */
