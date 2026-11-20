@@ -59,7 +59,9 @@ export interface TeamMember {
   role: string;
   group: 'founder' | 'leadership' | 'core' | 'product';
   portraitSrc?: string;
+  summaryLine: string;
   bio: string;
+  responsibilities: string[];
   focusArea: string;
   quote: string;
 }
@@ -247,7 +249,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Founder & CEO',
     group: 'founder',
     portraitSrc: manishPortrait,
-    bio: 'Leads Forgeit and Teen Cabs with a focus on useful, trustworthy technology. Shapes the company vision, growth strategy, partnerships, and product decisions around parent confidence and teen independence.',
+    summaryLine: 'Shapes company vision, trust & strategy.',
+    bio: 'Leads Forgeit and Teen Cabs with a focus on practical, trustworthy mobility technology built for families. Shapes company vision, school and city partnerships, and product decisions around calm parent confidence and everyday teen independence.',
+    responsibilities: [
+      'Company vision & family-first safety strategy',
+      'School, parent community & city partnerships',
+      'Long-term product & operational direction',
+    ],
     focusArea: 'Overall Strategy & Mobility Vision',
     quote:
       'Every parent deserves calm visibility, and every teen deserves a ride built around their world.',
@@ -259,7 +267,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Innovation Officer',
     group: 'leadership',
     portraitSrc: sriramPortrait,
-    bio: 'Identifies emerging mobility opportunities and converts long-term ideas into practical product direction. Connects user needs, business priorities, and new technologies with changing family expectations.',
+    summaryLine: 'Drives future mobility & pilot programs.',
+    bio: 'Identifies emerging urban mobility opportunities and translates long-term ideas into practical product direction for Teen Cabs. Connects evolving family safety expectations, business priorities, and new transport technologies into cohesive rider workflows.',
+    responsibilities: [
+      'Emerging mobility pilots & strategic foresight',
+      'Translating family safety needs into new capabilities',
+      'Cross-functional innovation & roadmap alignment',
+    ],
     focusArea: 'Future Mobility & Strategic Foresight',
     quote:
       'True independence for teens begins when safety is engineered into the foundation, not bolted on later.',
@@ -271,7 +285,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Marketing Officer',
     group: 'leadership',
     portraitSrc: karthikPortrait,
-    bio: 'Builds the Teen Cabs brand through thoughtful campaigns, community engagement, and clear communication. Establishes lasting trust with parents, teens, schools, and local mobility partners.',
+    summaryLine: 'Builds brand growth & community trust.',
+    bio: 'Builds the Teen Cabs brand through thoughtful outreach campaigns, school community engagement, and transparent communication. Focuses on earning lasting multi-generational trust across safety-conscious parents, independent teens, schools, and local mobility partners.',
+    responsibilities: [
+      'Brand positioning & multi-generational storytelling',
+      'Parent & school outreach programs',
+      'Launch campaigns & local community trust building',
+    ],
     focusArea: 'Brand Growth & Community Trust',
     quote:
       'We listen closely to both parents and teens so our platform earns trust across two generations.',
@@ -283,7 +303,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Technology Officer',
     group: 'core',
     portraitSrc: tharunPortrait,
-    bio: 'Leads platform architecture, reliability, and real-time systems. Focuses on secure ride telemetry, scalable infrastructure, and the accurate live updates families depend on.',
+    summaryLine: 'Leads platform architecture & telemetry.',
+    bio: 'Leads platform engineering, system reliability, and real-time ride infrastructure across Forgeit and Teen Cabs. Designs secure live GPS telemetry, guardian alert pipelines, and resilient dispatch services that families depend on every day.',
+    responsibilities: [
+      'Real-time GPS telemetry & route verification systems',
+      'Scalable cloud architecture & dispatch reliability',
+      'Data security, privacy & guardian alert pipelines',
+    ],
     focusArea: 'Scalable Architecture & Telemetry',
     quote:
       'Behind every calm parent notification is rock-solid real-time engineering.',
@@ -295,7 +321,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Chief Designing Officer',
     group: 'core',
     portraitSrc: manobalaPortrait,
-    bio: 'Directs product design and visual systems across the Teen Cabs experience. Combines accessibility, clarity, and purposeful interactions so families can make confident decisions quickly.',
+    summaryLine: 'Directs visual systems & product craft.',
+    bio: 'Directs product design and visual systems across both the teen rider and parent companion experiences. Combines high-contrast readability, calm visual hierarchy, and purposeful interactions so families can verify trip status in a single glance.',
+    responsibilities: [
+      'End-to-end design systems & visual identity',
+      'Parent approval & teen booking interaction craft',
+      'Accessibility, readability & calm UI clarity',
+    ],
     focusArea: 'Visual Systems & Product Craft',
     quote:
       'Clarity is a safety feature — teens and parents should understand every ride state in a single glance.',
@@ -307,7 +339,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: kaavyaPortrait,
-    bio: 'Supports product research and experience refinement for Teen Cabs. Focuses on rider needs, usability gaps, and turning feedback into polished, practical improvements.',
+    summaryLine: 'Leads user research & rider experience.',
+    bio: 'Supports product discovery, family research, and usability refinement across core Teen Cabs workflows. Maps daily commute friction from parents and teens alike, turning qualitative insights into clear, practical product improvements.',
+    responsibilities: [
+      'Parent & teen user discovery research',
+      'Usability testing & commute workflow refinement',
+      'Translating family feedback into feature specs',
+    ],
     focusArea: 'Product Development & User Experience',
     quote: 'Every thoughtful detail should make the journey feel simpler.',
   },
@@ -318,7 +356,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: vedaanthPortrait,
-    bio: 'Contributes to product development and new feature experiments. Explores practical improvements to booking, safety information, and rider interactions.',
+    summaryLine: 'Prototypes booking & safety flows.',
+    bio: 'Contributes to product development and rapid feature experimentation across booking and in-ride safety flows. Explores practical ways to present driver verification, live trip updates, and cabin preferences clearly for young riders.',
+    responsibilities: [
+      'Feature prototyping & rider flow experiments',
+      'Driver verification & in-ride safety UX',
+      'Cross-team iteration from concept to launch',
+    ],
     focusArea: 'Development & Product Innovation',
     quote: 'Innovation matters most when it improves everyday confidence.',
   },
@@ -329,7 +373,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: sudarshanPortrait,
-    bio: 'Works across core product features, testing, and delivery. Translates product requirements into reliable experiences and refines everyday interactions across devices.',
+    summaryLine: 'Delivers core features & quality testing.',
+    bio: 'Works across core product execution, quality validation, and cross-device delivery for Teen Cabs. Translates product specifications into dependable user journeys while auditing edge cases across pickup, approval, and drop-off states.',
+    responsibilities: [
+      'Core booking & supervision feature delivery',
+      'Cross-device testing & edge-case validation',
+      'Release readiness & interaction polish',
+    ],
     focusArea: 'Core Product Features',
     quote: 'The best features make safe journeys feel effortless.',
   },
@@ -340,7 +390,13 @@ export const TEAM_MEMBERS: TeamMember[] = [
     role: 'Product Team',
     group: 'product',
     portraitSrc: tejasreePortrait,
-    bio: 'Shapes the end-to-end product experience across planning, interaction design, and feature refinement. Turns family feedback into simple journeys that feel clear, comfortable, and easy to use.',
+    summaryLine: 'Shapes end-to-end rider journeys.',
+    bio: 'Shapes the end-to-end product experience across journey planning, interface flow, and feature refinement. Turns family feedback into approachable booking and supervision touchpoints that feel calm, clear, and intuitive to use daily.',
+    responsibilities: [
+      'End-to-end journey mapping & interaction flow',
+      'Feature refinement for parent & teen clarity',
+      'Product-design collaboration on core experiences',
+    ],
     focusArea: 'Product Experience & Feature Craft',
     quote:
       'Thoughtful design creates effortless journeys for both parents and teens.',

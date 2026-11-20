@@ -7,7 +7,7 @@ import {
   type KeyboardEvent,
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, LayoutGrid } from 'lucide-react';
 import { gsap, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
@@ -17,13 +17,12 @@ import {
 import { useLenis } from '../motion/LenisContext';
 import { TEAM_MEMBERS, type TeamMember } from '../data/teenCabsData';
 
-type TeamCategoryId = 'all' | TeamMember['group'];
+type TeamCategoryId = TeamMember['group'];
 
 const TEAM_CATEGORIES: ReadonlyArray<{
   id: TeamCategoryId;
   label: string;
 }> = [
-  { id: 'all', label: 'All Team' },
   { id: 'founder', label: 'Founders' },
   { id: 'leadership', label: 'Leadership' },
   { id: 'core', label: 'Core Team' },
@@ -33,11 +32,11 @@ const TEAM_CATEGORIES: ReadonlyArray<{
 function PortraitAsset({
   member,
   eager = false,
-  compact = false,
+  hoverZoom = false,
 }: {
   member: TeamMember;
   eager?: boolean;
-  compact?: boolean;
+  hoverZoom?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -56,7 +55,11 @@ function PortraitAsset({
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
         referrerPolicy="no-referrer"
-        className="h-full w-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-[1.05]"
+        className={`h-full w-full object-cover object-top ${
+          hoverZoom
+            ? 'transition-transform duration-300 ease-out group-hover:scale-[1.03]'
+            : ''
+        }`}
       />
     );
   }
@@ -65,27 +68,12 @@ function PortraitAsset({
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#0B4933] via-[#063B27] to-[#032A1D]">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-8 left-1/2 h-40 w-40 -translate-x-1/2 transform-gpu rounded-full bg-[radial-gradient(circle,rgba(230,196,119,0.2)_0%,transparent_68%)]"
-      />
-      <div
-        aria-hidden="true"
-        className={`flex items-center justify-center rounded-full border border-[#E6C477]/35 bg-[#032A1D]/55 ${
-          compact ? 'h-20 w-20 sm:h-24 sm:w-24' : 'h-28 w-28'
-        }`}
+        className="flex h-20 w-20 items-center justify-center rounded-full border border-[#E6C477]/35 bg-[#032A1D]/55"
       >
-        <span
-          className={`font-editorial font-normal italic text-[#E6C477] ${
-            compact ? 'text-3xl sm:text-4xl' : 'text-4xl sm:text-5xl'
-          }`}
-        >
+        <span className="font-editorial text-2xl font-normal italic text-[#E6C477]">
           {member.initials}
         </span>
       </div>
-      {!compact && (
-        <span className="mt-3 text-[10px] font-medium tracking-[0.2em] text-[#B7C8BA]/80 uppercase">
-          {member.role}
-        </span>
-      )}
     </div>
   );
 }
@@ -93,17 +81,15 @@ function PortraitAsset({
 export function TeamSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const spotlightWrapRef = useRef<HTMLDivElement>(null);
   const { prefersReducedMotion, scrollTo } = useLenis();
 
-  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('all');
+  const [activeCategory, setActiveCategory] = useState<TeamCategoryId>('founder');
   const [activeIndex, setActiveIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
   const [isSpotlight, setIsSpotlight] = useState(false);
 
   const categoryCounts = useMemo(() => {
     const counts: Record<TeamCategoryId, number> = {
-      all: TEAM_MEMBERS.length,
       founder: 0,
       leadership: 0,
       core: 0,
@@ -115,13 +101,13 @@ export function TeamSection() {
     return counts;
   }, []);
 
-  const filteredMembers = useMemo(() => {
-    if (activeCategory === 'all') return TEAM_MEMBERS;
-    return TEAM_MEMBERS.filter((member) => member.group === activeCategory);
-  }, [activeCategory]);
+  const filteredMembers = useMemo(
+    () => TEAM_MEMBERS.filter((member) => member.group === activeCategory),
+    [activeCategory]
+  );
 
   const activeCategoryLabel =
-    TEAM_CATEGORIES.find((cat) => cat.id === activeCategory)?.label ?? 'All';
+    TEAM_CATEGORIES.find((cat) => cat.id === activeCategory)?.label ?? 'Founders';
 
   const safeActiveIndex = Math.min(
     activeIndex,
@@ -162,22 +148,30 @@ export function TeamSection() {
     { scope: sectionRef, dependencies: [prefersReducedMotion] }
   );
 
-  const handleCategoryChange = useCallback((nextCategory: TeamCategoryId) => {
-    setActiveCategory(nextCategory);
-    setActiveIndex(0);
-    setSlideDirection(1);
-    setIsSpotlight(false);
-  }, []);
+  const handleCategoryChange = useCallback(
+    (nextCategory: TeamCategoryId) => {
+      setActiveCategory(nextCategory);
+      setActiveIndex(0);
+      setSlideDirection(1);
+      setIsSpotlight(false);
 
-  const handleInspectFromAll = useCallback(
-    (member: TeamMember) => {
-      const groupMembers = TEAM_MEMBERS.filter((m) => m.group === member.group);
-      const indexInGroup = Math.max(
-        0,
-        groupMembers.findIndex((m) => m.id === member.id)
-      );
-      setActiveCategory(member.group);
-      setActiveIndex(indexInGroup);
+      if (window.innerWidth < 1024 && contentRef.current) {
+        const rect = contentRef.current.getBoundingClientRect();
+        if (rect.top < 72) {
+          scrollTo(contentRef.current, {
+            offset: -84,
+            immediate: prefersReducedMotion,
+          });
+        }
+      }
+    },
+    [prefersReducedMotion, scrollTo]
+  );
+
+  const handleSelectMemberCard = useCallback(
+    (index: number) => {
+      setActiveIndex(index);
+      setSlideDirection(1);
       setIsSpotlight(true);
 
       if (window.innerWidth < 1024 && contentRef.current) {
@@ -210,7 +204,7 @@ export function TeamSection() {
 
   const handleSpotlightKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
-      if (activeCategory === 'all') return;
+      if (!isSpotlight) return;
       if (event.key === 'ArrowRight' && canGoNext) {
         event.preventDefault();
         handleNext();
@@ -219,25 +213,11 @@ export function TeamSection() {
         handlePrev();
       }
     },
-    [activeCategory, canGoNext, canGoPrev, handleNext, handlePrev]
+    [isSpotlight, canGoNext, canGoPrev, handleNext, handlePrev]
   );
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
-  const isDirectoryView = !isSpotlight;
-  const isAllView = activeCategory === 'all';
-
-  // Truly randomized & asymmetric background shape positions and sizes for each member
-  const accentVariations = useMemo(
-    () => [
-      { c1: 'top-1 -left-4 h-20 w-20 bg-[#063B27]/30', c2: 'bottom-0 right-2 h-16 w-16 bg-[#E6C477]/45' },
-      { c1: '-top-3 right-0 h-22 w-22 bg-[#84A98C]/35', c2: 'bottom-2 -left-3 h-14 w-14 bg-[#063B27]/25' },
-      { c1: 'top-2 -left-3 h-18 w-18 bg-[#E6C477]/40', c2: '-bottom-3 right-1 h-20 w-20 bg-[#063B27]/30' },
-      { c1: '-top-2 -left-2 h-24 w-24 bg-[#063B27]/25', c2: 'bottom-1 right-0 h-16 w-16 bg-[#84A98C]/40' },
-      { c1: 'top-0 right-2 h-20 w-20 bg-[#E6C477]/40', c2: '-bottom-2 -left-3 h-22 w-22 bg-[#063B27]/30' },
-      { c1: '-top-4 left-2 h-16 w-16 bg-[#84A98C]/40', c2: 'bottom-2 -right-3 h-20 w-20 bg-[#063B27]/30' },
-    ],
-    []
-  );
+  const usesThreeCols = filteredMembers.length % 3 === 0;
 
   return (
     <section
@@ -246,15 +226,9 @@ export function TeamSection() {
       aria-labelledby="team-heading"
       className="relative z-10 min-h-[calc(100vh-5rem)] overflow-x-clip bg-transparent py-12 text-[#063B27] sm:py-16 lg:py-24"
     >
-      {/* Large soft organic backdrop shape matching reference slide */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-12 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-gradient-to-bl from-[#E5E0D4]/85 via-[#EAE5D9]/50 to-transparent blur-3xl sm:h-[700px] sm:w-[700px] lg:right-[-5%] lg:top-[-2%]"
-      />
-
       <div className="relative mx-auto max-w-[1280px] px-6 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start lg:gap-12">
-          {/* LEFT SIDEBAR: Editorial Heading, 3-4 Line Description & Category Filter */}
+          {/* LEFT SIDEBAR: Editorial Heading, Description & Category Filter Rail */}
           <aside className="lg:sticky lg:top-28 lg:col-span-4">
             <p
               data-team-intro
@@ -276,15 +250,15 @@ export function TeamSection() {
 
             <p
               data-team-intro
-              className="mt-4 max-w-[38ch] text-sm leading-[1.78] font-normal text-[#061a12] sm:text-[0.9375rem]"
+              className="mt-4 max-w-[38ch] text-sm leading-[1.72] font-normal text-[#061a12] sm:text-[0.9375rem]"
             >
               Forgeit and Teen Cabs are built by a multidisciplinary team of
               strategists, engineers, designers, and outreach leads united by a
-              single goal: giving parents calm visibility while helping teens move
-              with confidence and everyday independence.
+              single goal: giving parents calm visibility while helping teens
+              move with confidence and everyday independence.
             </p>
 
-            {/* Desktop Vertical Category Selectors */}
+            {/* Desktop Vertical Filter Rail */}
             <nav
               data-team-intro
               aria-label="Filter team members by category"
@@ -301,14 +275,14 @@ export function TeamSection() {
                     onClick={() => handleCategoryChange(category.id)}
                     className={`group flex min-h-[46px] w-full cursor-pointer items-center justify-between border-b py-3 text-left transition-colors duration-200 ${
                       isActive
-                        ? 'border-[#8A6720] bg-[#E6C477]/25 px-3 rounded-lg text-[#061a12] font-bold'
-                        : 'border-[#A8A08A] text-[#061a12] hover:border-[#8A6720] hover:text-[#061a12]'
+                        ? 'border-[#8A6720] font-bold text-[#061a12]'
+                        : 'border-[#A8A08A] text-[#061a12]/80 hover:border-[#8A6720] hover:text-[#061a12]'
                     }`}
                   >
                     <span className="flex items-center gap-3 text-sm font-semibold tracking-wide whitespace-nowrap">
                       <span
                         aria-hidden="true"
-                        className={`h-px transition-all duration-200 ${
+                        className={`h-[1.5px] transition-all duration-200 ${
                           isActive
                             ? 'w-5 bg-[#8A6720]'
                             : 'w-2.5 bg-[#695F46] group-hover:w-4 group-hover:bg-[#8A6720]'
@@ -319,7 +293,7 @@ export function TeamSection() {
                     <span
                       className={`font-mono text-xs tabular-nums transition-colors duration-200 ${
                         isActive
-                          ? 'text-[#6B4F14] font-bold'
+                          ? 'font-bold text-[#6B4F14]'
                           : 'text-[#365647] group-hover:text-[#061a12]'
                       }`}
                     >
@@ -330,11 +304,11 @@ export function TeamSection() {
               })}
             </nav>
 
-            {/* Mobile & Tablet Horizontal Category Tabs */}
+            {/* Mobile & Tablet Horizontally Scrollable Filter Pills */}
             <nav
               data-team-intro
               aria-label="Filter team members by category"
-              className="-mx-6 mt-6 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:hidden"
+              className="-mx-6 mt-6 flex gap-2.5 overflow-x-auto px-6 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:hidden"
             >
               {TEAM_CATEGORIES.map((category) => {
                 const isActive = activeCategory === category.id;
@@ -344,14 +318,14 @@ export function TeamSection() {
                     type="button"
                     aria-pressed={isActive}
                     onClick={() => handleCategoryChange(category.id)}
-                    className={`inline-flex min-h-[40px] shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-150 ${
+                    className={`inline-flex min-h-[42px] shrink-0 cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors duration-150 ${
                       isActive
-                        ? 'border-[#8A6720] bg-[#063B27] text-[#FFFDF7]'
-                        : 'border-[#A8A08A] bg-[#FFFDF7] text-[#061a12] hover:border-[#8A6720]'
+                        ? 'border-[#063B27] bg-[#063B27] text-[#FFFDF7]'
+                        : 'border-[#A8A08A]/75 bg-[#FFFDF7] text-[#061a12] hover:border-[#8A6720]'
                     }`}
                   >
                     <span>{category.label}</span>
-                    <span className="font-mono text-[10px] opacity-90 tabular-nums">
+                    <span className="font-mono text-[11px] opacity-85 tabular-nums">
                       {formatIndex(categoryCounts[category.id])}
                     </span>
                   </button>
@@ -360,25 +334,26 @@ export function TeamSection() {
             </nav>
           </aside>
 
-          {/* RIGHT CONTENT: All-Members Directory Grid OR Single-Category Spotlight */}
+          {/* RIGHT CONTENT: Per-Category Grid View OR Detailed Spotlight View */}
           <div
             ref={contentRef}
             onKeyDown={handleSpotlightKeyDown}
             tabIndex={-1}
             className="min-w-0 focus:outline-none lg:col-span-8"
           >
-            {/* Top Status & Arrow Navigation Header */}
-            <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#A8A08A] pb-3.5 sm:mb-8 sm:pb-4">
-              <div className="flex items-center gap-2.5 font-mono text-xs font-semibold tabular-nums">
-                <span className="tracking-[0.12em] text-[#6B4F14] uppercase">
+            {/* Top Status & Controls Header */}
+            <div className="mb-6 flex min-h-[44px] flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-b border-[#A8A08A] pb-3.5 sm:mb-8 sm:pb-4">
+              <div className="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold tabular-nums sm:gap-2.5 sm:text-xs">
+                <span className="tracking-[0.1em] text-[#6B4F14] uppercase sm:tracking-[0.12em]">
                   {activeCategoryLabel}
                 </span>
                 <span aria-hidden="true" className="text-[#695F46]">
                   /
                 </span>
-                {isDirectoryView ? (
+                {!isSpotlight ? (
                   <span className="text-[#061a12]">
-                    {formatIndex(filteredMembers.length)} Members
+                    {formatIndex(filteredMembers.length)}{' '}
+                    {filteredMembers.length === 1 ? 'Member' : 'Members'}
                   </span>
                 ) : (
                   <>
@@ -395,214 +370,175 @@ export function TeamSection() {
                 )}
               </div>
 
-              {isSpotlight && filteredMembers.length > 1 && (
-                <div className="flex items-center gap-2.5">
+              {isSpotlight && (
+                <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
                   <button
                     type="button"
-                    onClick={handlePrev}
-                    disabled={!canGoPrev}
-                    aria-label="Previous team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                    onClick={() => setIsSpotlight(false)}
+                    aria-label={`Back to ${activeCategoryLabel} grid view`}
+                    title="Grid view"
+                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center gap-1.5 rounded-full border border-[#063B27]/20 bg-[#FCF9F2] text-xs font-semibold text-[#061a12] whitespace-nowrap transition-colors duration-150 hover:border-[#063B27] hover:bg-[#063B27] hover:text-[#FFFDF7] sm:h-11 sm:w-auto sm:px-3.5"
                   >
-                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                    <LayoutGrid className="h-4 w-4 shrink-0 sm:h-3.5 sm:w-3.5" aria-hidden="true" />
+                    <span className="hidden sm:inline">Grid view</span>
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    disabled={!canGoNext}
-                    aria-label="Next team member"
-                    className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
-                  >
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </button>
+
+                  {filteredMembers.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handlePrev}
+                        disabled={!canGoPrev}
+                        aria-label="Previous team member"
+                        className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                      >
+                        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        disabled={!canGoNext}
+                        aria-label="Next team member"
+                        className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#695F46] text-[#061a12] transition-colors duration-150 hover:border-[#061a12] hover:bg-[#061a12] hover:text-[#FFFDF7] disabled:cursor-not-allowed disabled:opacity-35 sm:h-11 sm:w-11"
+                      >
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
 
-            {/* VIEW SWITCH: All Members Grid vs Single Member Spotlight */}
-            <div
-              ref={spotlightWrapRef}
-              aria-live="polite"
-              className="relative z-10 lg:static"
-            >
+            {/* PER-CATEGORY GRID OR DETAILED SPOTLIGHT CARD */}
+            <div aria-live="polite" className="relative z-10">
               <AnimatePresence mode="wait" initial={false}>
-                {isDirectoryView ? (
-                  <motion.div
-                    key="all-grid"
+                {!isSpotlight ? (
+                  <motion.section
+                    key={`grid-${activeCategory}`}
+                    aria-labelledby={`${activeCategory}-team-heading`}
                     initial={prefersReducedMotion ? false : { opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={prefersReducedMotion ? undefined : { opacity: 0 }}
                     transition={{
-                      duration: prefersReducedMotion ? 0 : 0.12,
+                      duration: prefersReducedMotion ? 0 : 0.14,
                       ease: 'easeOut',
                     }}
-                    className="space-y-10 sm:space-y-12"
                   >
-                    {(isAllView
-                      ? TEAM_CATEGORIES.filter(
-                          (category) =>
-                            category.id !== 'all' && categoryCounts[category.id] > 0
-                        )
-                      : TEAM_CATEGORIES.filter(
-                          (category) => category.id === activeCategory
-                        )
-                    ).map((category) => {
-                      const members = TEAM_MEMBERS.filter(
-                        (member) => member.group === category.id
-                      );
+                    <div className="mb-5 flex items-baseline gap-2.5 border-b border-[#A8A08A] pb-3">
+                      <h2
+                        id={`${activeCategory}-team-heading`}
+                        className="font-editorial text-2xl font-bold italic text-[#061a12] sm:text-[1.75rem]"
+                      >
+                        {activeCategoryLabel}
+                      </h2>
+                      <span className="font-mono text-xs font-semibold text-[#365647] tabular-nums">
+                        {formatIndex(filteredMembers.length)}
+                      </span>
+                    </div>
 
-                      return (
-                        <section key={category.id} aria-labelledby={`${category.id}-team-heading`}>
-                          <div className="mb-4 flex items-center gap-3 border-b border-[#A8A08A] pb-3">
-                            <h2
-                              id={`${category.id}-team-heading`}
-                              className="font-editorial text-2xl font-bold italic text-[#061a12] sm:text-3xl"
-                            >
-                              {category.label}
-                            </h2>
-                            <span className="font-mono text-xs font-semibold text-[#365647] tabular-nums">
-                              {formatIndex(members.length)}
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7">
-                            {members.map((member, index) => {
-                              const isFounder = member.group === 'founder';
-                              const accent = accentVariations[index % accentVariations.length];
-
-                              return (
-                                <button
-                                  key={member.id}
-                                  type="button"
-                                  onClick={() => handleInspectFromAll(member)}
-                                  aria-label={`View profile for ${member.name}, ${member.role}`}
-                                  className="group relative flex min-w-0 items-center gap-6 rounded-2xl p-4 text-left transition-all duration-300 hover:bg-[#EAE5D9]/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] sm:p-5"
-                                >
-                                  {/* Circular Portrait with Randomized & Asymmetric Background Shapes */}
-                                  <div className="relative shrink-0">
-                                    {/* Background Accent Shape 1 */}
-                                    <div
-                                      aria-hidden="true"
-                                      className={`absolute rounded-full transition-transform duration-300 group-hover:scale-110 ${accent.c1}`}
-                                    />
-                                    {/* Background Accent Shape 2 */}
-                                    <div
-                                      aria-hidden="true"
-                                      className={`absolute rounded-full transition-transform duration-300 group-hover:scale-110 ${accent.c2}`}
-                                    />
-
-                                    {/* Main Clean Circular Portrait Avatar */}
-                                    <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-white bg-[#061a12] shadow-xl sm:h-32 sm:w-32">
-                                      <PortraitAsset
-                                        member={member}
-                                        eager={index < 6}
-                                        compact
-                                      />
-                                    </div>
-                                  </div>
-
-                                  {/* Card Text Content: High Contrast Name, Designation & Bio */}
-                                  <div className="min-w-0 flex-1 py-1">
-                                    <div className="flex items-center gap-2">
-                                      <p className="text-[11px] font-bold tracking-[0.14em] text-[#6B4F14] uppercase sm:text-xs">
-                                        {member.role}
-                                      </p>
-                                      {isFounder && (
-                                        <span className="inline-flex items-center rounded-full bg-[#063B27] px-2 py-0.5 text-[9px] font-bold text-[#E6C477]">
-                                          Founder
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    <h3 className="mt-1 truncate text-lg font-bold tracking-tight text-[#061a12] sm:text-xl">
-                                      {member.name}
-                                    </h3>
-
-                                    <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed font-normal text-[#061a12] sm:text-sm">
-                                      {member.bio}
-                                    </p>
-                                  </div>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </section>
-                      );
-                    })}
-                  </motion.div>
-                ) : (() => {
-                  const isFounderSpotlight = selectedMember.group === 'founder';
-                  return (
-                    <motion.article
-                      key={selectedMember.id}
-                      initial={
-                        prefersReducedMotion
-                          ? false
-                          : { opacity: 0, x: slideDirection * 64 }
-                      }
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={
-                        prefersReducedMotion
-                          ? undefined
-                          : { opacity: 0, x: slideDirection * -64 }
-                      }
-                      transition={{
-                        duration: prefersReducedMotion ? 0 : 0.11,
-                        ease: 'easeOut',
-                      }}
-                      className="grid grid-cols-1 gap-6 rounded-2xl p-5 md:grid-cols-12 md:items-stretch md:gap-8 md:p-8 lg:gap-10 lg:p-10"
+                    <div
+                      className={`grid gap-4 sm:gap-5 ${
+                        usesThreeCols
+                          ? 'max-w-[780px] grid-cols-1 sm:grid-cols-3'
+                          : 'max-w-[540px] grid-cols-1 sm:grid-cols-2'
+                      }`}
                     >
-                      {/* Featured Single Portrait with Natural Asymmetric Shapes */}
-                      <div className="md:col-span-5 flex items-center justify-center">
-                        <div className="relative aspect-square w-52 sm:w-60 md:w-full md:max-w-[280px]">
-                          {/* Background Accent Shape 1 */}
-                          <div
-                            aria-hidden="true"
-                            className="absolute -top-6 -left-4 h-36 w-36 rounded-full bg-[#063B27]/25 sm:h-44 sm:w-44"
-                          />
-                          {/* Background Accent Shape 2 */}
-                          <div
-                            aria-hidden="true"
-                            className="absolute -bottom-4 -right-6 h-32 w-32 rounded-full bg-[#E6C477]/50 sm:h-40 sm:w-40"
-                          />
-                          {/* Main Circular Portrait */}
-                          <div className="relative h-full w-full overflow-hidden rounded-full border-4 border-white bg-[#061a12] shadow-2xl">
-                            <PortraitAsset member={selectedMember} eager />
-                          </div>
-                        </div>
+                      {filteredMembers.map((member, index) => {
+                        const isFounder = member.group === 'founder';
+                        return (
+                          <button
+                            key={member.id}
+                            type="button"
+                            onClick={() => handleSelectMemberCard(index)}
+                            aria-label={`Inspect profile for ${member.name}, ${member.role}`}
+                            className={`group flex min-w-0 cursor-pointer flex-col rounded-[14px] border p-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(6,26,18,0.09)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] ${
+                              isFounder
+                                ? 'border-[#C99E44]/55 bg-gradient-to-br from-[#FDFBF5] via-[#FAF4E4] to-[#F4EBDA] shadow-[0_10px_26px_rgba(107,79,20,0.07)] hover:border-[#B8892E]'
+                                : 'border-[#063B27]/14 bg-gradient-to-br from-[#FCF9F2] via-[#FAF6EC] to-[#F4EFE2] shadow-[0_10px_24px_rgba(6,26,18,0.05)] hover:border-[#063B27]/35'
+                            }`}
+                          >
+                            <div className="aspect-square w-full overflow-hidden rounded-[10px] bg-[#061a12] ring-1 ring-[#061a12]/10">
+                              <PortraitAsset
+                                member={member}
+                                eager={index < 4}
+                                hoverZoom
+                              />
+                            </div>
+
+                            <div className="px-0.5 pt-3 pb-0.5">
+                              <p className="text-[10px] leading-[1.35] font-bold tracking-[0.12em] text-[#6B4F14] uppercase">
+                                {member.role}
+                              </p>
+                              <h3 className="mt-1 text-[15px] leading-[1.3] font-bold tracking-tight text-[#061a12] sm:text-base">
+                                {member.name}
+                              </h3>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.section>
+                ) : (
+                  <motion.article
+                    key={selectedMember.id}
+                    initial={
+                      prefersReducedMotion
+                        ? false
+                        : { opacity: 0, x: slideDirection * 40 }
+                    }
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={
+                      prefersReducedMotion
+                        ? undefined
+                        : { opacity: 0, x: slideDirection * -40 }
+                    }
+                    transition={{
+                      duration: prefersReducedMotion ? 0 : 0.16,
+                      ease: 'easeOut',
+                    }}
+                    className={`rounded-[16px] border p-4 shadow-[0_20px_48px_rgba(6,26,18,0.07),0_2px_10px_rgba(107,79,20,0.05)] sm:p-6 md:grid md:grid-cols-12 md:items-center md:gap-8 md:p-7 lg:gap-10 lg:p-8 ${
+                      selectedMember.group === 'founder'
+                        ? 'border-[#C99E44]/55 bg-gradient-to-br from-[#FDFBF5] via-[#FAF4E4] to-[#F4EBDA]'
+                        : 'border-[#063B27]/14 bg-gradient-to-br from-[#FCF9F2] via-[#FAF6EC] to-[#F4EFE2]'
+                    }`}
+                  >
+                    {/* Left Portrait (~42% width on desktop, full-width square above on mobile) */}
+                    <div className="md:col-span-5">
+                      <div className="aspect-square w-full overflow-hidden rounded-[12px] bg-[#061a12] shadow-[0_12px_28px_rgba(6,26,18,0.14)] ring-1 ring-[#061a12]/10">
+                        <PortraitAsset member={selectedMember} eager />
+                      </div>
+                    </div>
+
+                    {/* Right Editorial Profile Details */}
+                    <div className="mt-5 min-w-0 md:col-span-7 md:mt-0 md:flex md:flex-col md:justify-center">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-[1.4] font-bold tracking-wide sm:text-xs">
+                        <span className="tracking-[0.09em] text-[#6B4F14] uppercase">
+                          {selectedMember.role}
+                        </span>
+                        <span aria-hidden="true" className="text-[#8A6720]/60">
+                          ·
+                        </span>
+                        <span className="font-semibold text-[#365647]">
+                          {selectedMember.focusArea}
+                        </span>
                       </div>
 
-                      {/* Editorial Profile & Pull Quote */}
-                      <div className="min-w-0 md:col-span-7 md:flex md:flex-col md:justify-between md:py-2">
-                        <div>
-                          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs leading-tight font-bold tracking-wide">
-                            <span className="tracking-[0.08em] text-[#6B4F14] uppercase">
-                              {selectedMember.role}
-                            </span>
-                            <span aria-hidden="true" className="text-[#695F46]">
-                              ·
-                            </span>
-                            <span className="text-[#365647] font-semibold">{selectedMember.focusArea}</span>
-                          </div>
+                      <h2 className="mt-2 text-2xl leading-[1.2] font-bold tracking-tight text-[#061a12] sm:text-3xl">
+                        {selectedMember.name}
+                      </h2>
 
-                          <h2 className="mt-2 text-2xl leading-tight font-bold tracking-tight text-[#061a12] sm:text-3xl md:text-4xl">
-                            {selectedMember.name}
-                          </h2>
+                      <p className="mt-3.5 text-[15px] leading-[1.68] font-normal text-[#1E352B] sm:text-base">
+                        {selectedMember.bio}
+                      </p>
 
-                          <p className="mt-4 max-w-[48ch] text-sm leading-[1.75] font-normal text-[#061a12] sm:text-base">
-                            {selectedMember.bio}
-                          </p>
-                        </div>
-
-                        <blockquote className="mt-6 border-t border-[#A8A08A] pt-5 lg:mt-8 lg:pt-6">
-                          <p className="font-editorial text-lg leading-[1.5] italic font-semibold text-[#6B4F14] sm:text-xl">
-                            “{selectedMember.quote}”
-                          </p>
-                        </blockquote>
-                      </div>
-                    </motion.article>
-                  );
-                })()}
+                      <blockquote className="mt-5 border-t border-[#8A6720]/25 pt-4 sm:mt-6 sm:pt-5">
+                        <p className="font-editorial text-[17px] leading-[1.5] font-semibold italic text-[#6B4F14] sm:text-xl">
+                          “{selectedMember.quote}”
+                        </p>
+                      </blockquote>
+                    </div>
+                  </motion.article>
+                )}
               </AnimatePresence>
             </div>
           </div>
