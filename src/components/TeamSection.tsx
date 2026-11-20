@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ArrowLeft, ArrowRight, LayoutGrid } from 'lucide-react';
-import { gsap, useGSAP } from '../motion/setup';
+import { ScrollTrigger, gsap, useGSAP } from '../motion/setup';
 import {
   MOTION_DISTANCE,
   MOTION_DURATION,
@@ -148,6 +148,68 @@ export function TeamSection() {
     { scope: sectionRef, dependencies: [prefersReducedMotion] }
   );
 
+  useGSAP(
+    () => {
+      if (isSpotlight) {
+        ScrollTrigger.refresh();
+        return;
+      }
+
+      const root = sectionRef.current;
+      if (!root) return;
+
+      const grids = gsap.utils.toArray<HTMLElement>('.js-team-grid', root);
+      if (grids.length === 0) return;
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        grids.forEach((grid) => {
+          const cards = grid.querySelectorAll<HTMLElement>('.js-fadeIn');
+          if (!cards.length) return;
+
+          gsap.fromTo(
+            cards,
+            {
+              y: 30,
+              autoAlpha: 0,
+            },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.85,
+              stagger: 0.15,
+              ease: 'power2.out',
+              clearProps: 'transform',
+              scrollTrigger: {
+                trigger: grid,
+                start: 'top 82%',
+                once: true,
+              },
+            }
+          );
+        });
+
+        ScrollTrigger.refresh();
+      });
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        grids.forEach((grid) => {
+          const cards = grid.querySelectorAll<HTMLElement>('.js-fadeIn');
+          if (cards.length) {
+            gsap.set(cards, { y: 0, autoAlpha: 1, clearProps: 'transform' });
+          }
+        });
+      });
+
+      return () => mm.revert();
+    },
+    {
+      scope: sectionRef,
+      dependencies: [activeCategory, isSpotlight, prefersReducedMotion],
+    }
+  );
+
   const handleCategoryChange = useCallback(
     (nextCategory: TeamCategoryId) => {
       setActiveCategory(nextCategory);
@@ -217,7 +279,6 @@ export function TeamSection() {
   );
 
   const formatIndex = (value: number) => String(value).padStart(2, '0');
-  const usesThreeCols = filteredMembers.length % 3 === 0;
 
   return (
     <section
@@ -411,74 +472,62 @@ export function TeamSection() {
 
             {/* PER-CATEGORY GRID OR DETAILED SPOTLIGHT CARD */}
             <div aria-live="polite" className="relative z-10">
-              <AnimatePresence mode="wait" initial={false}>
-                {!isSpotlight ? (
-                  <motion.section
-                    key={`grid-${activeCategory}`}
-                    aria-labelledby={`${activeCategory}-team-heading`}
-                    initial={prefersReducedMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
-                    transition={{
-                      duration: prefersReducedMotion ? 0 : 0.14,
-                      ease: 'easeOut',
-                    }}
-                  >
-                    <div className="mb-5 flex items-baseline gap-2.5 border-b border-[#A8A08A] pb-3">
-                      <h2
-                        id={`${activeCategory}-team-heading`}
-                        className="font-editorial text-2xl font-bold italic text-[#061a12] sm:text-[1.75rem]"
-                      >
-                        {activeCategoryLabel}
-                      </h2>
-                      <span className="font-mono text-xs font-semibold text-[#365647] tabular-nums">
-                        {formatIndex(filteredMembers.length)}
-                      </span>
-                    </div>
-
-                    <div
-                      className={`grid gap-4 sm:gap-5 ${
-                        usesThreeCols
-                          ? 'max-w-[780px] grid-cols-1 sm:grid-cols-3'
-                          : 'max-w-[540px] grid-cols-1 sm:grid-cols-2'
-                      }`}
+              {!isSpotlight ? (
+                <section
+                  key={`grid-${activeCategory}`}
+                  aria-labelledby={`${activeCategory}-team-heading`}
+                  className="team-section-group"
+                >
+                  <div className="mb-5 flex items-baseline gap-2.5 border-b border-[#A8A08A] pb-3">
+                    <h2
+                      id={`${activeCategory}-team-heading`}
+                      className="team-group-heading font-editorial text-2xl font-bold italic text-[#061a12] sm:text-[1.75rem]"
                     >
-                      {filteredMembers.map((member, index) => {
-                        const isFounder = member.group === 'founder';
-                        return (
-                          <button
-                            key={member.id}
-                            type="button"
-                            onClick={() => handleSelectMemberCard(index)}
-                            aria-label={`Inspect profile for ${member.name}, ${member.role}`}
-                            className={`group flex min-w-0 cursor-pointer flex-col rounded-[14px] border p-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(6,26,18,0.09)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] ${
-                              isFounder
-                                ? 'border-[#C99E44]/55 bg-gradient-to-br from-[#FDFBF5] via-[#FAF4E4] to-[#F4EBDA] shadow-[0_10px_26px_rgba(107,79,20,0.07)] hover:border-[#B8892E]'
-                                : 'border-[#063B27]/14 bg-gradient-to-br from-[#FCF9F2] via-[#FAF6EC] to-[#F4EFE2] shadow-[0_10px_24px_rgba(6,26,18,0.05)] hover:border-[#063B27]/35'
-                            }`}
-                          >
-                            <div className="aspect-square w-full overflow-hidden rounded-[10px] bg-[#061a12] ring-1 ring-[#061a12]/10">
-                              <PortraitAsset
-                                member={member}
-                                eager={index < 4}
-                                hoverZoom
-                              />
-                            </div>
+                      {activeCategoryLabel}
+                    </h2>
+                    <span className="font-mono text-xs font-semibold text-[#365647] tabular-nums">
+                      {formatIndex(filteredMembers.length)}
+                    </span>
+                  </div>
 
-                            <div className="px-0.5 pt-3 pb-0.5">
-                              <p className="text-[10px] leading-[1.35] font-bold tracking-[0.12em] text-[#6B4F14] uppercase">
-                                {member.role}
-                              </p>
-                              <h3 className="mt-1 text-[15px] leading-[1.3] font-bold tracking-tight text-[#061a12] sm:text-base">
-                                {member.name}
-                              </h3>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </motion.section>
-                ) : (
+                  <div className="team-cards-grid js-team-grid grid w-full max-w-[680px] grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+                    {filteredMembers.map((member, index) => {
+                      const isFounder = member.group === 'founder';
+                      return (
+                        <button
+                          key={member.id}
+                          type="button"
+                          onClick={() => handleSelectMemberCard(index)}
+                          aria-label={`Inspect profile for ${member.name}, ${member.role}`}
+                          className={`team-member-card js-fadeIn group flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[14px] border p-3 text-left transition-[border-color,box-shadow] duration-200 will-change-[transform,opacity] hover:shadow-[0_14px_32px_rgba(6,26,18,0.09)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#063B27] ${
+                            isFounder
+                              ? 'border-[#C99E44]/55 bg-gradient-to-br from-[#FDFBF5] via-[#FAF4E4] to-[#F4EBDA] shadow-[0_10px_26px_rgba(107,79,20,0.07)] hover:border-[#B8892E]'
+                              : 'border-[#063B27]/14 bg-gradient-to-br from-[#FCF9F2] via-[#FAF6EC] to-[#F4EFE2] shadow-[0_10px_24px_rgba(6,26,18,0.05)] hover:border-[#063B27]/35'
+                          }`}
+                        >
+                          <div className="team-member-photo aspect-[3/4] w-full overflow-hidden rounded-[10px] bg-[#061a12] ring-1 ring-[#061a12]/10">
+                            <PortraitAsset
+                              member={member}
+                              eager={index < 4}
+                              hoverZoom
+                            />
+                          </div>
+
+                          <div className="team-member-meta px-0.5 pt-3 pb-0.5">
+                            <p className="team-member-role text-[10px] leading-[1.35] font-bold tracking-[0.12em] text-[#6B4F14] uppercase">
+                              {member.role}
+                            </p>
+                            <h3 className="team-member-name mt-1 text-[15px] leading-[1.3] font-bold tracking-tight text-[#061a12] sm:text-base">
+                              {member.name}
+                            </h3>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+              ) : (
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.article
                     key={selectedMember.id}
                     initial={
@@ -502,9 +551,9 @@ export function TeamSection() {
                         : 'border-[#063B27]/14 bg-gradient-to-br from-[#FCF9F2] via-[#FAF6EC] to-[#F4EFE2]'
                     }`}
                   >
-                    {/* Left Portrait (~42% width on desktop, full-width square above on mobile) */}
+                    {/* Left Portrait (~42% width on desktop, full-width vertical rectangle above on mobile) */}
                     <div className="md:col-span-5">
-                      <div className="aspect-square w-full overflow-hidden rounded-[12px] bg-[#061a12] shadow-[0_12px_28px_rgba(6,26,18,0.14)] ring-1 ring-[#061a12]/10">
+                      <div className="aspect-[4/5] w-full overflow-hidden rounded-[12px] bg-[#061a12] shadow-[0_12px_28px_rgba(6,26,18,0.14)] ring-1 ring-[#061a12]/10 md:aspect-[3/4]">
                         <PortraitAsset member={selectedMember} eager />
                       </div>
                     </div>
@@ -538,8 +587,8 @@ export function TeamSection() {
                       </blockquote>
                     </div>
                   </motion.article>
-                )}
-              </AnimatePresence>
+                </AnimatePresence>
+              )}
             </div>
           </div>
         </div>
