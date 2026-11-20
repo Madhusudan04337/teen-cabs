@@ -106,46 +106,64 @@ export function AboutStorySection() {
           );
         });
 
-        // Vertical dropping journey line reveal
+        // Vertical scrubbed journey line reveal synced to scroll
         const journeyLine = root.querySelector<HTMLElement>('[data-journey-line]');
-        if (journeyLine) {
+        const journeyTrack = root.querySelector<HTMLElement>('[data-journey-track]');
+        if (journeyLine && journeyTrack) {
           gsap.fromTo(
             journeyLine,
             { scaleY: 0 },
             {
               scaleY: 1,
               transformOrigin: 'top center',
-              duration: 1.05,
-              ease: MOTION_EASE.gentle,
-              clearProps: 'transform',
+              ease: 'none',
               scrollTrigger: {
-                trigger: '[data-arch-diagram]',
-                start: 'top 84%',
-                toggleActions: 'play none none none',
-                once: true,
+                trigger: journeyTrack,
+                start: 'top 76%',
+                end: 'bottom 76%',
+                scrub: 0.25,
               },
             }
           );
         }
 
-        gsap.utils.toArray<HTMLElement>('[data-journey-stop]', root).forEach((stop, idx) => {
-          gsap.fromTo(
+        // Reveal each journey stop + node right as the scrolling line reaches it
+        gsap.utils.toArray<HTMLElement>('[data-journey-stop]', root).forEach((stop) => {
+          const node = stop.querySelector<HTMLElement>('[data-journey-node]');
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: stop,
+              start: 'top 76%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+
+          if (node) {
+            tl.fromTo(
+              node,
+              { scale: 0.55, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                duration: 0.35,
+                ease: 'back.out(1.8)',
+                clearProps: 'transform,opacity',
+              },
+              0
+            );
+          }
+
+          tl.fromTo(
             stop,
-            { y: offsetY * 0.7, opacity: 0 },
+            { y: Math.min(26, offsetY * 0.75), opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 0.65,
-              delay: 0.1 + idx * 0.12,
+              duration: 0.55,
               ease: MOTION_EASE.editorial,
               clearProps: 'transform,opacity',
-              scrollTrigger: {
-                trigger: '[data-arch-diagram]',
-                start: 'top 84%',
-                toggleActions: 'play none none none',
-                once: true,
-              },
-            }
+            },
+            0.04
           );
         });
 
@@ -287,10 +305,10 @@ export function AboutStorySection() {
             </div>
           </div>
 
-          {/* Right: Open Dropping Gold Journey Line (zero container boxes) */}
+          {/* Right: Open Scrubbed Gold Journey Line (zero container boxes) */}
           <div data-arch-diagram className="relative lg:col-span-6 lg:col-start-7">
-            <div className="relative pl-9 sm:pl-11">
-              {/* Subtle dashed route track + gold dropping progress line */}
+            <div data-journey-track className="relative pl-9 sm:pl-11">
+              {/* Subtle dashed route track + gold scroll-scrubbed progress line */}
               <div
                 aria-hidden="true"
                 className="absolute top-3 bottom-3 left-[11px] w-px border-l border-dashed border-[#285640]"
@@ -298,7 +316,7 @@ export function AboutStorySection() {
               <div
                 aria-hidden="true"
                 data-journey-line
-                className="absolute top-3 bottom-3 left-[11px] w-[2px] -translate-x-[0.5px] bg-gradient-to-b from-[#E6C477] via-[#D9B45B] to-[#E6C477]/25"
+                className="absolute top-3 bottom-3 left-[11px] w-[2px] origin-top -translate-x-[0.5px] bg-gradient-to-b from-[#E6C477] via-[#D9B45B] to-[#E6C477]/80"
               />
 
               <ol className="space-y-10 sm:space-y-12">
@@ -307,7 +325,8 @@ export function AboutStorySection() {
                     {/* Route node marker anchored cleanly on the dropping line */}
                     <span
                       aria-hidden="true"
-                      className="absolute top-1.5 -left-9 flex h-6 w-6 items-center justify-center rounded-full border border-[#E6C477]/65 bg-[#032A1D] sm:-left-11"
+                      data-journey-node
+                      className="absolute top-1.5 -left-9 flex h-6 w-6 items-center justify-center rounded-full border border-[#E6C477]/75 bg-[#032A1D] shadow-[0_0_12px_rgba(230,196,119,0.22)] sm:-left-11"
                     >
                       <span className="h-2 w-2 rounded-full bg-[#E6C477]" />
                     </span>

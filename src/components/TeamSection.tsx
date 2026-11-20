@@ -402,36 +402,27 @@ export function TeamSection() {
             tabIndex={-1}
             className="min-w-0 focus:outline-none lg:col-span-8"
           >
-            {/* Top Status & Controls Header */}
-            <div className="mb-6 flex min-h-[44px] flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-b border-[#A8A08A] pb-3.5 sm:mb-8 sm:pb-4">
-              <div className="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold tabular-nums sm:gap-2.5 sm:text-xs">
-                <span className="tracking-[0.1em] text-[#6B4F14] uppercase sm:tracking-[0.12em]">
-                  {activeCategoryLabel}
-                </span>
-                <span aria-hidden="true" className="text-[#695F46]">
-                  /
-                </span>
-                {!isSpotlight ? (
-                  <span className="text-[#061a12]">
-                    {formatIndex(filteredMembers.length)}{' '}
-                    {filteredMembers.length === 1 ? 'Member' : 'Members'}
+            {/* Spotlight Status & Navigation Header */}
+            {isSpotlight && (
+              <div className="mb-6 flex min-h-[44px] flex-wrap items-center justify-between gap-x-3 gap-y-2.5 border-b border-[#A8A08A] pb-3.5 sm:mb-8 sm:pb-4">
+                <div className="flex min-w-0 items-center gap-1.5 font-mono text-[11px] font-semibold tabular-nums sm:gap-2.5 sm:text-xs">
+                  <span className="tracking-[0.1em] text-[#6B4F14] uppercase sm:tracking-[0.12em]">
+                    {activeCategoryLabel}
                   </span>
-                ) : (
-                  <>
-                    <span className="text-[#061a12]">
-                      {formatIndex(safeActiveIndex + 1)}
-                    </span>
-                    <span aria-hidden="true" className="text-[#695F46]">
-                      of
-                    </span>
-                    <span className="text-[#061a12]">
-                      {formatIndex(filteredMembers.length)}
-                    </span>
-                  </>
-                )}
-              </div>
+                  <span aria-hidden="true" className="text-[#695F46]">
+                    /
+                  </span>
+                  <span className="text-[#061a12]">
+                    {formatIndex(safeActiveIndex + 1)}
+                  </span>
+                  <span aria-hidden="true" className="text-[#695F46]">
+                    of
+                  </span>
+                  <span className="text-[#061a12]">
+                    {formatIndex(filteredMembers.length)}
+                  </span>
+                </div>
 
-              {isSpotlight && (
                 <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
                   <button
                     type="button"
@@ -467,8 +458,8 @@ export function TeamSection() {
                     </>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* PER-CATEGORY GRID OR DETAILED SPOTLIGHT CARD */}
             <div aria-live="polite" className="relative z-10">
