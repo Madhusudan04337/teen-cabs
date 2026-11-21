@@ -200,6 +200,10 @@ export function ContactSection() {
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
     const phoneDigits = trimmedPhone.replace(/\D/g, '');
+    const normalizedPhoneDigits =
+      trimmedPhone.startsWith('+91') && phoneDigits.length === 12
+        ? phoneDigits.slice(2)
+        : phoneDigits;
     const trimmedMessage = message.trim();
     const emailPattern = /^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?(?:\.[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?)+$/i;
 
@@ -228,9 +232,9 @@ export function ContactSection() {
       setError('Phone number can contain only digits and phone formatting characters.');
       return;
     }
-    if (phoneDigits.length !== 10) {
+    if (normalizedPhoneDigits.length !== 10) {
       setErrorField('phone');
-      setError('Phone number must contain exactly 10 digits.');
+      setError('Phone number must contain exactly 10 digits, optionally with +91.');
       return;
     }
     if (!trimmedMessage) {
@@ -263,7 +267,7 @@ export function ContactSection() {
           first_name: firstName,
           name: trimmedName,
           email: trimmedEmail,
-          phone: phoneDigits,
+          phone: normalizedPhoneDigits,
           subject: selectedFocus,
           organization: organization.trim() || 'Not provided',
           message: trimmedMessage,
@@ -561,7 +565,7 @@ export function ContactSection() {
                           }}
                           aria-invalid={errorField === 'name'}
                           aria-describedby={errorField === 'name' ? 'contact-name-error' : undefined}
-                          placeholder="e.g. Anand Sundaram"
+                          placeholder="Enter your full name"
                           className={`min-h-[46px] w-full rounded-xl border bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
                             errorField === 'name'
                               ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
@@ -637,7 +641,7 @@ export function ContactSection() {
                           }}
                           aria-invalid={errorField === 'phone'}
                           aria-describedby={errorField === 'phone' ? 'contact-phone-error' : undefined}
-                          placeholder="98765 43210"
+                          placeholder="Enter 10-digit phone number"
                           className={`min-h-[46px] w-full rounded-xl border bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
                             errorField === 'phone'
                               ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
