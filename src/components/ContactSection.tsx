@@ -246,38 +246,59 @@ export function ContactSection() {
     setError('');
     setErrorField(null);
     setSubmitResult(null);
-
-    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
-      setSubmitResult({
-        status: 'error',
-      });
-      return;
-    }
-
     setIsSending(true);
 
     const firstName = trimmedName.split(/\s+/)[0] || trimmedName;
     const selectedFocus = topic;
 
     try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          first_name: firstName,
+      const submitToNetlify = async () => {
+        const formData = new URLSearchParams({
+          'form-name': 'contact-inquiry',
           name: trimmedName,
           email: trimmedEmail,
           phone: normalizedPhoneDigits,
           subject: selectedFocus,
           organization: organization.trim() || 'Not provided',
           message: trimmedMessage,
-          support_email: 'info@forgeit.co.in',
-          website_url: 'https://teen-cabs.netlify.app/',
-        },
-        {
-          publicKey: EMAILJS_PUBLIC_KEY,
+        });
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString(),
+        });
+        if (!response.ok) {
+          throw new Error(`Netlify Forms submission failed with status ${response.status}`);
         }
-      );
+      };
+
+      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+        try {
+          await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+              first_name: firstName,
+              name: trimmedName,
+              email: trimmedEmail,
+              phone: normalizedPhoneDigits,
+              subject: selectedFocus,
+              organization: organization.trim() || 'Not provided',
+              message: trimmedMessage,
+              support_email: 'info@forgeit.co.in',
+              website_url: 'https://teen-cabs.netlify.app/',
+            },
+            {
+              publicKey: EMAILJS_PUBLIC_KEY,
+            }
+          );
+        } catch (emailjsError) {
+          console.error('EmailJS inquiry submission failed, trying Netlify Forms:', emailjsError);
+          await submitToNetlify();
+        }
+      } else {
+        await submitToNetlify();
+      }
 
       setFullName('');
       setEmail('');
@@ -730,11 +751,11 @@ export function ContactSection() {
                                 Thank you, {submitResult.firstName}. Your inquiry is on its way.
                               </p>
                               <p className="mt-0.5 text-[#D4E1D8]">
-                                A confirmation for your{' '}
+                                Your inquiry for{' '}
                                 <span className="font-semibold text-[#D4B46A]">
                                   {submitResult.topic}
                                 </span>{' '}
-                                message has been sent to{' '}
+                                was submitted successfully. We will respond at{' '}
                                 <span className="font-mono text-[#F3F0E6]">
                                   {submitResult.email}
                                 </span>
