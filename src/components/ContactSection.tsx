@@ -17,11 +17,12 @@ import {
   X,
 } from 'lucide-react';
 
-const EMAILJS_SERVICE_ID = 'service_kwtfq2k';
+const EMAILJS_SERVICE_ID =
+  import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim() || '';
 const EMAILJS_TEMPLATE_ID =
-  import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || 'YOUR_EMAILJS_TEMPLATE_ID';
+  import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || '';
 const EMAILJS_PUBLIC_KEY =
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || 'YOUR_EMAILJS_PUBLIC_KEY';
+  import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || '';
 
 const INQUIRY_TOPICS = [
   'Parent & Family',
@@ -31,7 +32,7 @@ const INQUIRY_TOPICS = [
 ] as const;
 
 type InquiryTopic = (typeof INQUIRY_TOPICS)[number];
-type ContactErrorField = 'name' | 'email' | 'message' | null;
+type ContactErrorField = 'name' | 'email' | 'phone' | 'message' | null;
 type SubmitResult =
   | {
       status: 'success';
@@ -197,17 +198,39 @@ export function ContactSection() {
 
     const trimmedName = fullName.trim();
     const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+    const phoneDigits = trimmedPhone.replace(/\D/g, '');
     const trimmedMessage = message.trim();
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?(?:\.[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?)+$/i;
 
     if (!trimmedName) {
       setErrorField('name');
       setError('Please enter your full name.');
       return;
     }
+    if (!trimmedEmail) {
+      setErrorField('email');
+      setError('Please enter your email address.');
+      return;
+    }
     if (!emailPattern.test(trimmedEmail)) {
       setErrorField('email');
       setError('Please enter a valid email address.');
+      return;
+    }
+    if (!trimmedPhone) {
+      setErrorField('phone');
+      setError('Please enter your phone number.');
+      return;
+    }
+    if (!/^[+\d\s().-]+$/.test(trimmedPhone)) {
+      setErrorField('phone');
+      setError('Phone number can contain only digits and phone formatting characters.');
+      return;
+    }
+    if (phoneDigits.length !== 10) {
+      setErrorField('phone');
+      setError('Phone number must contain exactly 10 digits.');
       return;
     }
     if (!trimmedMessage) {
@@ -219,6 +242,14 @@ export function ContactSection() {
     setError('');
     setErrorField(null);
     setSubmitResult(null);
+
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID || !EMAILJS_PUBLIC_KEY) {
+      setSubmitResult({
+        status: 'error',
+      });
+      return;
+    }
+
     setIsSending(true);
 
     const firstName = trimmedName.split(/\s+/)[0] || trimmedName;
@@ -232,7 +263,7 @@ export function ContactSection() {
           first_name: firstName,
           name: trimmedName,
           email: trimmedEmail,
-          phone: phone.trim() || 'Not provided',
+          phone: phoneDigits,
           subject: selectedFocus,
           organization: organization.trim() || 'Not provided',
           message: trimmedMessage,
@@ -554,6 +585,7 @@ export function ContactSection() {
                         <input
                           id="contact-email"
                           type="email"
+                          required
                           autoComplete="email"
                           disabled={isSending}
                           value={email}
@@ -585,18 +617,38 @@ export function ContactSection() {
                           htmlFor="contact-phone"
                           className="mb-1.5 block text-xs font-semibold text-[#063B27]"
                         >
-                          Phone / WhatsApp
+                          Phone / WhatsApp <span className="text-[#547064]">*</span>
                         </label>
                         <input
                           id="contact-phone"
                           type="tel"
+                          required
+                          maxLength={20}
+                          inputMode="tel"
                           autoComplete="tel"
                           disabled={isSending}
                           value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="min-h-[46px] w-full rounded-xl border border-[#D8D9C9] bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:border-[#D9B45B] focus:ring-2 focus:ring-[#D9B45B]/35 focus:outline-none"
+                          onChange={(e) => {
+                            setPhone(e.target.value);
+                            if (errorField === 'phone') {
+                              setError('');
+                              setErrorField(null);
+                            }
+                          }}
+                          aria-invalid={errorField === 'phone'}
+                          aria-describedby={errorField === 'phone' ? 'contact-phone-error' : undefined}
+                          placeholder="98765 43210"
+                          className={`min-h-[46px] w-full rounded-xl border bg-[#FFFFFF] px-4 py-2.5 text-sm text-[#063B27] placeholder:text-[#87958B] focus:ring-2 focus:outline-none ${
+                            errorField === 'phone'
+                              ? 'border-[#C0392B] focus:border-[#C0392B] focus:ring-[#C0392B]/25'
+                              : 'border-[#D8D9C9] focus:border-[#D9B45B] focus:ring-[#D9B45B]/35'
+                          }`}
                         />
+                        {errorField === 'phone' && (
+                          <p id="contact-phone-error" role="alert" className="mt-1.5 text-xs font-medium text-[#C0392B]">
+                            {error}
+                          </p>
+                        )}
                       </div>
 
                       <div>
