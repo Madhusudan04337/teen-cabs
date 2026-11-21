@@ -221,7 +221,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             data-flip-id="waitlist-panel"
             onSubmit={handleSubmit}
             noValidate
-            className="mt-6 space-y-5"
+            className="waitlist-dark-form mt-6 space-y-5"
           >
             <fieldset>
               <legend className="mb-2 text-xs font-semibold text-[#D4E1D8]">

@@ -136,6 +136,47 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Keep browser-autofilled inputs crisp inside the warm ivory contact sheet */
+.contact-sheet-form {
+  color-scheme: light;
+}
+
+.contact-sheet-form input:-webkit-autofill,
+.contact-sheet-form input:-webkit-autofill:hover,
+.contact-sheet-form input:-webkit-autofill:focus,
+.contact-sheet-form input:-webkit-autofill:active,
+.contact-sheet-form textarea:-webkit-autofill,
+.contact-sheet-form textarea:-webkit-autofill:hover,
+.contact-sheet-form textarea:-webkit-autofill:focus,
+.contact-sheet-form textarea:-webkit-autofill:active {
+  -webkit-text-fill-color: #063B27 !important;
+  caret-color: #063B27;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  background-color: #FFFFFF !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.contact-sheet-form input:autofill,
+.contact-sheet-form textarea:autofill {
+  -webkit-text-fill-color: #063B27 !important;
+  box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  background-color: #FFFFFF !important;
+  color: #063B27 !important;
+}
+
+.waitlist-dark-form input:-webkit-autofill,
+.waitlist-dark-form input:-webkit-autofill:hover,
+.waitlist-dark-form input:-webkit-autofill:focus,
+.waitlist-dark-form input:-webkit-autofill:active {
+  -webkit-text-fill-color: #E8EEE8 !important;
+  caret-color: #E8EEE8;
+  -webkit-box-shadow: 0 0 0 1000px #032A1D inset !important;
+  box-shadow: 0 0 0 1000px #032A1D inset !important;
+  background-color: #032A1D !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
 /* Frosted dark emerald glass panels that catch drifting gold & emerald orbs */
 .glass-emerald {
   background: rgba(11, 45, 32, 0.45);
