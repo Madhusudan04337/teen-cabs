@@ -18,11 +18,14 @@ import {
 } from 'lucide-react';
 
 const EMAILJS_SERVICE_ID =
-  import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim() || '';
+  import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim() || 'service_kwtfq2k';
 const EMAILJS_TEMPLATE_ID =
   import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || '';
 const EMAILJS_PUBLIC_KEY =
   import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || '';
+
+const isPlaceholderValue = (val: string) =>
+  !val || /^(your_|MY_)/i.test(val);
 
 const INQUIRY_TOPICS = [
   'Parent & Family',
@@ -253,8 +256,21 @@ export function ContactSection() {
 
     try {
       const submitToNetlify = async () => {
+        const isNetlifyHost =
+          typeof window !== 'undefined' &&
+          !import.meta.env.DEV &&
+          !['localhost', '127.0.0.1'].includes(window.location.hostname) &&
+          !window.location.hostname.endsWith('.run.app');
+
+        if (!isNetlifyHost) {
+          throw new Error(
+            'EmailJS credentials are not configured in this environment and Netlify Forms is unavailable outside Netlify hosting.'
+          );
+        }
+
         const formData = new URLSearchParams({
           'form-name': 'contact-inquiry',
+          'bot-field': '',
           name: trimmedName,
           email: trimmedEmail,
           phone: normalizedPhoneDigits,
@@ -272,7 +288,12 @@ export function ContactSection() {
         }
       };
 
-      if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+      const emailJsConfigured =
+        !isPlaceholderValue(EMAILJS_SERVICE_ID) &&
+        !isPlaceholderValue(EMAILJS_TEMPLATE_ID) &&
+        !isPlaceholderValue(EMAILJS_PUBLIC_KEY);
+
+      if (emailJsConfigured) {
         try {
           await emailjs.send(
             EMAILJS_SERVICE_ID,
@@ -297,6 +318,9 @@ export function ContactSection() {
           await submitToNetlify();
         }
       } else {
+        console.warn(
+          'EmailJS is not configured (missing VITE_EMAILJS_TEMPLATE_ID or VITE_EMAILJS_PUBLIC_KEY).'
+        );
         await submitToNetlify();
       }
 

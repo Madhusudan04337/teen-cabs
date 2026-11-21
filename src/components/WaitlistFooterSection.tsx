@@ -70,7 +70,7 @@ export function WaitlistCtaSection({ onOpenWaitlist }: WaitlistFooterSectionProp
               <form
                 onSubmit={handleInlineSubmit}
                 noValidate
-                className="mx-auto mt-10 max-w-lg"
+                className="waitlist-dark-form mx-auto mt-10 max-w-lg"
               >
                 <div className="flex flex-col gap-3.5 sm:flex-row">
                   <label htmlFor="footer-waitlist-email" className="sr-only">
