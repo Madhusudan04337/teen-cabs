@@ -1,18 +1,27 @@
 import { useRef, useState } from 'react';
+import emailjs from '@emailjs/browser';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
+  AlertCircle,
   ArrowUpRight,
   Check,
   CheckCircle2,
   Clock,
   Copy,
+  Loader2,
   Mail,
   MapPin,
   Phone,
-  RotateCcw,
+  X,
 } from 'lucide-react';
+
+const EMAILJS_SERVICE_ID = 'service_kwtfq2k';
+const EMAILJS_TEMPLATE_ID =
+  import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim() || 'YOUR_EMAILJS_TEMPLATE_ID';
+const EMAILJS_PUBLIC_KEY =
+  import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim() || 'YOUR_EMAILJS_PUBLIC_KEY';
 
 const INQUIRY_TOPICS = [
   'Parent & Family',
@@ -23,6 +32,17 @@ const INQUIRY_TOPICS = [
 
 type InquiryTopic = (typeof INQUIRY_TOPICS)[number];
 type ContactErrorField = 'name' | 'email' | 'message' | null;
+type SubmitResult =
+  | {
+      status: 'success';
+      firstName: string;
+      topic: InquiryTopic;
+      email: string;
+    }
+  | {
+      status: 'error';
+    }
+  | null;
 
 // TODO: Configure verified Teen Cabs / Forgeit social profile URLs before linking externally.
 const SOCIAL_PROFILES: ReadonlyArray<{
@@ -75,7 +95,8 @@ export function ContactSection() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [errorField, setErrorField] = useState<ContactErrorField>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [submitResult, setSubmitResult] = useState<SubmitResult>(null);
 
   useGSAP(
     () => {
@@ -170,12 +191,16 @@ export function ContactSection() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (isSending) return;
+
+    const trimmedName = fullName.trim();
     const trimmedEmail = email.trim();
+    const trimmedMessage = message.trim();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!fullName.trim()) {
+    if (!trimmedName) {
       setErrorField('name');
       setError('Please enter your full name.');
       return;
@@ -185,26 +210,57 @@ export function ContactSection() {
       setError('Please enter a valid email address.');
       return;
     }
-    if (message.trim().length < 8) {
+    if (!trimmedMessage) {
       setErrorField('message');
-      setError('Please share a brief note about your question or inquiry.');
+      setError('Please enter your message.');
       return;
     }
 
     setError('');
     setErrorField(null);
-    setSubmitted(true);
-  };
+    setSubmitResult(null);
+    setIsSending(true);
 
-  const handleReset = () => {
-    setSubmitted(false);
-    setFullName('');
-    setEmail('');
-    setPhone('');
-    setOrganization('');
-    setMessage('');
-    setError('');
-    setErrorField(null);
+    const firstName = trimmedName.split(/\s+/)[0] || trimmedName;
+    const selectedFocus = topic;
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          first_name: firstName,
+          name: trimmedName,
+          email: trimmedEmail,
+          phone: phone.trim() || 'Not provided',
+          subject: selectedFocus,
+          organization: organization.trim() || 'Not provided',
+          message: trimmedMessage,
+          support_email: 'info@forgeit.co.in',
+          website_url: 'https://teen-cabs.netlify.app/',
+        },
+        {
+          publicKey: EMAILJS_PUBLIC_KEY,
+        }
+      );
+
+      setFullName('');
+      setEmail('');
+      setPhone('');
+      setOrganization('');
+      setMessage('');
+      setTopic('Parent & Family');
+      setSubmitResult({
+        status: 'success',
+        firstName,
+        topic: selectedFocus,
+        email: trimmedEmail,
+      });
+    } catch {
+      setSubmitResult({ status: 'error' });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -417,70 +473,38 @@ export function ContactSection() {
                 </span>
               </div>
 
-              <AnimatePresence mode="wait">
-                {submitted ? (
-                  <motion.div
-                    key="submitted"
-                    initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={prefersReducedMotion ? undefined : { opacity: 0 }}
-                    role="status"
-                    className="py-10 text-center"
-                  >
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27]">
-                      <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
-                    </div>
-                    <h4 className="mt-5 text-xl font-semibold text-[#063B27]">
-                      Message received, {fullName.trim()}
-                    </h4>
-                    <p className="mx-auto mt-2 max-w-[40ch] text-sm leading-relaxed text-[#547064]">
-                      Our team will review your <span className="font-semibold text-[#063B27]">{topic}</span> note
-                      and reply to <span className="font-mono text-[#063B27]">{email.trim()}</span> within 24 hours.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="mt-7 inline-flex min-h-[42px] cursor-pointer items-center gap-2 rounded-full bg-[#063B27] px-6 py-2.5 text-xs font-semibold text-[#E6C477] transition-colors hover:bg-[#032A1D]"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
-                      <span>Send another message</span>
-                    </button>
-                  </motion.div>
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={prefersReducedMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    onSubmit={handleSubmit}
-                    noValidate
-                    className="mt-6 space-y-5"
-                  >
-                    {/* Topic Selector Buttons */}
-                    <fieldset>
-                      <legend className="mb-2.5 text-xs font-semibold tracking-wider text-[#547064] uppercase">
-                        Inquiry focus
-                      </legend>
-                      <div className="flex flex-wrap gap-2">
-                        {INQUIRY_TOPICS.map((item) => {
-                          const active = topic === item;
-                          return (
-                            <button
-                              key={item}
-                              type="button"
-                              onClick={() => setTopic(item)}
-                              aria-pressed={active}
-                              className={`min-h-[44px] cursor-pointer rounded-full px-4 py-2 text-xs font-semibold transition-colors sm:min-h-[38px] sm:py-1.5 ${
-                                active
-                                  ? 'bg-[#063B27] text-[#E6C477]'
-                                  : 'border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27] hover:bg-[#E8EEE8]'
-                              }`}
-                            >
-                              {item}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </fieldset>
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="mt-6 space-y-5"
+              >
+                {/* Topic Selector Buttons */}
+                <fieldset disabled={isSending}>
+                  <legend className="mb-2.5 text-xs font-semibold tracking-wider text-[#547064] uppercase">
+                    Inquiry focus
+                  </legend>
+                  <div className="flex flex-wrap gap-2">
+                    {INQUIRY_TOPICS.map((item) => {
+                      const active = topic === item;
+                      return (
+                        <button
+                          key={item}
+                          type="button"
+                          onClick={() => setTopic(item)}
+                          aria-pressed={active}
+                          disabled={isSending}
+                          className={`min-h-[44px] cursor-pointer rounded-full px-4 py-2 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-[38px] sm:py-1.5 ${
+                            active
+                              ? 'border border-[#0B1F16] bg-[#0B1F16] text-[#D4B46A] shadow-sm'
+                              : 'border border-[#D8D9C9] bg-[#FFFFFF] text-[#063B27] hover:bg-[#E8EEE8]'
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
@@ -494,6 +518,7 @@ export function ContactSection() {
                           id="contact-name"
                           type="text"
                           autoComplete="name"
+                          disabled={isSending}
                           value={fullName}
                           onChange={(e) => {
                             setFullName(e.target.value);
@@ -529,6 +554,7 @@ export function ContactSection() {
                           id="contact-email"
                           type="email"
                           autoComplete="email"
+                          disabled={isSending}
                           value={email}
                           onChange={(e) => {
                             setEmail(e.target.value);
@@ -564,6 +590,7 @@ export function ContactSection() {
                           id="contact-phone"
                           type="tel"
                           autoComplete="tel"
+                          disabled={isSending}
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder="+91 98765 43210"
@@ -582,6 +609,7 @@ export function ContactSection() {
                           id="contact-org"
                           type="text"
                           autoComplete="organization"
+                          disabled={isSending}
                           value={organization}
                           onChange={(e) => setOrganization(e.target.value)}
                           placeholder="Optional"
@@ -600,6 +628,7 @@ export function ContactSection() {
                       <textarea
                         id="contact-message"
                         rows={4}
+                        disabled={isSending}
                         value={message}
                         onChange={(e) => {
                           setMessage(e.target.value);
@@ -624,18 +653,106 @@ export function ContactSection() {
                       )}
                     </div>
 
+                    <AnimatePresence mode="wait">
+                      {submitResult?.status === 'success' && (
+                        <motion.div
+                          key="submit-success"
+                          initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
+                          role="status"
+                          className="flex items-start justify-between gap-3 rounded-2xl border border-[#0B1F16] bg-[#0B1F16] px-4 py-3.5 text-[#F3F0E6] shadow-md"
+                        >
+                          <div className="flex items-start gap-3">
+                            <CheckCircle2
+                              className="mt-0.5 h-5 w-5 shrink-0 text-[#D4B46A]"
+                              aria-hidden="true"
+                            />
+                            <div className="text-xs leading-relaxed sm:text-sm">
+                              <p className="font-semibold text-[#F3F0E6]">
+                                Thank you, {submitResult.firstName}. Your inquiry is on its way.
+                              </p>
+                              <p className="mt-0.5 text-[#D4E1D8]">
+                                A confirmation for your{' '}
+                                <span className="font-semibold text-[#D4B46A]">
+                                  {submitResult.topic}
+                                </span>{' '}
+                                message has been sent to{' '}
+                                <span className="font-mono text-[#F3F0E6]">
+                                  {submitResult.email}
+                                </span>
+                                .
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSubmitResult(null)}
+                            aria-label="Dismiss confirmation message"
+                            className="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#D4E1D8] transition-colors hover:bg-[#143728] hover:text-[#F3F0E6]"
+                          >
+                            <X className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                        </motion.div>
+                      )}
+
+                      {submitResult?.status === 'error' && (
+                        <motion.div
+                          key="submit-error"
+                          initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={prefersReducedMotion ? undefined : { opacity: 0, y: -4 }}
+                          role="alert"
+                          className="flex items-start justify-between gap-3 rounded-2xl border border-[#C0392B]/35 bg-[#FDF2F2] px-4 py-3.5 text-[#7F1D1D]"
+                        >
+                          <div className="flex items-start gap-3">
+                            <AlertCircle
+                              className="mt-0.5 h-5 w-5 shrink-0 text-[#C0392B]"
+                              aria-hidden="true"
+                            />
+                            <p className="text-xs leading-relaxed sm:text-sm">
+                              Unable to send your inquiry right now. Please contact us directly at{' '}
+                              <a
+                                href="mailto:info@forgeit.co.in"
+                                className="font-semibold underline decoration-[#C0392B]/60 underline-offset-2 hover:text-[#5C1313]"
+                              >
+                                info@forgeit.co.in
+                              </a>
+                              .
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setSubmitResult(null)}
+                            aria-label="Dismiss error message"
+                            className="inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#7F1D1D]/80 transition-colors hover:bg-[#C0392B]/10 hover:text-[#7F1D1D]"
+                          >
+                            <X className="h-4 w-4" aria-hidden="true" />
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
                     <div className="pt-1">
                       <button
                         type="submit"
-                        className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#063B27] px-6 py-3 text-sm font-semibold text-[#E6C477] transition-colors hover:bg-[#032A1D]"
+                        disabled={isSending}
+                        className="inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#063B27] px-6 py-3 text-sm font-semibold text-[#E6C477] transition-colors hover:bg-[#032A1D] disabled:cursor-not-allowed disabled:opacity-75"
                       >
-                        <span>Send message</span>
-                        <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                        {isSending ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                            <span>Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Send message</span>
+                            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                          </>
+                        )}
                       </button>
                     </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
+              </form>
             </div>
           </div>
         </div>
