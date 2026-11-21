@@ -357,6 +357,28 @@ export function SiteFooter({ onOpenWaitlist }: WaitlistFooterSectionProps) {
                 <path d="M18.244 2.25H21.552L14.325 10.51L22.827 21.75H16.17L10.956 14.933L4.99 21.75H1.68L9.41 12.915L1.254 2.25H8.08L12.793 8.481L18.244 2.25ZM17.083 19.77H18.916L7.084 4.126H5.117L17.083 19.77Z" />
               </svg>
             </a>
+            <a
+              href="https://www.youtube.com/@forgeitgroups"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Forgeit Groups on YouTube"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#285640] bg-[#061a12] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814ZM9.545 15.568V8.432L15.818 12l-6.273 3.568Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61584893184358"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Forgeit Groups on Facebook"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#285640] bg-[#061a12] text-[#D4E1D8] transition-colors hover:border-[#E6C477] hover:bg-[#E6C477] hover:text-[#032A1D]"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
+                <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.557-.14-2.857-.14C11.928 2 10 3.657 10 6.7v2.8H7v4h3V22h4v-8.5Z" />
+              </svg>
+            </a>
           </div>
         </div>
       </div>
