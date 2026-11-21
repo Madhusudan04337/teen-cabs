@@ -171,8 +171,10 @@ export function NeedSection({ compact = false }: NeedSectionProps) {
       id="the-need"
       ref={sectionRef}
       aria-labelledby="need-heading"
-      className={`relative z-10 overflow-x-clip border-t border-[#d4af37]/12 bg-[#061a12]/25 ${
-        compact ? 'py-16 sm:py-20 lg:py-24' : 'py-20 sm:py-24 lg:py-28'
+      className={`relative z-10 overflow-x-clip ${
+        compact
+          ? 'bg-transparent pt-6 pb-16 sm:pt-8 sm:pb-20 lg:pt-10 lg:pb-24'
+          : 'border-t border-[#d4af37]/12 bg-[#061a12]/25 py-20 sm:py-24 lg:py-28'
       }`}
     >
 
